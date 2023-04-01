@@ -1,511 +1,511 @@
 "symbol","company_name","sector","stock_type","status","last_runtime"
-"A","Agilent Technologies Inc","Health Care","sp500",1,2022-10-21 20:07:12
-"AAL","American Airlines Group Inc","Industrials","sp500",1,2022-10-21 20:07:12
-"AAP","Advance Auto Parts Inc","Consumer Discretionary","sp500",1,2022-10-21 20:07:12
-"AAPL","Apple Inc","Information Technology","sp500",1,2022-10-21 20:07:12
-"ABBV","Abbvie Inc","Health Care","sp500",1,2022-10-21 20:07:12
-"ABC","AmerisourceBergen Corp","Health Care","sp500",1,2022-10-21 20:07:12
-"ABMD","Abiomed Inc","Health Care","sp500",1,2022-10-21 20:07:12
-"ABT","Abbott Laboratories","Health Care","sp500",1,2022-10-21 20:07:12
-"ACN","Accenture Plc Class A","Information Technology","sp500",1,2022-10-21 20:07:12
-"ADBE","Adobe Inc","Information Technology","sp500",1,2022-10-21 20:07:12
-"ADI","Analog Devices Inc","Information Technology","sp500",1,2022-10-21 20:07:12
-"ADM","Archer-Daniels-Midland Company","Consumer Staples","sp500",1,2022-10-21 20:07:12
-"ADP","Automatic Data Processing Inc","Information Technology","sp500",1,2022-10-21 20:07:12
-"ADSK","Autodesk Inc","Information Technology","sp500",1,2022-10-21 20:07:12
-"AEE","Ameren Corp","Utilities","sp500",1,2022-10-21 20:07:12
-"AEP","American Electric Power Inc","Utilities","sp500",1,2022-10-21 20:07:12
-"AES","AES Corp","Utilities","sp500",1,2022-10-21 20:07:12
-"AFL","Aflac Inc","Financials","sp500",1,2022-10-21 20:07:12
-"AIG","American International Group Inc","Financials","sp500",1,2022-10-21 20:07:12
-"AIZ","Assurant Inc","Financials","sp500",1,2022-10-21 20:07:12
-"AJG","Arthur J Gallagher","Financials","sp500",1,2022-10-21 20:07:12
-"AKAM","Akamai Technologies Inc","Information Technology","sp500",1,2022-10-21 20:07:12
-"ALB","Albemarle Corp","Materials","sp500",1,2022-10-21 20:07:12
-"ALGN","Align Technology Inc","Health Care","sp500",1,2022-10-21 20:07:12
-"ALK","Alaska Air Group Inc","Industrials","sp500",1,2022-10-21 20:07:12
-"ALL","Allstate Corp","Financials","sp500",1,2022-10-21 20:07:12
-"ALLE","Allegion PLC","Industrials","sp500",1,2022-10-21 20:07:12
-"AMAT","Applied Material Inc","Information Technology","sp500",1,2022-10-21 20:07:12
-"AMC","","","others",1,2022-10-21 20:07:12
-"AMCR","Amcor plc","Materials","sp500",1,2022-10-21 20:07:12
-"AMD","Advanced Micro Devices Inc","Information Technology","sp500",1,2022-10-21 20:07:12
-"AME","Ametek Inc","Industrials","sp500",1,2022-10-21 20:07:12
-"AMGN","Amgen Inc","Health Care","sp500",1,2022-10-21 20:07:12
-"AMP","Ameriprise Finance Inc","Financials","sp500",1,2022-10-21 20:07:12
-"AMT","American Tower Corporation","Real Estate","sp500",1,2022-10-21 20:07:12
-"AMZN","Amazon.Com Inc.","Consumer Discretionary","sp500",1,2022-10-21 20:07:12
-"ANET","Arista Networks Inc","Information Technology","sp500",1,2022-10-21 20:07:12
-"ANSS","Ansys Inc","Information Technology","sp500",1,2022-10-21 20:07:12
-"AON","Aon Plc","Financials","sp500",1,2022-10-21 20:07:12
-"AOS","A O Smith Corp","Industrials","sp500",1,2022-10-21 20:07:12
-"APA","Apache Corp","Energy","sp500",1,2022-10-21 20:07:12
-"APD","Air Products And Chemicals Inc","Materials","sp500",1,2022-10-21 20:07:12
-"APH","Amphenol Corp","Information Technology","sp500",1,2022-10-21 20:07:12
-"APTV","Aptiv Plc","Consumer Discretionary","sp500",1,2022-10-21 20:07:12
-"ARE","Alexandria Real Estate Equities, Inc","Real Estate","sp500",1,2022-10-21 20:07:12
-"ATO","Atmos Energy Corp","Utilities","sp500",1,2022-10-21 20:07:12
-"ATVI","Activision Blizzard Inc","Communication Services","sp500",1,2022-10-21 20:07:12
-"AVB","AvalonBay Communities, Inc","Real Estate","sp500",1,2022-10-21 20:07:12
-"AVGO","Broadcom Inc.","Information Technology","sp500",1,2022-10-21 20:07:12
-"AVY","Avery Dennison Corp","Materials","sp500",1,2022-10-21 20:07:12
-"AWK","American Water Works Inc","Utilities","sp500",1,2022-10-21 20:07:12
-"AXP","American Express","Financials","sp500",1,2022-10-21 20:07:12
-"AZO","Autozone Inc","Consumer Discretionary","sp500",1,2022-10-21 20:07:12
-"BA","Boeing","Industrials","sp500",1,2022-10-21 20:07:12
-"BAC","Bank of America Corp","Financials","sp500",1,2022-10-21 20:07:12
-"BALL","Ball Corporation","Materials","sp500",1,2022-10-21 20:07:12
-"BAX","Baxter International Inc","Health Care","sp500",1,2022-10-21 20:07:12
-"BBWI","Bath & Body Works, Inc.","Consumer Discretionary","sp500",1,2022-10-21 20:07:12
-"BBY","Best Buy Inc","Consumer Discretionary","sp500",1,2022-10-21 20:07:12
-"BDX","Becton Dickinson","Health Care","sp500",1,2022-10-21 20:07:12
-"BEN","Franklin Resources Inc","Financials","sp500",1,2022-10-21 20:07:12
-"BF.B","Brown Forman Inc Class B","Consumer Staples","sp500",1,2022-10-21 20:07:12
-"BIIB","Biogen Inc","Health Care","sp500",1,2022-10-21 20:07:12
-"BIO","Bio Rad Laboratories Inc Class A","Health Care","sp500",1,2022-10-21 20:07:12
-"BK","Bank Of New York Mellon Corp","Financials","sp500",1,2022-10-21 20:07:12
-"BKNG","Booking Holdings Inc","Consumer Discretionary","sp500",1,2022-10-21 20:07:12
-"BKR","Baker Hughes Company Class A","Energy","sp500",1,2022-10-21 20:07:12
-"BLK","Blackrock Inc","Financials","sp500",1,2022-10-21 20:07:12
-"BMY","Bristol Myers Squibb","Health Care","sp500",1,2022-10-21 20:07:12
-"BR","Broadridge Financial Solutions Inc","Information Technology","sp500",1,2022-10-21 20:07:12
-"BRK.B","Berkshire Hathaway Inc. Class B","Financials","sp500",1,2022-10-21 20:07:12
-"BRO","Brown & Brown Inc","Financials","sp500",1,2022-10-21 20:07:12
-"BSX","Boston Scientific Corp","Health Care","sp500",1,2022-10-21 20:07:12
-"BWA","BorgWarner Inc","Consumer Discretionary","sp500",1,2022-10-21 20:07:12
-"BXP","Boston Properties, Inc","Real Estate","sp500",1,2022-10-21 20:07:12
-"C","Citigroup Inc","Financials","sp500",1,2022-10-21 20:07:12
-"CAG","Conagra Brands Inc","Consumer Staples","sp500",1,2022-10-21 20:07:12
-"CAH","Cardinal Health Inc","Health Care","sp500",1,2022-10-21 20:07:12
-"CARR","Carrier Global Corporation","Industrials","sp500",1,2022-10-21 20:07:12
-"CAT","Caterpillar Inc","Industrials","sp500",1,2022-10-21 20:07:12
-"CB","Chubb Ltd","Financials","sp500",1,2022-10-21 20:07:12
-"CBOE","Cboe Global Markets, Inc.","Financials","sp500",1,2022-10-21 20:07:12
-"CBRE","CBRE Group Inc","Real Estate","sp500",1,2022-10-21 20:07:12
-"CCI","Crown Castle International Corp.","Real Estate","sp500",1,2022-10-21 20:07:12
-"CCL","Carnival Corp","Consumer Discretionary","sp500",1,2022-10-21 20:07:12
-"CDAY","Ceridian HCM Holding Inc.","Information Technology","sp500",1,2022-10-21 20:07:12
-"CDNS","Cadence Design Systems Inc","Information technology","sp500",1,2022-10-21 20:07:12
-"CDW","CDW Corp","Information Technology","sp500",1,2022-10-21 20:07:12
-"CE","Celanese Corporation","Materials","sp500",1,2022-10-21 20:07:12
-"CEG","Constellation Energy Corporation","Utilities","sp500",1,2022-10-21 20:07:12
-"CF","CF Industries Holdings Inc","Materials","sp500",1,2022-10-21 20:07:12
-"CFG","Citizens Financial Group Inc","Financials","sp500",1,2022-10-21 20:07:12
-"CHD","Church And Dwight Inc","Consumer Staples","sp500",1,2022-10-21 20:07:12
-"CHRW","C.H. Robinson Worldwide, Inc.","Industrials","sp500",1,2022-10-21 20:07:12
-"CHTR","Charter Communications Inc Class A","Communication Services","sp500",1,2022-10-21 20:07:12
-"CI","Cigna Corp","Health Care","sp500",1,2022-10-21 20:07:12
-"CINF","Cincinnati Financial Corp","Financials","sp500",1,2022-10-21 20:07:12
-"CL","Colgate-Palmolive","Consumer Staples","sp500",1,2022-10-21 20:07:12
-"CLX","Clorox","Consumer Staples","sp500",1,2022-10-21 20:07:12
-"CMA","Comerica Inc","Financials","sp500",1,2022-10-21 20:07:12
-"CMCSA","Comcast A Corp","Communication Services","sp500",1,2022-10-21 20:07:12
-"CME","CME Group Inc Class A","Financials","sp500",1,2022-10-21 20:07:12
-"CMG","Chipotle Mexican Grill Inc","Consumer Discretionary","sp500",1,2022-10-21 20:07:12
-"CMI","Cummins Inc","Industrials","sp500",1,2022-10-21 20:07:12
-"CMS","CMS Energy Corp","Utilities","sp500",1,2022-10-21 20:07:12
-"CNC","Centene Corp","Health Care","sp500",1,2022-10-21 20:07:12
-"CNP","Centerpoint Energy Inc","Utilities","sp500",1,2022-10-21 20:07:12
-"COF","Capital One Financial Corp","Financials","sp500",1,2022-10-21 20:07:12
-"COO","Cooper Companies, Inc.","Health Care","sp500",1,2022-10-21 20:07:12
-"COP","ConocoPhillips","Energy","sp500",1,2022-10-21 20:07:12
-"COST","Costco Wholesale Corp","Consumer Staples","sp500",1,2022-10-21 20:07:12
-"CPB","Campbell Soup","Consumer Staples","sp500",1,2022-10-21 20:07:12
-"CPRT","Copart Inc","Industrials","sp500",1,2022-10-21 20:07:12
-"CPT","Camden Property Trust","Real Estate","sp500",1,2022-10-21 20:07:12
-"CRL","Charles River Laboratories International","Health Care","sp500",1,2022-10-21 20:07:12
-"CRM","Salesforce.Com Inc","Information Technology","sp500",1,2022-10-21 20:07:12
-"CSCO","Cisco Systems Inc","Information Technology","sp500",1,2022-10-21 20:07:12
-"CSGP","Costar Group Inc","Industrials","sp500",1,2022-10-21 20:07:12
-"CSX","CSX Corp","Industrials","sp500",1,2022-10-21 20:07:12
-"CTAS","Cintas Corp","Industrials","sp500",1,2022-10-21 20:07:12
-"CTLT","Catalent Inc","Health Care","sp500",1,2022-10-21 20:07:12
-"CTRA","Coterra Energy Inc.","Energy","sp500",1,2022-10-21 20:07:12
-"CTSH","Cognizant Technology Solutions","Information Technology","sp500",1,2022-10-21 20:07:12
-"CTVA","Corteva, Inc.","Materials","sp500",1,2022-10-21 20:07:12
-"CVS","CVS Health Corp","Health Care","sp500",1,2022-10-21 20:07:12
-"CVX","Chevron Corp","Energy","sp500",1,2022-10-21 20:07:12
-"CZR","Caesars Entertainment Corp","Consumer Discretionary","sp500",1,2022-10-21 20:07:12
-"D","Dominion Energy Inc","Utilities","sp500",1,2022-10-21 20:07:12
-"DAL","Delta Air Lines Inc","Industrials","sp500",1,2022-10-21 20:07:12
-"DD","DuPont de Nemours, Inc.","Materials","sp500",1,2022-10-21 20:07:12
-"DE","Deere & Company","Industrials","sp500",1,2022-10-21 20:07:12
-"DFS","Discover Financial Services","Financials","sp500",1,2022-10-21 20:07:12
-"DG","Dollar General Corp","Consumer Discretionary","sp500",1,2022-10-21 20:07:12
-"DGX","Quest Diagnostics Inc","Health Care","sp500",1,2022-10-21 20:07:12
-"DHI","D R Horton Inc","Consumer Discretionary","sp500",1,2022-10-21 20:07:12
-"DHR","Danaher Corp","Health Care","sp500",1,2022-10-21 20:07:12
-"DIS","Walt Disney","Communication Services","sp500",1,2022-10-21 20:07:12
-"DISH","Dish Network Corp Class A","Communication Services","sp500",1,2022-10-21 20:07:12
-"DKNG","","","others",1,2022-10-21 20:07:12
-"DLR","Digital Realty Trust, Inc","Real Estate","sp500",1,2022-10-21 20:07:12
-"DLTR","Dollar Tree Inc","Consumer Discretionary","sp500",1,2022-10-21 20:07:12
-"DOV","Dover Corp","Industrials","sp500",1,2022-10-21 20:07:12
-"DOW","Dow Inc.","Materials","sp500",1,2022-10-21 20:07:12
-"DPZ","Dominos Pizza Inc","Consumer Discretionary","sp500",1,2022-10-21 20:07:12
-"DRI","Darden Restaurants Inc","Consumer Discretionary","sp500",1,2022-10-21 20:07:12
-"DTE","DTE Energy","Utilities","sp500",1,2022-10-21 20:07:12
-"DUK","Duke Energy Corp","Utilities","sp500",1,2022-10-21 20:07:12
-"DVA","Davita Inc","Health Care","sp500",1,2022-10-21 20:07:12
-"DVN","Devon Energy Corp","Energy","sp500",1,2022-10-21 20:07:12
-"DXC","DXC Technology Company","Information Technology","sp500",1,2022-10-21 20:07:12
-"DXCM","Dexcom Inc","Health Care","sp500",1,2022-10-21 20:07:12
-"EA","Electronic Arts Inc","Communication Services","sp500",1,2022-10-21 20:07:12
-"EBAY","Ebay Inc","Consumer Discretionary","sp500",1,2022-10-21 20:07:12
-"ECL","Ecolab Inc","Materials","sp500",1,2022-10-21 20:07:12
-"ED","Consolidated Edison Inc","Utilities","sp500",1,2022-10-21 20:07:12
-"EFX","Equifax Inc","Industrials","sp500",1,2022-10-21 20:07:12
-"EIX","Edison International","Utilities","sp500",1,2022-10-21 20:07:12
-"EL","Estee Lauder Inc Class A","Consumer Staples","sp500",1,2022-10-21 20:07:12
-"ELV","Elevance Health, Inc.","Health Care","sp500",1,2022-10-21 20:07:12
-"EMN","Eastman Chemical","Materials","sp500",1,2022-10-21 20:07:12
-"EMR","Emerson Electric","Industrials","sp500",1,2022-10-21 20:07:12
-"ENPH","Enphase Energy Inc","Information Technology","sp500",1,2022-10-21 20:07:12
-"EOG","EOG Resources Inc","Energy","sp500",1,2022-10-21 20:07:12
-"EPAM","Epam Systems Inc","Information Technology","sp500",1,2022-10-21 20:07:12
-"EQIX","Equinix, Inc.","Real Estate","sp500",1,2022-10-21 20:07:12
-"EQR","Equity Residential","Real Estate","sp500",1,2022-10-21 20:07:12
-"EQT","EQT Corporation","Energy","sp500",1,2022-10-21 20:07:12
-"ES","Eversource Energy","Utilities","sp500",1,2022-10-21 20:07:12
-"ESS","Essex Property Trust, Inc","Real Estate","sp500",1,2022-10-21 20:07:12
-"ETN","Eaton Corporation, PLC","Industrials","sp500",1,2022-10-21 20:07:12
-"ETR","Entergy Corp","Utilities","sp500",1,2022-10-21 20:07:12
-"ETSY","Etsy Inc","Consumer Discretionary","sp500",1,2022-10-21 20:07:12
-"EVRG","Evergy Inc","Utilities","sp500",1,2022-10-21 20:07:12
-"EW","Edwards Lifesciences Corp","Health Care","sp500",1,2022-10-21 20:07:12
-"EXC","Exelon Corp","Utilities","sp500",1,2022-10-21 20:07:12
-"EXPD","Expeditors International Of Washington","Industrials","sp500",1,2022-10-21 20:07:12
-"EXPE","Expedia Inc","Consumer Discretionary","sp500",1,2022-10-21 20:07:12
-"EXR","Extra Space Storage Inc","Real Estate","sp500",1,2022-10-21 20:07:12
-"F","Ford Motor Company","Consumer Discretionary","sp500",1,2022-10-21 20:07:12
-"FANG","Diamondback Energy Inc","Energy","sp500",1,2022-10-21 20:07:12
-"FAST","Fastenal","Industrials","sp500",1,2022-10-21 20:07:12
-"FBHS","Fortune Brands Home And Security","Industrials","sp500",1,2022-10-21 20:07:12
-"FCEL","","","others",1,2022-10-21 20:07:12
-"FCX","Freeport-McMoRan, Inc.","Materials","sp500",1,2022-10-21 20:07:12
-"FDS","Factset Research Systems Inc","Financials","sp500",1,2022-10-21 20:07:12
-"FDX","FedEx Corporation","Industrials","sp500",1,2022-10-21 20:07:12
-"FE","Firstenergy Corp","Utilities","sp500",1,2022-10-21 20:07:12
-"FFIV","F5 Networks Inc","Information Technology","sp500",1,2022-10-21 20:07:12
-"FIS","Fidelity National Information Services","Information Technology","sp500",1,2022-10-21 20:07:12
-"FISV","Fiserv Inc","Information Technology","sp500",1,2022-10-21 20:07:12
-"FITB","Fifth Third Bancorp","Financials","sp500",1,2022-10-21 20:07:12
-"FLT","Fleetcor Technologies Inc","Information Technology","sp500",1,2022-10-21 20:07:12
-"FMC","FMC Corp","Materials","sp500",1,2022-10-21 20:07:12
-"FOX","Fox Corporation Class B","Communication Services","sp500",1,2022-10-21 20:07:12
-"FOXA","Fox Corporation Class A","Communication Services","sp500",1,2022-10-21 20:07:12
-"FRC","First Republic Bank","Financials","sp500",1,2022-10-21 20:07:12
-"FRT","Federal Realty Investment Trust","Real Estate","sp500",1,2022-10-21 20:07:12
-"FTNT","Fortinet Inc","Information Technology","sp500",1,2022-10-21 20:07:12
-"FTV","Fortive Corp","Industrials","sp500",1,2022-10-21 20:07:12
-"GD","General Dynamics Corp","Industrials","sp500",1,2022-10-21 20:07:12
-"GE","General Electric","Industrials","sp500",1,2022-10-21 20:07:12
-"GILD","Gilead Sciences Inc","Health Care","sp500",1,2022-10-21 20:07:12
-"GIS","General Mills Inc","Consumer Staples","sp500",1,2022-10-21 20:07:12
-"GL","Globe Life Inc.","Financials","sp500",1,2022-10-21 20:07:12
-"GLW","Corning Inc","Information Technology","sp500",1,2022-10-21 20:07:12
-"GM","General Motors","Consumer Discretionary","sp500",1,2022-10-21 20:07:12
-"GNRC","Generac Holdings Inc","Industrials","sp500",1,2022-10-21 20:07:12
-"GOOG","Alphabet Inc Class C","Communication Services","sp500",1,2022-10-21 20:07:12
-"GOOGL","Alphabet Inc Class A","Communication Services","sp500",1,2022-10-21 20:07:12
-"GPC","Genuine Parts","Consumer Discretionary","sp500",1,2022-10-21 20:07:12
-"GPN","Global Payments Inc","Information Technology","sp500",1,2022-10-21 20:07:12
-"GRMN","Garmin Ltd","Consumer Discretionary","sp500",1,2022-10-21 20:07:12
-"GS","Goldman Sachs Group Inc","Financials","sp500",1,2022-10-21 20:07:12
-"GWW","W.W. Grainger Inc","Industrials","sp500",1,2022-10-21 20:07:12
-"HAL","Halliburton","Energy","sp500",1,2022-10-21 20:07:12
-"HAS","Hasbro Inc","Consumer Discretionary","sp500",1,2022-10-21 20:07:12
-"HBAN","Huntington Bancshares Inc","Financials","sp500",1,2022-10-21 20:07:12
-"HCA","HCA Healthcare, Inc.","Health Care","sp500",1,2022-10-21 20:07:12
-"HD","Home Depot Inc","Consumer Discretionary","sp500",1,2022-10-21 20:07:12
-"HES","Hess Corp","Energy","sp500",1,2022-10-21 20:07:12
-"HIG","Hartford Financial Services Group","Financials","sp500",1,2022-10-21 20:07:12
-"HII","Huntington Ingalls Industries Inc","Industrials","sp500",1,2022-10-21 20:07:12
-"HLT","Hilton Worldwide Holdings Inc","Consumer Discretionary","sp500",1,2022-10-21 20:07:12
-"HOLX","Hologic Inc","Health Care","sp500",1,2022-10-21 20:07:12
-"HON","Honeywell International Inc","Industrials","sp500",1,2022-10-21 20:07:12
-"HPE","Hewlett Packard Enterprise","Information Technology","sp500",1,2022-10-21 20:07:12
-"HPQ","HP Inc","Information Technology","sp500",1,2022-10-21 20:07:12
-"HRL","Hormel Foods Corp","Consumer Staples","sp500",1,2022-10-21 20:07:12
-"HSIC","Henry Schein Inc","Health Care","sp500",1,2022-10-21 20:07:12
-"HST","Host Hotels & Resorts, Inc","Real Estate","sp500",1,2022-10-21 20:07:12
-"HSY","Hershey Foods","Consumer Staples","sp500",1,2022-10-21 20:07:12
-"HUM","Humana Inc","Health Care","sp500",1,2022-10-21 20:07:12
-"HWM","Howmet Aerospace Inc.","Industrials","sp500",1,2022-10-21 20:07:12
-"IBM","International Business Machines Co","Information Technology","sp500",1,2022-10-21 20:07:12
-"ICE","Intercontinental Exchange Inc","Financials","sp500",1,2022-10-21 20:07:12
-"IDXX","Idexx Laboratories Inc","Health Care","sp500",1,2022-10-21 20:07:12
-"IEX","IDEX Corp","Industrials","sp500",1,2022-10-21 20:07:12
-"IFF","International Flavors & Fragrances","Materials","sp500",1,2022-10-21 20:07:12
-"ILMN","Illumina Inc","Health Care","sp500",1,2022-10-21 20:07:12
-"INCY","Incyte Corp","Health Care","sp500",1,2022-10-21 20:07:12
-"INTC","Intel Corporation Corp","Information Technology","sp500",1,2022-10-21 20:07:12
-"INTU","Intuit Inc","Information Technology","sp500",1,2022-10-21 20:07:12
-"INVH","Invitation Homes Inc","Real Estate","sp500",1,2022-10-21 20:07:12
-"IP","International Paper","Materials","sp500",1,2022-10-21 20:07:12
-"IPG","Interpublic Group Of Companies Inc","Communication Services","sp500",1,2022-10-21 20:07:12
-"IQV","IQVIA Holdings, Inc.","Health Care","sp500",1,2022-10-21 20:07:12
-"IR","Ingersoll Rand Plc","Industrials","sp500",1,2022-10-21 20:07:12
-"IRM","Iron Mountain Incorporated","Real Estate","sp500",1,2022-10-21 20:07:12
-"ISRG","Intuitive Surgical Inc","Health Care","sp500",1,2022-10-21 20:07:12
-"IT","Gartner Inc","Information Technology","sp500",1,2022-10-21 20:07:12
-"ITW","Illinois Tool Inc","Industrials","sp500",1,2022-10-21 20:07:12
-"IVZ","Invesco Ltd","Financials","sp500",1,2022-10-21 20:07:12
-"J","Jacobs Engineering Group Inc.","Industrials","sp500",1,2022-10-21 20:07:12
-"JBHT","JB Hunt Transport Services Inc","Industrials","sp500",1,2022-10-21 20:07:12
-"JCI","Johnson Controls International Plc","Industrials","sp500",1,2022-10-21 20:07:12
-"JKHY","Jack Henry & Associates, Inc.","Information Technology","sp500",1,2022-10-21 20:07:12
-"JNJ","Johnson & Johnson","Health Care","sp500",1,2022-10-21 20:07:12
-"JNPR","Juniper Networks Inc","Information Technology","sp500",1,2022-10-21 20:07:12
-"JPM","JP Morgan Chase & Co","Financials","sp500",1,2022-10-21 20:07:12
-"K","Kellogg","Consumer Staples","sp500",1,2022-10-21 20:07:12
-"KDP","Keurig Dr Pepper Inc.","Consumer Staples","sp500",1,2022-10-21 20:07:12
-"KEY","Keycorp","Financials","sp500",1,2022-10-21 20:07:12
-"KEYS","Keysight Technologies Inc","Information Technology","sp500",1,2022-10-21 20:07:12
-"KHC","Kraft Heinz","Consumer Staples","sp500",1,2022-10-21 20:07:12
-"KIM","Kimco Realty Corporation","Real Estate","sp500",1,2022-10-21 20:07:12
-"KLAC","KLA-Tencor Corporation","Information Technology","sp500",1,2022-10-21 20:07:12
-"KMB","Kimberly Clark Corp","Consumer Staples","sp500",1,2022-10-21 20:07:12
-"KMI","Kinder Morgan Inc","Energy","sp500",1,2022-10-21 20:07:12
-"KMX","Carmax Inc","Consumer Discretionary","sp500",1,2022-10-21 20:07:12
-"KO","Coca-Cola","Consumer Staples","sp500",1,2022-10-21 20:07:12
-"KR","Kroger","Consumer Staples","sp500",1,2022-10-21 20:07:12
-"L","Loews Corp","Financials","sp500",1,2022-10-21 20:07:12
-"LDOS","Leidos Holdings Inc","Industrials","sp500",1,2022-10-21 20:07:12
-"LEN","Lennar Corporation Class A","Consumer Discretionary","sp500",1,2022-10-21 20:07:12
-"LH","Laboratory Corporation Of America","Health Care","sp500",1,2022-10-21 20:07:12
-"LHX","L3Harris Technologies, Inc.","Industrials","sp500",1,2022-10-21 20:07:12
-"LIN","Linde Plc","Materials","sp500",1,2022-10-21 20:07:12
-"LKQ","LKQ Corp","Consumer Discretionary","sp500",1,2022-10-21 20:07:12
-"LLY","Eli Lilly","Health Care","sp500",1,2022-10-21 20:07:12
-"LMT","Lockheed Martin Corp","Industrials","sp500",1,2022-10-21 20:07:12
-"LNC","Lincoln National Corp","Financials","sp500",1,2022-10-21 20:07:12
-"LNT","Alliant Energy Corp","Utilities","sp500",1,2022-10-21 20:07:12
-"LOW","Lowes Companies Inc","Consumer Discretionary","sp500",1,2022-10-21 20:07:12
-"LRCX","Lam Research Corp","Information Technology","sp500",1,2022-10-21 20:07:12
-"LUMN","CenturyLink, Inc.","Communication Services","sp500",1,2022-10-21 20:07:12
-"LUV","Southwest Airlines","Industrials","sp500",1,2022-10-21 20:07:12
-"LVS","Las Vegas Sands Corp","Consumer Discretionary","sp500",1,2022-10-21 20:07:12
-"LW","Lamb Weston Holdings Inc","Consumer Staples","sp500",1,2022-10-21 20:07:12
-"LYB","Lyondellbasell Industries NV","Materials","sp500",1,2022-10-21 20:07:12
-"LYV","Live Nation Entertainment Inc","Communication Services","sp500",1,2022-10-21 20:07:12
-"MA","Mastercard Inc Class A","Information Technology","sp500",1,2022-10-21 20:07:12
-"MAA","Mid-America Apartment Communities, Inc","Real Estate","sp500",1,2022-10-21 20:07:12
-"MAR","Marriott International Inc","Consumer Discretionary","sp500",1,2022-10-21 20:07:12
-"MAS","Masco Corp","Industrials","sp500",1,2022-10-21 20:07:12
-"MCD","Mcdonalds Corp","Consumer Discretionary","sp500",1,2022-10-21 20:07:12
-"MCHP","Microchip Technology Inc","Information Technology","sp500",1,2022-10-21 20:07:12
-"MCK","Mckesson Corp","Health Care","sp500",1,2022-10-21 20:07:12
-"MCO","Moodys Corp","Financials","sp500",1,2022-10-21 20:07:12
-"MDLZ","Mondelez International Inc","Consumer Staples","sp500",1,2022-10-21 20:07:12
-"MDT","Medtronic Plc","Health Care","sp500",1,2022-10-21 20:07:12
-"MET","Metlife Inc","Financials","sp500",1,2022-10-21 20:07:12
-"META","Meta Platforms, Inc.","Communication Services","sp500",1,2022-10-21 20:07:12
-"MGM","MGM Resorts International","Consumer Discretionary","sp500",1,2022-10-21 20:07:12
-"MHK","Mohawk Industries Inc","Consumer Discretionary","sp500",1,2022-10-21 20:07:12
-"MKC","McCormick & Co  Non-voting","Consumer Staples","sp500",1,2022-10-21 20:07:12
-"MKTX","Marketaxess Holdings Inc","Financials","sp500",1,2022-10-21 20:07:12
-"MLM","Martin Marietta Materials Inc","Materials","sp500",1,2022-10-21 20:07:12
-"MMC","Marsh & McLennan Inc","Financials","sp500",1,2022-10-21 20:07:12
-"MMM","3M","Industrials","sp500",1,2022-10-21 20:07:12
-"MNST","Monster Beverage Corp","Consumer Staples","sp500",1,2022-10-21 20:07:12
-"MO","Altria Group Inc","Consumer Staples","sp500",1,2022-10-21 20:07:12
-"MOH","Molina Healthcare Inc","Health Care","sp500",1,2022-10-21 20:07:12
-"MOS","Mosaic","Materials","sp500",1,2022-10-21 20:07:12
-"MPC","Marathon Petroleum Corp","Energy","sp500",1,2022-10-21 20:07:12
-"MPWR","Monolithic Power Systems Inc","Information Technology","sp500",1,2022-10-21 20:07:12
-"MRK","Merck & Co Inc","Health Care","sp500",1,2022-10-21 20:07:12
-"MRNA","Moderna, Inc.","Health Care","sp500",1,2022-10-21 20:07:12
-"MRO","Marathon Oil Corp","Energy","sp500",1,2022-10-21 20:07:12
-"MS","Morgan Stanley","Financials","sp500",1,2022-10-21 20:07:12
-"MSCI","MSCI Inc","Financials","sp500",1,2022-10-21 20:07:12
-"MSFT","Microsoft Corp","Information Technology","sp500",1,2022-10-21 20:07:12
-"MSI","Motorola Solutions Inc","Information Technology","sp500",1,2022-10-21 20:07:12
-"MTB","M&T Bank Corp","Financials","sp500",1,2022-10-21 20:07:12
-"MTCH","Match Group Inc","Communication Services","sp500",1,2022-10-21 20:07:12
-"MTD","Mettler Toledo Inc","Health Care","sp500",1,2022-10-21 20:07:12
-"MU","Micron Technology Inc","Information Technology","sp500",1,2022-10-21 20:07:12
-"NCLH","Norwegian Cruise Line Holdings Ltd","Consumer Discretionary","sp500",1,2022-10-21 20:07:12
-"NDAQ","Nasdaq Inc","Financials","sp500",1,2022-10-21 20:07:12
-"NDSN","Nordson Corp","Industrials","sp500",1,2022-10-21 20:07:12
-"NEE","Nextera Energy Inc","Utilities","sp500",1,2022-10-21 20:07:12
-"NEM","Newmont Corporation","Materials","sp500",1,2022-10-21 20:07:12
-"NFLX","Netflix Inc","Communication Services","sp500",1,2022-10-21 20:07:12
-"NI","Nisource Inc","Utilities","sp500",1,2022-10-21 20:07:12
-"NIO","","","others",1,2022-10-21 20:07:12
-"NKE","Nike Inc Class B","Consumer Discretionary","sp500",1,2022-10-21 20:07:12
-"NLOK","NortonLifeLock Inc.","Information Technology","sp500",1,2022-10-21 20:07:12
-"NOC","Northrop Grumman Corp","Industrials","sp500",1,2022-10-21 20:07:12
-"NOW","Servicenow Inc","Information Technology","sp500",1,2022-10-21 20:07:12
-"NRG","NRG Energy Inc","Utilities","sp500",1,2022-10-21 20:07:12
-"NSC","Norfolk Southern Corp","Industrials","sp500",1,2022-10-21 20:07:12
-"NTAP","NetApp Inc","Information Technology","sp500",1,2022-10-21 20:07:12
-"NTRS","Northern Trust Corporation","Financials","sp500",1,2022-10-21 20:07:12
-"NUE","Nucor Corp","Materials","sp500",1,2022-10-21 20:07:12
-"NVDA","Nvidia Corp","Information Technology","sp500",1,2022-10-21 20:07:12
-"NVR","NVR, Inc.","Consumer Discretionary","sp500",1,2022-10-21 20:07:12
-"NWL","Newell Brands Inc","Consumer Discretionary","sp500",1,2022-10-21 20:07:12
-"NWS","News Corp Class B","Communication Services","sp500",1,2022-10-21 20:07:12
-"NWSA","News Corp Class A","Communication Services","sp500",1,2022-10-21 20:07:12
-"NXPI","NXP Semiconductors Nv","Information Technology","sp500",1,2022-10-21 20:07:12
-"O","Realty Income Corporation","Real Estate","sp500",1,2022-10-21 20:07:12
-"ODFL","Old Dominion Freight Line Inc","Industrials","sp500",1,2022-10-21 20:07:12
-"OGN","Organon & Co.","Health Care","sp500",1,2022-10-21 20:07:12
-"OKE","Oneok Inc","Energy","sp500",1,2022-10-21 20:07:12
-"OMC","Omnicom Group Inc","Communication Services","sp500",1,2022-10-21 20:07:12
-"ON","ON Semiconductor Corp","Information Technology","sp500",1,2022-10-21 20:07:12
-"ORCL","Oracle Corp","Information Technology","sp500",1,2022-10-21 20:07:12
-"ORLY","Oreilly Automotive Inc","Consumer Discretionary","sp500",1,2022-10-21 20:07:12
-"OTIS","Otis Worldwide Corporation","Industrials","sp500",1,2022-10-21 20:07:12
-"OXY","Occidental Petroleum Corp","Energy","sp500",1,2022-10-21 20:07:12
-"PARA","Paramount Global - Class B","Communication Services","sp500",1,2022-10-21 20:07:12
-"PAYC","Paycom Software Inc","Information Technology","sp500",1,2022-10-21 20:07:12
-"PAYX","Paychex Inc","Information Technology","sp500",1,2022-10-21 20:07:12
-"PCAR","Paccar Inc","Industrials","sp500",1,2022-10-21 20:07:12
-"PCG","Pacific Gas & Electric Co.","Utilities","sp500",1,2022-10-21 20:07:12
-"PEAK","Healthpeak Properties, Inc.","Real Estate","sp500",1,2022-10-21 20:07:12
-"PEG","Public Service Enterprise Group Inc","Utilities","sp500",1,2022-10-21 20:07:12
-"PEP","Pepsico Inc","Consumer Staples","sp500",1,2022-10-21 20:07:12
-"PFE","Pfizer Inc","Health Care","sp500",1,2022-10-21 20:07:12
-"PFG","Principal Financial Group Inc","Financials","sp500",1,2022-10-21 20:07:12
-"PG","Procter & Gamble","Consumer Staples","sp500",1,2022-10-21 20:07:12
-"PGR","Progressive Corp","Financials","sp500",1,2022-10-21 20:07:12
-"PH","Parker-Hannifin Corp","Industrials","sp500",1,2022-10-21 20:07:12
-"PHM","Pultegroup Inc","Consumer Discretionary","sp500",1,2022-10-21 20:07:12
-"PKG","Packaging Corp Of America","Materials","sp500",1,2022-10-21 20:07:12
-"PKI","Perkinelmer Inc","Health Care","sp500",1,2022-10-21 20:07:12
-"PLD","Prologis, Inc","Real Estate","sp500",1,2022-10-21 20:07:12
-"PLUG","","","others",1,2022-10-21 20:07:12
-"PM","Philip Morris International Inc","Consumer Staples","sp500",1,2022-10-21 20:07:12
-"PNC","PNC Financial Services Group, Inc.","Financials","sp500",1,2022-10-21 20:07:12
-"PNR","Pentair","Industrials","sp500",1,2022-10-21 20:07:12
-"PNW","Pinnacle West Corp","Utilities","sp500",1,2022-10-21 20:07:12
-"POOL","Pool Corp","Consumer Discretionary","sp500",1,2022-10-21 20:07:12
-"PPG","PPG Industries Inc","Materials","sp500",1,2022-10-21 20:07:12
-"PPL","PPL Corporation","Utilities","sp500",1,2022-10-21 20:07:12
-"PRU","Prudential Financial Inc","Financials","sp500",1,2022-10-21 20:07:12
-"PSA","Public Storage","Real Estate","sp500",1,2022-10-21 20:07:12
-"PSX","Phillips 66","Energy","sp500",1,2022-10-21 20:07:12
-"PTC","PTC Inc","Information Technology","sp500",1,2022-10-21 20:07:12
-"PWR","Quanta Services Inc","Industrials","sp500",1,2022-10-21 20:07:12
-"PXD","Pioneer Natural Resource","Energy","sp500",1,2022-10-21 20:07:12
-"PYPL","Paypal Holdings Inc","Information Technology","sp500",1,2022-10-21 20:07:12
-"QCOM","Qualcomm Inc","Information Technology","sp500",1,2022-10-21 20:07:12
-"QRVO","Qorvo, Inc.","Information Technology","sp500",1,2022-10-21 20:07:12
-"RCL","Royal Caribbean Cruises Ltd","Consumer Discretionary","sp500",1,2022-10-21 20:07:12
-"RE","Everest Re Group Ltd","Financials","sp500",1,2022-10-21 20:07:12
-"REG","Regency Centers Corporation","Real Estate","sp500",1,2022-10-21 20:07:12
-"REGN","Regeneron Pharmaceuticals Inc","Health Care","sp500",1,2022-10-21 20:07:12
-"RF","Regions Financial Corp","Financials","sp500",1,2022-10-21 20:07:12
-"RHI","Robert Half","Industrials","sp500",1,2022-10-21 20:07:12
-"RJF","Raymond James Inc","Financials","sp500",1,2022-10-21 20:07:12
-"RL","Ralph Lauren Corp Class A","Consumer Discretionary","sp500",1,2022-10-21 20:07:12
-"RMD","Resmed Inc","Health Care","sp500",1,2022-10-21 20:07:12
-"ROK","Rockwell Automation Inc","Industrials","sp500",1,2022-10-21 20:07:12
-"ROL","Rollins Inc","Industrials","sp500",1,2022-10-21 20:07:12
-"ROP","Roper Technologies Inc","Information Technology","sp500",1,2022-10-21 20:07:12
-"ROST","Ross Stores Inc","Consumer Discretionary","sp500",1,2022-10-21 20:07:12
-"RSG","Republic Services Inc","Industrials","sp500",1,2022-10-21 20:07:12
-"RTX","Raytheon Technologies Corporation","Industrials","sp500",1,2022-10-21 20:07:12
-"SBAC","SBA Communications Corporation","Real Estate","sp500",1,2022-10-21 20:07:12
-"SBNY","Signature Bank","Financials","sp500",1,2022-10-21 20:07:12
-"SBUX","Starbucks Corp","Consumer Discretionary","sp500",1,2022-10-21 20:07:12
-"SCHW","Charles Schwab Corporation","Financials","sp500",1,2022-10-21 20:07:12
-"SEDG","SolarEdge Technologies Inc","Information Technology","sp500",1,2022-10-21 20:07:12
-"SEE","Sealed Air Corp","Materials","sp500",1,2022-10-21 20:07:12
-"SHW","Sherwin Williams","Materials","sp500",1,2022-10-21 20:07:12
-"SIVB","SVB Financial Group","Financials","sp500",1,2022-10-21 20:07:12
-"SJM","J.M. Smucker","Consumer Staples","sp500",1,2022-10-21 20:07:12
-"SLB","Schlumberger Nv","Energy","sp500",1,2022-10-21 20:07:12
-"SNA","Snap On Inc","Industrials","sp500",1,2022-10-21 20:07:12
-"SNPS","Synopsys Inc","Information Technology","sp500",1,2022-10-21 20:07:12
-"SO","Southern Co","Utilities","sp500",1,2022-10-21 20:07:12
-"SPG","Simon Property Group, Inc","Real Estate","sp500",1,2022-10-21 20:07:12
-"SPGI","S&P Global Inc","Financials","sp500",1,2022-10-21 20:07:12
-"SPY","SPDR S&P 500 trust","","others",1,2022-10-21 20:07:12
-"SRE","Sempra Energy","Utilities","sp500",1,2022-10-21 20:07:12
-"STE","STERIS PLC","Health Care","sp500",1,2022-10-21 20:07:12
-"STT","State Street Corp","Financials","sp500",1,2022-10-21 20:07:12
-"STX","Seagate Technology Plc","Information Technology","sp500",1,2022-10-21 20:07:12
-"STZ","Constellation Brands Class A","Consumer Staples","sp500",1,2022-10-21 20:07:12
-"SWK","Stanley Black & Decker Inc","Industrials","sp500",1,2022-10-21 20:07:12
-"SWKS","Skyworks Solutions Inc","Information Technology","sp500",1,2022-10-21 20:07:12
-"SYF","Synchrony Financial","Financials","sp500",1,2022-10-21 20:07:12
-"SYK","Stryker Corp","Health Care","sp500",1,2022-10-21 20:07:12
-"SYY","Sysco Corp","Consumer Staples","sp500",1,2022-10-21 20:07:12
-"T","AT&T Inc.","Communication Services","sp500",1,2022-10-21 20:07:12
-"TAP","Molson Coors Brewing Class B","Consumer Staples","sp500",1,2022-10-21 20:07:12
-"TDG","Transdigm Group Inc","Industrials","sp500",1,2022-10-21 20:07:12
-"TDY","Teledyne Technologies Inc","Information Technology","sp500",1,2022-10-21 20:07:12
-"TECH","Bio-Techne Corp","Health Care","sp500",1,2022-10-21 20:07:12
-"TEL","TE Connectivity Ltd","Information Technology","sp500",1,2022-10-21 20:07:12
-"TER","Teradyne Inc","Information Technology","sp500",1,2022-10-21 20:07:12
-"TFC","Truist Financial Corporation","Financials","sp500",1,2022-10-21 20:07:12
-"TFX","Teleflex Inc","Health Care","sp500",1,2022-10-21 20:07:12
-"TGT","Target Corp","Consumer Discretionary","sp500",1,2022-10-21 20:07:12
-"TJX","TJX Companies, Inc.","Consumer Discretionary","sp500",1,2022-10-21 20:07:12
-"TMO","Thermo Fisher Scientific Inc","Health Care","sp500",1,2022-10-21 20:07:12
-"TMUS","T Mobile US Inc","Communication Services","sp500",1,2022-10-21 20:07:12
-"TPR","Tapestry","Consumer Discretionary","sp500",1,2022-10-21 20:07:12
-"TRGP","Targa Resources Corp","Energy","sp500",1,2022-10-21 20:07:12
-"TRMB","Trimble Inc","Information Technology","sp500",1,2022-10-21 20:07:12
-"TROW","T Rowe Price Group Inc","Financials","sp500",1,2022-10-21 20:07:12
-"TRV","Travelers Companies Inc","Financials","sp500",1,2022-10-21 20:07:12
-"TSCO","Tractor Supply","Consumer Discretionary","sp500",1,2022-10-21 20:07:12
-"TSLA","Tesla Inc","Consumer Discretionary","sp500",1,2022-10-21 20:07:12
-"TSN","Tyson Foods Inc Class A","Consumer Staples","sp500",1,2022-10-21 20:07:12
-"TT","Trane Technologies plc","Industrials","sp500",1,2022-10-21 20:07:12
-"TTWO","Take Two Interactive Software Inc","Communication Services","sp500",1,2022-10-21 20:07:12
-"TWTR","Twitter Inc","Communication Services","sp500",1,2022-10-21 20:07:12
-"TXN","Texas Instrument Inc","Information Technology","sp500",1,2022-10-21 20:07:12
-"TXT","Textron Inc","Industrials","sp500",1,2022-10-21 20:07:12
-"TYL","Tyler Technologies Inc","Information Technology","sp500",1,2022-10-21 20:07:12
-"UAL","United Continental Holdings Inc","Industrials","sp500",1,2022-10-21 20:07:12
-"UDR","UDR, Inc","Real Estate","sp500",1,2022-10-21 20:07:12
-"UHS","Universal Health Services Inc.","Health Care","sp500",1,2022-10-21 20:07:12
-"ULTA","Ulta Beauty Inc","Consumer Discretionary","sp500",1,2022-10-21 20:07:12
-"UNH","Unitedhealth Group Inc","Health Care","sp500",1,2022-10-21 20:07:12
-"UNP","Union Pacific Corp","Industrials","sp500",1,2022-10-21 20:07:12
-"UPS","United Parcel Service Inc Class B","Industrials","sp500",1,2022-10-21 20:07:12
-"URI","United Rentals Inc","Industrials","sp500",1,2022-10-21 20:07:12
-"USB","US Bancorp","Financials","sp500",1,2022-10-21 20:07:12
-"V","Visa Inc Class A","Information Technology","sp500",1,2022-10-21 20:07:12
-"VFC","VF Corp","Consumer Discretionary","sp500",1,2022-10-21 20:07:12
-"VICI","VICI Properties Inc","Real Estate","sp500",1,2022-10-21 20:07:12
-"VLO","Valero Energy Corp","Energy","sp500",1,2022-10-21 20:07:12
-"VMC","Vulcan Materials","Materials","sp500",1,2022-10-21 20:07:12
-"VNO","Vornado Realty Trust","Real Estate","sp500",1,2022-10-21 20:07:12
-"VRSK","Verisk Analytics Inc","Industrials","sp500",1,2022-10-21 20:07:12
-"VRSN","Verisign Inc","Information Technology","sp500",1,2022-10-21 20:07:12
-"VRTX","Vertex Pharmaceuticals Inc","Health Care","sp500",1,2022-10-21 20:07:12
-"VTR","Ventas, Inc","Real Estate","sp500",1,2022-10-21 20:07:12
-"VTRS","Viatris Inc.","Health Care","sp500",1,2022-10-21 20:07:12
-"VZ","Verizon Communications Inc","Communication Services","sp500",1,2022-10-21 20:07:12
-"WAB","Westinghouse Air Brake Technologies","Industrials","sp500",1,2022-10-21 20:07:12
-"WAT","Waters Corp","Health Care","sp500",1,2022-10-21 20:07:12
-"WBA","Walgreen Boots Alliance Inc","Consumer Staples","sp500",1,2022-10-21 20:07:12
-"WBD","Warner Bros. Discovery, Inc. - Series A","Communication Services","sp500",1,2022-10-21 20:07:12
-"WDC","Western Digital Corp","Information Technology","sp500",1,2022-10-21 20:07:12
-"WEC","WEC Energy Group Inc","Utilities","sp500",1,2022-10-21 20:07:12
-"WELL","Welltower Inc","Real Estate","sp500",1,2022-10-21 20:07:12
-"WFC","Wells Fargo","Financials","sp500",1,2022-10-21 20:07:12
-"WHR","Whirlpool Corp","Consumer Discretionary","sp500",1,2022-10-21 20:07:12
-"WM","Waste Management Inc","Industrials","sp500",1,2022-10-21 20:07:12
-"WMB","Williams Inc","Energy","sp500",1,2022-10-21 20:07:12
-"WMT","Walmart Stores Inc","Consumer Staples","sp500",1,2022-10-21 20:07:12
-"WRB","WR Berkley Corp","Financials","sp500",1,2022-10-21 20:07:12
-"WRK","Westrock","Materials","sp500",1,2022-10-21 20:07:12
-"WST","West Pharmaceutical Services Inc","Health Care","sp500",1,2022-10-21 20:07:12
-"WTW","Willis Towers Watson Public Limited Company","Financials","sp500",1,2022-10-21 20:07:12
-"WY","Weyerhaeuser Company","Real Estate","sp500",1,2022-10-21 20:07:12
-"WYNN","Wynn Resorts Ltd","Consumer Discretionary","sp500",1,2022-10-21 20:07:12
-"XEL","Xcel Energy Inc","Utilities","sp500",1,2022-10-21 20:07:12
-"XOM","Exxon Mobil Corp","Energy","sp500",1,2022-10-21 20:07:12
-"XRAY","Dentsply Sirona Inc","Health Care","sp500",1,2022-10-21 20:07:12
-"XYL","Xylem Inc","Industrials","sp500",1,2022-10-21 20:07:12
-"YUM","Yum Brands Inc","Consumer Discretionary","sp500",1,2022-10-21 20:07:12
-"ZBH","Zimmer Biomet Holdings Inc","Health Care","sp500",1,2022-10-21 20:07:12
-"ZBRA","Zebra Technologies Corp","Information Technology","sp500",1,2022-10-21 20:07:12
-"ZION","Zions Bancorporation","Financials","sp500",1,2022-10-21 20:07:12
-"ZM","","","others",1,2022-10-21 20:07:12
-"ZTS","Zoetis Inc","Health Care","sp500",1,2022-10-21 20:07:12
+"A","Agilent Technologies Inc","Health Care","sp500",1,2023-01-31 16:37:42
+"AAL","American Airlines Group Inc","Industrials","sp500",1,2023-01-31 16:37:42
+"AAP","Advance Auto Parts Inc","Consumer Discretionary","sp500",1,2023-01-31 16:37:42
+"AAPL","Apple Inc","Information Technology","sp500",1,2023-01-31 16:37:42
+"ABBV","Abbvie Inc","Health Care","sp500",1,2023-01-31 16:37:42
+"ABC","AmerisourceBergen Corp","Health Care","sp500",1,2023-01-31 16:37:42
+"ABMD","Abiomed Inc","Health Care","sp500",1,2023-01-31 16:37:42
+"ABT","Abbott Laboratories","Health Care","sp500",1,2023-01-31 16:37:42
+"ACN","Accenture Plc Class A","Information Technology","sp500",1,2023-01-31 16:37:42
+"ADBE","Adobe Inc","Information Technology","sp500",1,2023-01-31 16:37:42
+"ADI","Analog Devices Inc","Information Technology","sp500",1,2023-01-31 16:37:42
+"ADM","Archer-Daniels-Midland Company","Consumer Staples","sp500",1,2023-01-31 16:37:42
+"ADP","Automatic Data Processing Inc","Information Technology","sp500",1,2023-01-31 16:37:42
+"ADSK","Autodesk Inc","Information Technology","sp500",1,2023-01-31 16:37:42
+"AEE","Ameren Corp","Utilities","sp500",1,2023-01-31 16:37:42
+"AEP","American Electric Power Inc","Utilities","sp500",1,2023-01-31 16:37:42
+"AES","AES Corp","Utilities","sp500",1,2023-01-31 16:37:42
+"AFL","Aflac Inc","Financials","sp500",1,2023-01-31 16:37:42
+"AIG","American International Group Inc","Financials","sp500",1,2023-01-31 16:37:42
+"AIZ","Assurant Inc","Financials","sp500",1,2023-01-31 16:37:42
+"AJG","Arthur J Gallagher","Financials","sp500",1,2023-01-31 16:37:42
+"AKAM","Akamai Technologies Inc","Information Technology","sp500",1,2023-01-31 16:37:42
+"ALB","Albemarle Corp","Materials","sp500",1,2023-01-31 16:37:42
+"ALGN","Align Technology Inc","Health Care","sp500",1,2023-01-31 16:37:42
+"ALK","Alaska Air Group Inc","Industrials","sp500",1,2023-01-31 16:37:42
+"ALL","Allstate Corp","Financials","sp500",1,2023-01-31 16:37:42
+"ALLE","Allegion PLC","Industrials","sp500",1,2023-01-31 16:37:42
+"AMAT","Applied Material Inc","Information Technology","sp500",1,2023-01-31 16:37:42
+"AMC","","","others",1,2023-01-31 16:37:42
+"AMCR","Amcor plc","Materials","sp500",1,2023-01-31 16:37:42
+"AMD","Advanced Micro Devices Inc","Information Technology","sp500",1,2023-01-31 16:37:42
+"AME","Ametek Inc","Industrials","sp500",1,2023-01-31 16:37:42
+"AMGN","Amgen Inc","Health Care","sp500",1,2023-01-31 16:37:42
+"AMP","Ameriprise Finance Inc","Financials","sp500",1,2023-01-31 16:37:42
+"AMT","American Tower Corporation","Real Estate","sp500",1,2023-01-31 16:37:42
+"AMZN","Amazon.Com Inc.","Consumer Discretionary","sp500",1,2023-01-31 16:37:42
+"ANET","Arista Networks Inc","Information Technology","sp500",1,2023-01-31 16:37:42
+"ANSS","Ansys Inc","Information Technology","sp500",1,2023-01-31 16:37:42
+"AON","Aon Plc","Financials","sp500",1,2023-01-31 16:37:42
+"AOS","A O Smith Corp","Industrials","sp500",1,2023-01-31 16:37:42
+"APA","Apache Corp","Energy","sp500",1,2023-01-31 16:37:42
+"APD","Air Products And Chemicals Inc","Materials","sp500",1,2023-01-31 16:37:42
+"APH","Amphenol Corp","Information Technology","sp500",1,2023-01-31 16:37:42
+"APTV","Aptiv Plc","Consumer Discretionary","sp500",1,2023-01-31 16:37:42
+"ARE","Alexandria Real Estate Equities, Inc","Real Estate","sp500",1,2023-01-31 16:37:42
+"ATO","Atmos Energy Corp","Utilities","sp500",1,2023-01-31 16:37:42
+"ATVI","Activision Blizzard Inc","Communication Services","sp500",1,2023-01-31 16:37:42
+"AVB","AvalonBay Communities, Inc","Real Estate","sp500",1,2023-01-31 16:37:42
+"AVGO","Broadcom Inc.","Information Technology","sp500",1,2023-01-31 16:37:42
+"AVY","Avery Dennison Corp","Materials","sp500",1,2023-01-31 16:37:42
+"AWK","American Water Works Inc","Utilities","sp500",1,2023-01-31 16:37:42
+"AXP","American Express","Financials","sp500",1,2023-01-31 16:37:42
+"AZO","Autozone Inc","Consumer Discretionary","sp500",1,2023-01-31 16:37:42
+"BA","Boeing","Industrials","sp500",1,2023-01-31 16:37:42
+"BAC","Bank of America Corp","Financials","sp500",1,2023-01-31 16:37:42
+"BALL","Ball Corporation","Materials","sp500",1,2023-01-31 16:37:42
+"BAX","Baxter International Inc","Health Care","sp500",1,2023-01-31 16:37:42
+"BBWI","Bath & Body Works, Inc.","Consumer Discretionary","sp500",1,2023-01-31 16:37:42
+"BBY","Best Buy Inc","Consumer Discretionary","sp500",1,2023-01-31 16:37:42
+"BDX","Becton Dickinson","Health Care","sp500",1,2023-01-31 16:37:42
+"BEN","Franklin Resources Inc","Financials","sp500",1,2023-01-31 16:37:42
+"BF.B","Brown Forman Inc Class B","Consumer Staples","sp500",1,2023-01-31 16:37:42
+"BIIB","Biogen Inc","Health Care","sp500",1,2023-01-31 16:37:42
+"BIO","Bio Rad Laboratories Inc Class A","Health Care","sp500",1,2023-01-31 16:37:42
+"BK","Bank Of New York Mellon Corp","Financials","sp500",1,2023-01-31 16:37:42
+"BKNG","Booking Holdings Inc","Consumer Discretionary","sp500",1,2023-01-31 16:37:42
+"BKR","Baker Hughes Company Class A","Energy","sp500",1,2023-01-31 16:37:42
+"BLK","Blackrock Inc","Financials","sp500",1,2023-01-31 16:37:42
+"BMY","Bristol Myers Squibb","Health Care","sp500",1,2023-01-31 16:37:42
+"BR","Broadridge Financial Solutions Inc","Information Technology","sp500",1,2023-01-31 16:37:42
+"BRK.B","Berkshire Hathaway Inc. Class B","Financials","sp500",1,2023-01-31 16:37:42
+"BRO","Brown & Brown Inc","Financials","sp500",1,2023-01-31 16:37:42
+"BSX","Boston Scientific Corp","Health Care","sp500",1,2023-01-31 16:37:42
+"BWA","BorgWarner Inc","Consumer Discretionary","sp500",1,2023-01-31 16:37:42
+"BXP","Boston Properties, Inc","Real Estate","sp500",1,2023-01-31 16:37:42
+"C","Citigroup Inc","Financials","sp500",1,2023-01-31 16:37:42
+"CAG","Conagra Brands Inc","Consumer Staples","sp500",1,2023-01-31 16:37:42
+"CAH","Cardinal Health Inc","Health Care","sp500",1,2023-01-31 16:37:42
+"CARR","Carrier Global Corporation","Industrials","sp500",1,2023-01-31 16:37:42
+"CAT","Caterpillar Inc","Industrials","sp500",1,2023-01-31 16:37:42
+"CB","Chubb Ltd","Financials","sp500",1,2023-01-31 16:37:42
+"CBOE","Cboe Global Markets, Inc.","Financials","sp500",1,2023-01-31 16:37:42
+"CBRE","CBRE Group Inc","Real Estate","sp500",1,2023-01-31 16:37:42
+"CCI","Crown Castle International Corp.","Real Estate","sp500",1,2023-01-31 16:37:42
+"CCL","Carnival Corp","Consumer Discretionary","sp500",1,2023-01-31 16:37:42
+"CDAY","Ceridian HCM Holding Inc.","Information Technology","sp500",1,2023-01-31 16:37:42
+"CDNS","Cadence Design Systems Inc","Information technology","sp500",1,2023-01-31 16:37:42
+"CDW","CDW Corp","Information Technology","sp500",1,2023-01-31 16:37:42
+"CE","Celanese Corporation","Materials","sp500",1,2023-01-31 16:37:42
+"CEG","Constellation Energy Corporation","Utilities","sp500",1,2023-01-31 16:37:42
+"CF","CF Industries Holdings Inc","Materials","sp500",1,2023-01-31 16:37:42
+"CFG","Citizens Financial Group Inc","Financials","sp500",1,2023-01-31 16:37:42
+"CHD","Church And Dwight Inc","Consumer Staples","sp500",1,2023-01-31 16:37:42
+"CHRW","C.H. Robinson Worldwide, Inc.","Industrials","sp500",1,2023-01-31 16:37:42
+"CHTR","Charter Communications Inc Class A","Communication Services","sp500",1,2023-01-31 16:37:42
+"CI","Cigna Corp","Health Care","sp500",1,2023-01-31 16:37:42
+"CINF","Cincinnati Financial Corp","Financials","sp500",1,2023-01-31 16:37:42
+"CL","Colgate-Palmolive","Consumer Staples","sp500",1,2023-01-31 16:37:42
+"CLX","Clorox","Consumer Staples","sp500",1,2023-01-31 16:37:42
+"CMA","Comerica Inc","Financials","sp500",1,2023-01-31 16:37:42
+"CMCSA","Comcast A Corp","Communication Services","sp500",1,2023-01-31 16:37:42
+"CME","CME Group Inc Class A","Financials","sp500",1,2023-01-31 16:37:42
+"CMG","Chipotle Mexican Grill Inc","Consumer Discretionary","sp500",1,2023-01-31 16:37:42
+"CMI","Cummins Inc","Industrials","sp500",1,2023-01-31 16:37:42
+"CMS","CMS Energy Corp","Utilities","sp500",1,2023-01-31 16:37:42
+"CNC","Centene Corp","Health Care","sp500",1,2023-01-31 16:37:42
+"CNP","Centerpoint Energy Inc","Utilities","sp500",1,2023-01-31 16:37:42
+"COF","Capital One Financial Corp","Financials","sp500",1,2023-01-31 16:37:42
+"COO","Cooper Companies, Inc.","Health Care","sp500",1,2023-01-31 16:37:42
+"COP","ConocoPhillips","Energy","sp500",1,2023-01-31 16:37:42
+"COST","Costco Wholesale Corp","Consumer Staples","sp500",1,2023-01-31 16:37:42
+"CPB","Campbell Soup","Consumer Staples","sp500",1,2023-01-31 16:37:42
+"CPRT","Copart Inc","Industrials","sp500",1,2023-01-31 16:37:42
+"CPT","Camden Property Trust","Real Estate","sp500",1,2023-01-31 16:37:42
+"CRL","Charles River Laboratories International","Health Care","sp500",1,2023-01-31 16:37:42
+"CRM","Salesforce.Com Inc","Information Technology","sp500",1,2023-01-31 16:37:42
+"CSCO","Cisco Systems Inc","Information Technology","sp500",1,2023-01-31 16:37:42
+"CSGP","Costar Group Inc","Industrials","sp500",1,2023-01-31 16:37:42
+"CSX","CSX Corp","Industrials","sp500",1,2023-01-31 16:37:42
+"CTAS","Cintas Corp","Industrials","sp500",1,2023-01-31 16:37:42
+"CTLT","Catalent Inc","Health Care","sp500",1,2023-01-31 16:37:42
+"CTRA","Coterra Energy Inc.","Energy","sp500",1,2023-01-31 16:37:42
+"CTSH","Cognizant Technology Solutions","Information Technology","sp500",1,2023-01-31 16:37:42
+"CTVA","Corteva, Inc.","Materials","sp500",1,2023-01-31 16:37:42
+"CVS","CVS Health Corp","Health Care","sp500",1,2023-01-31 16:37:42
+"CVX","Chevron Corp","Energy","sp500",1,2023-01-31 16:37:42
+"CZR","Caesars Entertainment Corp","Consumer Discretionary","sp500",1,2023-01-31 16:37:42
+"D","Dominion Energy Inc","Utilities","sp500",1,2023-01-31 16:37:42
+"DAL","Delta Air Lines Inc","Industrials","sp500",1,2023-01-31 16:37:42
+"DD","DuPont de Nemours, Inc.","Materials","sp500",1,2023-01-31 16:37:42
+"DE","Deere & Company","Industrials","sp500",1,2023-01-31 16:37:42
+"DFS","Discover Financial Services","Financials","sp500",1,2023-01-31 16:37:42
+"DG","Dollar General Corp","Consumer Discretionary","sp500",1,2023-01-31 16:37:42
+"DGX","Quest Diagnostics Inc","Health Care","sp500",1,2023-01-31 16:37:42
+"DHI","D R Horton Inc","Consumer Discretionary","sp500",1,2023-01-31 16:37:42
+"DHR","Danaher Corp","Health Care","sp500",1,2023-01-31 16:37:42
+"DIS","Walt Disney","Communication Services","sp500",1,2023-01-31 16:37:42
+"DISH","Dish Network Corp Class A","Communication Services","sp500",1,2023-01-31 16:37:42
+"DKNG","","","others",1,2023-01-31 16:37:42
+"DLR","Digital Realty Trust, Inc","Real Estate","sp500",1,2023-01-31 16:37:42
+"DLTR","Dollar Tree Inc","Consumer Discretionary","sp500",1,2023-01-31 16:37:42
+"DOV","Dover Corp","Industrials","sp500",1,2023-01-31 16:37:42
+"DOW","Dow Inc.","Materials","sp500",1,2023-01-31 16:37:42
+"DPZ","Dominos Pizza Inc","Consumer Discretionary","sp500",1,2023-01-31 16:37:42
+"DRI","Darden Restaurants Inc","Consumer Discretionary","sp500",1,2023-01-31 16:37:42
+"DTE","DTE Energy","Utilities","sp500",1,2023-01-31 16:37:42
+"DUK","Duke Energy Corp","Utilities","sp500",1,2023-01-31 16:37:42
+"DVA","Davita Inc","Health Care","sp500",1,2023-01-31 16:37:42
+"DVN","Devon Energy Corp","Energy","sp500",1,2023-01-31 16:37:42
+"DXC","DXC Technology Company","Information Technology","sp500",1,2023-01-31 16:37:42
+"DXCM","Dexcom Inc","Health Care","sp500",1,2023-01-31 16:37:42
+"EA","Electronic Arts Inc","Communication Services","sp500",1,2023-01-31 16:37:42
+"EBAY","Ebay Inc","Consumer Discretionary","sp500",1,2023-01-31 16:37:42
+"ECL","Ecolab Inc","Materials","sp500",1,2023-01-31 16:37:42
+"ED","Consolidated Edison Inc","Utilities","sp500",1,2023-01-31 16:37:42
+"EFX","Equifax Inc","Industrials","sp500",1,2023-01-31 16:37:42
+"EIX","Edison International","Utilities","sp500",1,2023-01-31 16:37:42
+"EL","Estee Lauder Inc Class A","Consumer Staples","sp500",1,2023-01-31 16:37:42
+"ELV","Elevance Health, Inc.","Health Care","sp500",1,2023-01-31 16:37:42
+"EMN","Eastman Chemical","Materials","sp500",1,2023-01-31 16:37:42
+"EMR","Emerson Electric","Industrials","sp500",1,2023-01-31 16:37:42
+"ENPH","Enphase Energy Inc","Information Technology","sp500",1,2023-01-31 16:37:42
+"EOG","EOG Resources Inc","Energy","sp500",1,2023-01-31 16:37:42
+"EPAM","Epam Systems Inc","Information Technology","sp500",1,2023-01-31 16:37:42
+"EQIX","Equinix, Inc.","Real Estate","sp500",1,2023-01-31 16:37:42
+"EQR","Equity Residential","Real Estate","sp500",1,2023-01-31 16:37:42
+"EQT","EQT Corporation","Energy","sp500",1,2023-01-31 16:37:42
+"ES","Eversource Energy","Utilities","sp500",1,2023-01-31 16:37:42
+"ESS","Essex Property Trust, Inc","Real Estate","sp500",1,2023-01-31 16:37:42
+"ETN","Eaton Corporation, PLC","Industrials","sp500",1,2023-01-31 16:37:42
+"ETR","Entergy Corp","Utilities","sp500",1,2023-01-31 16:37:42
+"ETSY","Etsy Inc","Consumer Discretionary","sp500",1,2023-01-31 16:37:42
+"EVRG","Evergy Inc","Utilities","sp500",1,2023-01-31 16:37:42
+"EW","Edwards Lifesciences Corp","Health Care","sp500",1,2023-01-31 16:37:42
+"EXC","Exelon Corp","Utilities","sp500",1,2023-01-31 16:37:42
+"EXPD","Expeditors International Of Washington","Industrials","sp500",1,2023-01-31 16:37:42
+"EXPE","Expedia Inc","Consumer Discretionary","sp500",1,2023-01-31 16:37:42
+"EXR","Extra Space Storage Inc","Real Estate","sp500",1,2023-01-31 16:37:42
+"F","Ford Motor Company","Consumer Discretionary","sp500",1,2023-01-31 16:37:42
+"FANG","Diamondback Energy Inc","Energy","sp500",1,2023-01-31 16:37:42
+"FAST","Fastenal","Industrials","sp500",1,2023-01-31 16:37:42
+"FBHS","Fortune Brands Home And Security","Industrials","sp500",1,2023-01-31 16:37:42
+"FCEL","","","others",1,2023-01-31 16:37:42
+"FCX","Freeport-McMoRan, Inc.","Materials","sp500",1,2023-01-31 16:37:42
+"FDS","Factset Research Systems Inc","Financials","sp500",1,2023-01-31 16:37:42
+"FDX","FedEx Corporation","Industrials","sp500",1,2023-01-31 16:37:42
+"FE","Firstenergy Corp","Utilities","sp500",1,2023-01-31 16:37:42
+"FFIV","F5 Networks Inc","Information Technology","sp500",1,2023-01-31 16:37:42
+"FIS","Fidelity National Information Services","Information Technology","sp500",1,2023-01-31 16:37:42
+"FISV","Fiserv Inc","Information Technology","sp500",1,2023-01-31 16:37:42
+"FITB","Fifth Third Bancorp","Financials","sp500",1,2023-01-31 16:37:42
+"FLT","Fleetcor Technologies Inc","Information Technology","sp500",1,2023-01-31 16:37:42
+"FMC","FMC Corp","Materials","sp500",1,2023-01-31 16:37:42
+"FOX","Fox Corporation Class B","Communication Services","sp500",1,2023-01-31 16:37:42
+"FOXA","Fox Corporation Class A","Communication Services","sp500",1,2023-01-31 16:37:42
+"FRC","First Republic Bank","Financials","sp500",1,2023-01-31 16:37:42
+"FRT","Federal Realty Investment Trust","Real Estate","sp500",1,2023-01-31 16:37:42
+"FTNT","Fortinet Inc","Information Technology","sp500",1,2023-01-31 16:37:42
+"FTV","Fortive Corp","Industrials","sp500",1,2023-01-31 16:37:42
+"GD","General Dynamics Corp","Industrials","sp500",1,2023-01-31 16:37:42
+"GE","General Electric","Industrials","sp500",1,2023-01-31 16:37:42
+"GILD","Gilead Sciences Inc","Health Care","sp500",1,2023-01-31 16:37:42
+"GIS","General Mills Inc","Consumer Staples","sp500",1,2023-01-31 16:37:42
+"GL","Globe Life Inc.","Financials","sp500",1,2023-01-31 16:37:42
+"GLW","Corning Inc","Information Technology","sp500",1,2023-01-31 16:37:42
+"GM","General Motors","Consumer Discretionary","sp500",1,2023-01-31 16:37:42
+"GNRC","Generac Holdings Inc","Industrials","sp500",1,2023-01-31 16:37:42
+"GOOG","Alphabet Inc Class C","Communication Services","sp500",1,2023-01-31 16:37:42
+"GOOGL","Alphabet Inc Class A","Communication Services","sp500",1,2023-01-31 16:37:42
+"GPC","Genuine Parts","Consumer Discretionary","sp500",1,2023-01-31 16:37:42
+"GPN","Global Payments Inc","Information Technology","sp500",1,2023-01-31 16:37:42
+"GRMN","Garmin Ltd","Consumer Discretionary","sp500",1,2023-01-31 16:37:42
+"GS","Goldman Sachs Group Inc","Financials","sp500",1,2023-01-31 16:37:42
+"GWW","W.W. Grainger Inc","Industrials","sp500",1,2023-01-31 16:37:42
+"HAL","Halliburton","Energy","sp500",1,2023-01-31 16:37:42
+"HAS","Hasbro Inc","Consumer Discretionary","sp500",1,2023-01-31 16:37:42
+"HBAN","Huntington Bancshares Inc","Financials","sp500",1,2023-01-31 16:37:42
+"HCA","HCA Healthcare, Inc.","Health Care","sp500",1,2023-01-31 16:37:42
+"HD","Home Depot Inc","Consumer Discretionary","sp500",1,2023-01-31 16:37:42
+"HES","Hess Corp","Energy","sp500",1,2023-01-31 16:37:42
+"HIG","Hartford Financial Services Group","Financials","sp500",1,2023-01-31 16:37:42
+"HII","Huntington Ingalls Industries Inc","Industrials","sp500",1,2023-01-31 16:37:42
+"HLT","Hilton Worldwide Holdings Inc","Consumer Discretionary","sp500",1,2023-01-31 16:37:42
+"HOLX","Hologic Inc","Health Care","sp500",1,2023-01-31 16:37:42
+"HON","Honeywell International Inc","Industrials","sp500",1,2023-01-31 16:37:42
+"HPE","Hewlett Packard Enterprise","Information Technology","sp500",1,2023-01-31 16:37:42
+"HPQ","HP Inc","Information Technology","sp500",1,2023-01-31 16:37:42
+"HRL","Hormel Foods Corp","Consumer Staples","sp500",1,2023-01-31 16:37:42
+"HSIC","Henry Schein Inc","Health Care","sp500",1,2023-01-31 16:37:42
+"HST","Host Hotels & Resorts, Inc","Real Estate","sp500",1,2023-01-31 16:37:42
+"HSY","Hershey Foods","Consumer Staples","sp500",1,2023-01-31 16:37:42
+"HUM","Humana Inc","Health Care","sp500",1,2023-01-31 16:37:42
+"HWM","Howmet Aerospace Inc.","Industrials","sp500",1,2023-01-31 16:37:42
+"IBM","International Business Machines Co","Information Technology","sp500",1,2023-01-31 16:37:42
+"ICE","Intercontinental Exchange Inc","Financials","sp500",1,2023-01-31 16:37:42
+"IDXX","Idexx Laboratories Inc","Health Care","sp500",1,2023-01-31 16:37:42
+"IEX","IDEX Corp","Industrials","sp500",1,2023-01-31 16:37:42
+"IFF","International Flavors & Fragrances","Materials","sp500",1,2023-01-31 16:37:42
+"ILMN","Illumina Inc","Health Care","sp500",1,2023-01-31 16:37:42
+"INCY","Incyte Corp","Health Care","sp500",1,2023-01-31 16:37:42
+"INTC","Intel Corporation Corp","Information Technology","sp500",1,2023-01-31 16:37:42
+"INTU","Intuit Inc","Information Technology","sp500",1,2023-01-31 16:37:42
+"INVH","Invitation Homes Inc","Real Estate","sp500",1,2023-01-31 16:37:42
+"IP","International Paper","Materials","sp500",1,2023-01-31 16:37:42
+"IPG","Interpublic Group Of Companies Inc","Communication Services","sp500",1,2023-01-31 16:37:42
+"IQV","IQVIA Holdings, Inc.","Health Care","sp500",1,2023-01-31 16:37:42
+"IR","Ingersoll Rand Plc","Industrials","sp500",1,2023-01-31 16:37:42
+"IRM","Iron Mountain Incorporated","Real Estate","sp500",1,2023-01-31 16:37:42
+"ISRG","Intuitive Surgical Inc","Health Care","sp500",1,2023-01-31 16:37:42
+"IT","Gartner Inc","Information Technology","sp500",1,2023-01-31 16:37:42
+"ITW","Illinois Tool Inc","Industrials","sp500",1,2023-01-31 16:37:42
+"IVZ","Invesco Ltd","Financials","sp500",1,2023-01-31 16:37:42
+"J","Jacobs Engineering Group Inc.","Industrials","sp500",1,2023-01-31 16:37:42
+"JBHT","JB Hunt Transport Services Inc","Industrials","sp500",1,2023-01-31 16:37:42
+"JCI","Johnson Controls International Plc","Industrials","sp500",1,2023-01-31 16:37:42
+"JKHY","Jack Henry & Associates, Inc.","Information Technology","sp500",1,2023-01-31 16:37:42
+"JNJ","Johnson & Johnson","Health Care","sp500",1,2023-01-31 16:37:42
+"JNPR","Juniper Networks Inc","Information Technology","sp500",1,2023-01-31 16:37:42
+"JPM","JP Morgan Chase & Co","Financials","sp500",1,2023-01-31 16:37:42
+"K","Kellogg","Consumer Staples","sp500",1,2023-01-31 16:37:42
+"KDP","Keurig Dr Pepper Inc.","Consumer Staples","sp500",1,2023-01-31 16:37:42
+"KEY","Keycorp","Financials","sp500",1,2023-01-31 16:37:42
+"KEYS","Keysight Technologies Inc","Information Technology","sp500",1,2023-01-31 16:37:42
+"KHC","Kraft Heinz","Consumer Staples","sp500",1,2023-01-31 16:37:42
+"KIM","Kimco Realty Corporation","Real Estate","sp500",1,2023-01-31 16:37:42
+"KLAC","KLA-Tencor Corporation","Information Technology","sp500",1,2023-01-31 16:37:42
+"KMB","Kimberly Clark Corp","Consumer Staples","sp500",1,2023-01-31 16:37:42
+"KMI","Kinder Morgan Inc","Energy","sp500",1,2023-01-31 16:37:42
+"KMX","Carmax Inc","Consumer Discretionary","sp500",1,2023-01-31 16:37:42
+"KO","Coca-Cola","Consumer Staples","sp500",1,2023-01-31 16:37:42
+"KR","Kroger","Consumer Staples","sp500",1,2023-01-31 16:37:42
+"L","Loews Corp","Financials","sp500",1,2023-01-31 16:37:42
+"LDOS","Leidos Holdings Inc","Industrials","sp500",1,2023-01-31 16:37:42
+"LEN","Lennar Corporation Class A","Consumer Discretionary","sp500",1,2023-01-31 16:37:42
+"LH","Laboratory Corporation Of America","Health Care","sp500",1,2023-01-31 16:37:42
+"LHX","L3Harris Technologies, Inc.","Industrials","sp500",1,2023-01-31 16:37:42
+"LIN","Linde Plc","Materials","sp500",1,2023-01-31 16:37:42
+"LKQ","LKQ Corp","Consumer Discretionary","sp500",1,2023-01-31 16:37:42
+"LLY","Eli Lilly","Health Care","sp500",1,2023-01-31 16:37:42
+"LMT","Lockheed Martin Corp","Industrials","sp500",1,2023-01-31 16:37:42
+"LNC","Lincoln National Corp","Financials","sp500",1,2023-01-31 16:37:42
+"LNT","Alliant Energy Corp","Utilities","sp500",1,2023-01-31 16:37:42
+"LOW","Lowes Companies Inc","Consumer Discretionary","sp500",1,2023-01-31 16:37:42
+"LRCX","Lam Research Corp","Information Technology","sp500",1,2023-01-31 16:37:42
+"LUMN","CenturyLink, Inc.","Communication Services","sp500",1,2023-01-31 16:37:42
+"LUV","Southwest Airlines","Industrials","sp500",1,2023-01-31 16:37:42
+"LVS","Las Vegas Sands Corp","Consumer Discretionary","sp500",1,2023-01-31 16:37:42
+"LW","Lamb Weston Holdings Inc","Consumer Staples","sp500",1,2023-01-31 16:37:42
+"LYB","Lyondellbasell Industries NV","Materials","sp500",1,2023-01-31 16:37:42
+"LYV","Live Nation Entertainment Inc","Communication Services","sp500",1,2023-01-31 16:37:42
+"MA","Mastercard Inc Class A","Information Technology","sp500",1,2023-01-31 16:37:42
+"MAA","Mid-America Apartment Communities, Inc","Real Estate","sp500",1,2023-01-31 16:37:42
+"MAR","Marriott International Inc","Consumer Discretionary","sp500",1,2023-01-31 16:37:42
+"MAS","Masco Corp","Industrials","sp500",1,2023-01-31 16:37:42
+"MCD","Mcdonalds Corp","Consumer Discretionary","sp500",1,2023-01-31 16:37:42
+"MCHP","Microchip Technology Inc","Information Technology","sp500",1,2023-01-31 16:37:42
+"MCK","Mckesson Corp","Health Care","sp500",1,2023-01-31 16:37:42
+"MCO","Moodys Corp","Financials","sp500",1,2023-01-31 16:37:42
+"MDLZ","Mondelez International Inc","Consumer Staples","sp500",1,2023-01-31 16:37:42
+"MDT","Medtronic Plc","Health Care","sp500",1,2023-01-31 16:37:42
+"MET","Metlife Inc","Financials","sp500",1,2023-01-31 16:37:42
+"META","Meta Platforms, Inc.","Communication Services","sp500",1,2023-01-31 16:37:42
+"MGM","MGM Resorts International","Consumer Discretionary","sp500",1,2023-01-31 16:37:42
+"MHK","Mohawk Industries Inc","Consumer Discretionary","sp500",1,2023-01-31 16:37:42
+"MKC","McCormick & Co  Non-voting","Consumer Staples","sp500",1,2023-01-31 16:37:42
+"MKTX","Marketaxess Holdings Inc","Financials","sp500",1,2023-01-31 16:37:42
+"MLM","Martin Marietta Materials Inc","Materials","sp500",1,2023-01-31 16:37:42
+"MMC","Marsh & McLennan Inc","Financials","sp500",1,2023-01-31 16:37:42
+"MMM","3M","Industrials","sp500",1,2023-01-31 16:37:42
+"MNST","Monster Beverage Corp","Consumer Staples","sp500",1,2023-01-31 16:37:42
+"MO","Altria Group Inc","Consumer Staples","sp500",1,2023-01-31 16:37:42
+"MOH","Molina Healthcare Inc","Health Care","sp500",1,2023-01-31 16:37:42
+"MOS","Mosaic","Materials","sp500",1,2023-01-31 16:37:42
+"MPC","Marathon Petroleum Corp","Energy","sp500",1,2023-01-31 16:37:42
+"MPWR","Monolithic Power Systems Inc","Information Technology","sp500",1,2023-01-31 16:37:42
+"MRK","Merck & Co Inc","Health Care","sp500",1,2023-01-31 16:37:42
+"MRNA","Moderna, Inc.","Health Care","sp500",1,2023-01-31 16:37:42
+"MRO","Marathon Oil Corp","Energy","sp500",1,2023-01-31 16:37:42
+"MS","Morgan Stanley","Financials","sp500",1,2023-01-31 16:37:42
+"MSCI","MSCI Inc","Financials","sp500",1,2023-01-31 16:37:42
+"MSFT","Microsoft Corp","Information Technology","sp500",1,2023-01-31 16:37:42
+"MSI","Motorola Solutions Inc","Information Technology","sp500",1,2023-01-31 16:37:42
+"MTB","M&T Bank Corp","Financials","sp500",1,2023-01-31 16:37:42
+"MTCH","Match Group Inc","Communication Services","sp500",1,2023-01-31 16:37:42
+"MTD","Mettler Toledo Inc","Health Care","sp500",1,2023-01-31 16:37:42
+"MU","Micron Technology Inc","Information Technology","sp500",1,2023-01-31 16:37:42
+"NCLH","Norwegian Cruise Line Holdings Ltd","Consumer Discretionary","sp500",1,2023-01-31 16:37:42
+"NDAQ","Nasdaq Inc","Financials","sp500",1,2023-01-31 16:37:42
+"NDSN","Nordson Corp","Industrials","sp500",1,2023-01-31 16:37:42
+"NEE","Nextera Energy Inc","Utilities","sp500",1,2023-01-31 16:37:42
+"NEM","Newmont Corporation","Materials","sp500",1,2023-01-31 16:37:42
+"NFLX","Netflix Inc","Communication Services","sp500",1,2023-01-31 16:37:42
+"NI","Nisource Inc","Utilities","sp500",1,2023-01-31 16:37:42
+"NIO","","","others",1,2023-01-31 16:37:42
+"NKE","Nike Inc Class B","Consumer Discretionary","sp500",1,2023-01-31 16:37:42
+"NLOK","NortonLifeLock Inc.","Information Technology","sp500",1,2023-01-31 16:37:42
+"NOC","Northrop Grumman Corp","Industrials","sp500",1,2023-01-31 16:37:42
+"NOW","Servicenow Inc","Information Technology","sp500",1,2023-01-31 16:37:42
+"NRG","NRG Energy Inc","Utilities","sp500",1,2023-01-31 16:37:42
+"NSC","Norfolk Southern Corp","Industrials","sp500",1,2023-01-31 16:37:42
+"NTAP","NetApp Inc","Information Technology","sp500",1,2023-01-31 16:37:42
+"NTRS","Northern Trust Corporation","Financials","sp500",1,2023-01-31 16:37:42
+"NUE","Nucor Corp","Materials","sp500",1,2023-01-31 16:37:42
+"NVDA","Nvidia Corp","Information Technology","sp500",1,2023-01-31 16:37:42
+"NVR","NVR, Inc.","Consumer Discretionary","sp500",1,2023-01-31 16:37:42
+"NWL","Newell Brands Inc","Consumer Discretionary","sp500",1,2023-01-31 16:37:42
+"NWS","News Corp Class B","Communication Services","sp500",1,2023-01-31 16:37:42
+"NWSA","News Corp Class A","Communication Services","sp500",1,2023-01-31 16:37:42
+"NXPI","NXP Semiconductors Nv","Information Technology","sp500",1,2023-01-31 16:37:42
+"O","Realty Income Corporation","Real Estate","sp500",1,2023-01-31 16:37:42
+"ODFL","Old Dominion Freight Line Inc","Industrials","sp500",1,2023-01-31 16:37:42
+"OGN","Organon & Co.","Health Care","sp500",1,2023-01-31 16:37:42
+"OKE","Oneok Inc","Energy","sp500",1,2023-01-31 16:37:42
+"OMC","Omnicom Group Inc","Communication Services","sp500",1,2023-01-31 16:37:42
+"ON","ON Semiconductor Corp","Information Technology","sp500",1,2023-01-31 16:37:42
+"ORCL","Oracle Corp","Information Technology","sp500",1,2023-01-31 16:37:42
+"ORLY","Oreilly Automotive Inc","Consumer Discretionary","sp500",1,2023-01-31 16:37:42
+"OTIS","Otis Worldwide Corporation","Industrials","sp500",1,2023-01-31 16:37:42
+"OXY","Occidental Petroleum Corp","Energy","sp500",1,2023-01-31 16:37:42
+"PARA","Paramount Global - Class B","Communication Services","sp500",1,2023-01-31 16:37:42
+"PAYC","Paycom Software Inc","Information Technology","sp500",1,2023-01-31 16:37:42
+"PAYX","Paychex Inc","Information Technology","sp500",1,2023-01-31 16:37:42
+"PCAR","Paccar Inc","Industrials","sp500",1,2023-01-31 16:37:42
+"PCG","Pacific Gas & Electric Co.","Utilities","sp500",1,2023-01-31 16:37:42
+"PEAK","Healthpeak Properties, Inc.","Real Estate","sp500",1,2023-01-31 16:37:42
+"PEG","Public Service Enterprise Group Inc","Utilities","sp500",1,2023-01-31 16:37:42
+"PEP","Pepsico Inc","Consumer Staples","sp500",1,2023-01-31 16:37:42
+"PFE","Pfizer Inc","Health Care","sp500",1,2023-01-31 16:37:42
+"PFG","Principal Financial Group Inc","Financials","sp500",1,2023-01-31 16:37:42
+"PG","Procter & Gamble","Consumer Staples","sp500",1,2023-01-31 16:37:42
+"PGR","Progressive Corp","Financials","sp500",1,2023-01-31 16:37:42
+"PH","Parker-Hannifin Corp","Industrials","sp500",1,2023-01-31 16:37:42
+"PHM","Pultegroup Inc","Consumer Discretionary","sp500",1,2023-01-31 16:37:42
+"PKG","Packaging Corp Of America","Materials","sp500",1,2023-01-31 16:37:42
+"PKI","Perkinelmer Inc","Health Care","sp500",1,2023-01-31 16:37:42
+"PLD","Prologis, Inc","Real Estate","sp500",1,2023-01-31 16:37:42
+"PLUG","","","others",1,2023-01-31 16:37:42
+"PM","Philip Morris International Inc","Consumer Staples","sp500",1,2023-01-31 16:37:42
+"PNC","PNC Financial Services Group, Inc.","Financials","sp500",1,2023-01-31 16:37:42
+"PNR","Pentair","Industrials","sp500",1,2023-01-31 16:37:42
+"PNW","Pinnacle West Corp","Utilities","sp500",1,2023-01-31 16:37:42
+"POOL","Pool Corp","Consumer Discretionary","sp500",1,2023-01-31 16:37:42
+"PPG","PPG Industries Inc","Materials","sp500",1,2023-01-31 16:37:42
+"PPL","PPL Corporation","Utilities","sp500",1,2023-01-31 16:37:42
+"PRU","Prudential Financial Inc","Financials","sp500",1,2023-01-31 16:37:42
+"PSA","Public Storage","Real Estate","sp500",1,2023-01-31 16:37:42
+"PSX","Phillips 66","Energy","sp500",1,2023-01-31 16:37:42
+"PTC","PTC Inc","Information Technology","sp500",1,2023-01-31 16:37:42
+"PWR","Quanta Services Inc","Industrials","sp500",1,2023-01-31 16:37:42
+"PXD","Pioneer Natural Resource","Energy","sp500",1,2023-01-31 16:37:42
+"PYPL","Paypal Holdings Inc","Information Technology","sp500",1,2023-01-31 16:37:42
+"QCOM","Qualcomm Inc","Information Technology","sp500",1,2023-01-31 16:37:42
+"QRVO","Qorvo, Inc.","Information Technology","sp500",1,2023-01-31 16:37:42
+"RCL","Royal Caribbean Cruises Ltd","Consumer Discretionary","sp500",1,2023-01-31 16:37:42
+"RE","Everest Re Group Ltd","Financials","sp500",1,2023-01-31 16:37:42
+"REG","Regency Centers Corporation","Real Estate","sp500",1,2023-01-31 16:37:42
+"REGN","Regeneron Pharmaceuticals Inc","Health Care","sp500",1,2023-01-31 16:37:42
+"RF","Regions Financial Corp","Financials","sp500",1,2023-01-31 16:37:42
+"RHI","Robert Half","Industrials","sp500",1,2023-01-31 16:37:42
+"RJF","Raymond James Inc","Financials","sp500",1,2023-01-31 16:37:42
+"RL","Ralph Lauren Corp Class A","Consumer Discretionary","sp500",1,2023-01-31 16:37:42
+"RMD","Resmed Inc","Health Care","sp500",1,2023-01-31 16:37:42
+"ROK","Rockwell Automation Inc","Industrials","sp500",1,2023-01-31 16:37:42
+"ROL","Rollins Inc","Industrials","sp500",1,2023-01-31 16:37:42
+"ROP","Roper Technologies Inc","Information Technology","sp500",1,2023-01-31 16:37:42
+"ROST","Ross Stores Inc","Consumer Discretionary","sp500",1,2023-01-31 16:37:42
+"RSG","Republic Services Inc","Industrials","sp500",1,2023-01-31 16:37:42
+"RTX","Raytheon Technologies Corporation","Industrials","sp500",1,2023-01-31 16:37:42
+"SBAC","SBA Communications Corporation","Real Estate","sp500",1,2023-01-31 16:37:42
+"SBNY","Signature Bank","Financials","sp500",1,2023-01-31 16:37:42
+"SBUX","Starbucks Corp","Consumer Discretionary","sp500",1,2023-01-31 16:37:42
+"SCHW","Charles Schwab Corporation","Financials","sp500",1,2023-01-31 16:37:42
+"SEDG","SolarEdge Technologies Inc","Information Technology","sp500",1,2023-01-31 16:37:42
+"SEE","Sealed Air Corp","Materials","sp500",1,2023-01-31 16:37:42
+"SHW","Sherwin Williams","Materials","sp500",1,2023-01-31 16:37:42
+"SIVB","SVB Financial Group","Financials","sp500",1,2023-01-31 16:37:42
+"SJM","J.M. Smucker","Consumer Staples","sp500",1,2023-01-31 16:37:42
+"SLB","Schlumberger Nv","Energy","sp500",1,2023-01-31 16:37:42
+"SNA","Snap On Inc","Industrials","sp500",1,2023-01-31 16:37:42
+"SNPS","Synopsys Inc","Information Technology","sp500",1,2023-01-31 16:37:42
+"SO","Southern Co","Utilities","sp500",1,2023-01-31 16:37:42
+"SPG","Simon Property Group, Inc","Real Estate","sp500",1,2023-01-31 16:37:42
+"SPGI","S&P Global Inc","Financials","sp500",1,2023-01-31 16:37:42
+"SPY","SPDR S&P 500 trust","","others",1,2023-01-31 16:37:42
+"SRE","Sempra Energy","Utilities","sp500",1,2023-01-31 16:37:42
+"STE","STERIS PLC","Health Care","sp500",1,2023-01-31 16:37:42
+"STT","State Street Corp","Financials","sp500",1,2023-01-31 16:37:42
+"STX","Seagate Technology Plc","Information Technology","sp500",1,2023-01-31 16:37:42
+"STZ","Constellation Brands Class A","Consumer Staples","sp500",1,2023-01-31 16:37:42
+"SWK","Stanley Black & Decker Inc","Industrials","sp500",1,2023-01-31 16:37:42
+"SWKS","Skyworks Solutions Inc","Information Technology","sp500",1,2023-01-31 16:37:42
+"SYF","Synchrony Financial","Financials","sp500",1,2023-01-31 16:37:42
+"SYK","Stryker Corp","Health Care","sp500",1,2023-01-31 16:37:42
+"SYY","Sysco Corp","Consumer Staples","sp500",1,2023-01-31 16:37:42
+"T","AT&T Inc.","Communication Services","sp500",1,2023-01-31 16:37:42
+"TAP","Molson Coors Brewing Class B","Consumer Staples","sp500",1,2023-01-31 16:37:42
+"TDG","Transdigm Group Inc","Industrials","sp500",1,2023-01-31 16:37:42
+"TDY","Teledyne Technologies Inc","Information Technology","sp500",1,2023-01-31 16:37:42
+"TECH","Bio-Techne Corp","Health Care","sp500",1,2023-01-31 16:37:42
+"TEL","TE Connectivity Ltd","Information Technology","sp500",1,2023-01-31 16:37:42
+"TER","Teradyne Inc","Information Technology","sp500",1,2023-01-31 16:37:42
+"TFC","Truist Financial Corporation","Financials","sp500",1,2023-01-31 16:37:42
+"TFX","Teleflex Inc","Health Care","sp500",1,2023-01-31 16:37:42
+"TGT","Target Corp","Consumer Discretionary","sp500",1,2023-01-31 16:37:42
+"TJX","TJX Companies, Inc.","Consumer Discretionary","sp500",1,2023-01-31 16:37:42
+"TMO","Thermo Fisher Scientific Inc","Health Care","sp500",1,2023-01-31 16:37:42
+"TMUS","T Mobile US Inc","Communication Services","sp500",1,2023-01-31 16:37:42
+"TPR","Tapestry","Consumer Discretionary","sp500",1,2023-01-31 16:37:42
+"TRGP","Targa Resources Corp","Energy","sp500",1,2023-01-31 16:37:42
+"TRMB","Trimble Inc","Information Technology","sp500",1,2023-01-31 16:37:42
+"TROW","T Rowe Price Group Inc","Financials","sp500",1,2023-01-31 16:37:42
+"TRV","Travelers Companies Inc","Financials","sp500",1,2023-01-31 16:37:42
+"TSCO","Tractor Supply","Consumer Discretionary","sp500",1,2023-01-31 16:37:42
+"TSLA","Tesla Inc","Consumer Discretionary","sp500",1,2023-01-31 16:37:42
+"TSN","Tyson Foods Inc Class A","Consumer Staples","sp500",1,2023-01-31 16:37:42
+"TT","Trane Technologies plc","Industrials","sp500",1,2023-01-31 16:37:42
+"TTWO","Take Two Interactive Software Inc","Communication Services","sp500",1,2023-01-31 16:37:42
+"TWTR","Twitter Inc","Communication Services","sp500",1,2023-01-31 16:37:42
+"TXN","Texas Instrument Inc","Information Technology","sp500",1,2023-01-31 16:37:42
+"TXT","Textron Inc","Industrials","sp500",1,2023-01-31 16:37:42
+"TYL","Tyler Technologies Inc","Information Technology","sp500",1,2023-01-31 16:37:42
+"UAL","United Continental Holdings Inc","Industrials","sp500",1,2023-01-31 16:37:42
+"UDR","UDR, Inc","Real Estate","sp500",1,2023-01-31 16:37:42
+"UHS","Universal Health Services Inc.","Health Care","sp500",1,2023-01-31 16:37:42
+"ULTA","Ulta Beauty Inc","Consumer Discretionary","sp500",1,2023-01-31 16:37:42
+"UNH","Unitedhealth Group Inc","Health Care","sp500",1,2023-01-31 16:37:42
+"UNP","Union Pacific Corp","Industrials","sp500",1,2023-01-31 16:37:42
+"UPS","United Parcel Service Inc Class B","Industrials","sp500",1,2023-01-31 16:37:42
+"URI","United Rentals Inc","Industrials","sp500",1,2023-01-31 16:37:42
+"USB","US Bancorp","Financials","sp500",1,2023-01-31 16:37:42
+"V","Visa Inc Class A","Information Technology","sp500",1,2023-01-31 16:37:42
+"VFC","VF Corp","Consumer Discretionary","sp500",1,2023-01-31 16:37:42
+"VICI","VICI Properties Inc","Real Estate","sp500",1,2023-01-31 16:37:42
+"VLO","Valero Energy Corp","Energy","sp500",1,2023-01-31 16:37:42
+"VMC","Vulcan Materials","Materials","sp500",1,2023-01-31 16:37:42
+"VNO","Vornado Realty Trust","Real Estate","sp500",1,2023-01-31 16:37:42
+"VRSK","Verisk Analytics Inc","Industrials","sp500",1,2023-01-31 16:37:42
+"VRSN","Verisign Inc","Information Technology","sp500",1,2023-01-31 16:37:42
+"VRTX","Vertex Pharmaceuticals Inc","Health Care","sp500",1,2023-01-31 16:37:42
+"VTR","Ventas, Inc","Real Estate","sp500",1,2023-01-31 16:37:42
+"VTRS","Viatris Inc.","Health Care","sp500",1,2023-01-31 16:37:42
+"VZ","Verizon Communications Inc","Communication Services","sp500",1,2023-01-31 16:37:42
+"WAB","Westinghouse Air Brake Technologies","Industrials","sp500",1,2023-01-31 16:37:42
+"WAT","Waters Corp","Health Care","sp500",1,2023-01-31 16:37:42
+"WBA","Walgreen Boots Alliance Inc","Consumer Staples","sp500",1,2023-01-31 16:37:42
+"WBD","Warner Bros. Discovery, Inc. - Series A","Communication Services","sp500",1,2023-01-31 16:37:42
+"WDC","Western Digital Corp","Information Technology","sp500",1,2023-01-31 16:37:42
+"WEC","WEC Energy Group Inc","Utilities","sp500",1,2023-01-31 16:37:42
+"WELL","Welltower Inc","Real Estate","sp500",1,2023-01-31 16:37:42
+"WFC","Wells Fargo","Financials","sp500",1,2023-01-31 16:37:42
+"WHR","Whirlpool Corp","Consumer Discretionary","sp500",1,2023-01-31 16:37:42
+"WM","Waste Management Inc","Industrials","sp500",1,2023-01-31 16:37:42
+"WMB","Williams Inc","Energy","sp500",1,2023-01-31 16:37:42
+"WMT","Walmart Stores Inc","Consumer Staples","sp500",1,2023-01-31 16:37:42
+"WRB","WR Berkley Corp","Financials","sp500",1,2023-01-31 16:37:42
+"WRK","Westrock","Materials","sp500",1,2023-01-31 16:37:42
+"WST","West Pharmaceutical Services Inc","Health Care","sp500",1,2023-01-31 16:37:42
+"WTW","Willis Towers Watson Public Limited Company","Financials","sp500",1,2023-01-31 16:37:42
+"WY","Weyerhaeuser Company","Real Estate","sp500",1,2023-01-31 16:37:42
+"WYNN","Wynn Resorts Ltd","Consumer Discretionary","sp500",1,2023-01-31 16:37:42
+"XEL","Xcel Energy Inc","Utilities","sp500",1,2023-01-31 16:37:42
+"XOM","Exxon Mobil Corp","Energy","sp500",1,2023-01-31 16:37:42
+"XRAY","Dentsply Sirona Inc","Health Care","sp500",1,2023-01-31 16:37:42
+"XYL","Xylem Inc","Industrials","sp500",1,2023-01-31 16:37:42
+"YUM","Yum Brands Inc","Consumer Discretionary","sp500",1,2023-01-31 16:37:42
+"ZBH","Zimmer Biomet Holdings Inc","Health Care","sp500",1,2023-01-31 16:37:42
+"ZBRA","Zebra Technologies Corp","Information Technology","sp500",1,2023-01-31 16:37:42
+"ZION","Zions Bancorporation","Financials","sp500",1,2023-01-31 16:37:42
+"ZM","","","others",1,2023-01-31 16:37:42
+"ZTS","Zoetis Inc","Health Care","sp500",1,2023-01-31 16:37:42

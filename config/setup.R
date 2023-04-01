@@ -33,6 +33,8 @@ HOST_DB <- Sys.getenv("HOST_DB")
 DB_PORT <- Sys.getenv("DB_PORT")
 DB_USER <- Sys.getenv("DB_USER")
 DB_PASSWORD <- Sys.getenv("DB_PASSWORD")
+ETL_PROTOCOL <- Sys.getenv("ETL_PROTOCOL")
+EXECUTE_PW <- Sys.getenv("EXECUTE_PW")
 
 # set project home directory
 setwd(PROJECT_HOME_DIRECTORY)
