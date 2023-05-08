@@ -1,6 +1,6 @@
 __plot__/
 __data__/
-*.env
+#*.env
 *.Rhistory
 .httr-oauth
 *_template_*.xlsx

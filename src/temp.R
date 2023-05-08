@@ -1,0 +1,83 @@
+# initiate set up
+source("~/algorithmic_trading/config/setup.R")
+readRenviron("~/algorithmic_trading/config/.env")
+ALPHA_VANTAGE_API <- Sys.getenv("ALPHA_VANTAGE_API")
+av_api_key(ALPHA_VANTAGE_API)
+
+# symbols
+symbols = c("SPY", "GOOGL", "META", "AMC", "TSLA")
+
+# get data
+df = symbols %>%
+        tq_get(get = "alphavantage", 
+               av_fun = "TIME_SERIES_DAILY_ADJUSTED", 
+               outputsize = "full")     
+
+# adjust for OHLC
+df2 <- df %>%
+        dplyr::mutate(adj_coefficient = adjusted_close / close,
+                      adj_open = open * adj_coefficient,
+                      adj_high = high * adj_coefficient,
+                      adj_low = low * adj_coefficient)
+
+# rename columns              
+df3 <- df2 %>%
+        dplyr::select(symbol, 
+                      date = timestamp, 
+                      open, 
+                      high, 
+                      low, 
+                      close, 
+                      volume, 
+                      dividend_amount, 
+                      split_coefficient, 
+                      adj_open, 
+                      adj_high, 
+                      adj_low, 
+                      adj_close = adjusted_close) %>%
+        dplyr::arrange(symbol, date)
+
+#################################
+# parameters
+windows()
+# TA <- function(xtsList, 
+#                start_day_minus = 730, 
+#                end_day_minus = 0,
+#                start_datekey,
+#                end_datekey,
+#                input_datekey_flag = FALSE,
+#                save_plot_path = "~",
+#                folder_name = "TA charts",
+#                heikin_ashi = FALSE
+# )
+
+s = 'SPY'
+start_date = '2022-10-01'
+end_date = Sys.Date()-1
+
+s1 = df3 %>%
+        dplyr::filter(symbol == s) %>%
+        dplyr::select(date, 
+                      open = adj_open,
+                      high = adj_high,
+                      low = adj_low,
+                      close = adj_close,
+                      volume) %>%
+        dplyr::filter(date >= start_date & 
+                              date <= end_date)
+
+x = timetk::tk_xts(s1)
+x2 = x %>% heikin_ashi(., output_as_df = FALSE)
+
+x2 %>%
+        quantmod::chartSeries( name = paste0(s),
+                               TA = c(addBBands(draw = 'bands'), 
+                                      addMACD(),
+                                      #addADX(), 
+                                      addCCI(), 
+                                      addRSI(),                                      
+                                      addEMA(n = 10, col = 'red'),
+                                      addEMA(n = 30, col = 'blue')                                              
+                               ))
+
+
