@@ -24,6 +24,7 @@ nlcor
 openxlsx
 parallel
 plotly
+plyr
 pracma
 quantmod
 RColorBrewer

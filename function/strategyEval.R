@@ -1,18 +1,28 @@
 strategyEval <- function(s, fund_begin = 10000, amountInvestedMax = 10000, printOption = FALSE){
         
-        # s must have date, close, and message column
+        # s must have symbol, date, OHLC, and message column
+        # create a price column based on the average of OHLC of the day
         s = s %>%
-                dplyr::arrange(date)
+                dplyr::arrange(date) %>%
+                dplyr::mutate(price = (open + high + low + close) / 4,
+                              price_lead = dplyr::lead(price, 1)) %>%
+                dplyr::select(symbol, date, open, high, low, close, price, price_lead, message)                
         
         # these are the required columns
         symbol = s$symbol
         date = s$date
         open = s$open
-        close = s$close
+        high = s$high
+        low = s$low
+        close = s$close        
+        price = s$price
+        price_lead = s$price_lead
+        # replace the latest value (which is NA) by the most recent price
+        price_lead[length(price_lead)] = price[length(price)]
         message = s$message        
         
-        # use the next close price as the buy/sell price
-        current_price = s$close[1]
+        # set current status
+        current_price = s$price[1]
         current_share = 0
         current_amountInvested = 0
         current_fund = fund_begin 
@@ -23,23 +33,25 @@ strategyEval <- function(s, fund_begin = 10000, amountInvestedMax = 10000, print
         
         while(initiation){
                 
-                fundList = rep(0, length(close))
-                amountInvestedList = rep(0, length(close))
-                shareList = rep(0, length(close))
+                fundList = rep(0, length(price))
+                amountInvestedList = rep(0, length(price))
+                shareList = rep(0, length(price))
                 
-                for(i in 1:length(close)){
+                for(i in 1:length(price)){
                         
                         if(message[i] == 'hold'){
-                                current_price = close[i]
+                                current_price = price[i]
                                 fundList[i] = current_fund 
                                 amountInvestedList[i] = current_amountInvested 
                                 shareList[i] = current_share
                         } else {
                                 if(message[i] == 'buy'){
                                         if(ready_to_buy){
-                                                current_price = close[i]
+                                                # use the next "price" as the buy price                                                
+                                                buy_price = price_lead[i]
+                                                current_price = price[i]
                                                 current_amountInvested = min(amountInvestedMax, current_fund)
-                                                current_share = current_amountInvested / current_price
+                                                current_share = current_amountInvested / buy_price
                                                 current_fund = current_fund - current_amountInvested
                                                 
                                                 fundList[i] = current_fund 
@@ -49,7 +61,7 @@ strategyEval <- function(s, fund_begin = 10000, amountInvestedMax = 10000, print
                                                 ready_to_buy = FALSE
                                                 ready_to_sell = TRUE
                                         } else {
-                                                current_price = close[i]
+                                                current_price = price[i]
                                                 fundList[i] = current_fund 
                                                 amountInvestedList[i] = current_amountInvested
                                                 shareList[i] = current_share
@@ -58,8 +70,10 @@ strategyEval <- function(s, fund_begin = 10000, amountInvestedMax = 10000, print
                                         }
                                 } else {
                                         if(ready_to_sell){
-                                                current_price = close[i]
-                                                current_fund = current_fund + current_share * current_price
+                                                # use the next "price" as the sell price
+                                                sell_price = price_lead[i]
+                                                current_price = price[i]
+                                                current_fund = current_fund + current_share * sell_price
                                                 current_share = 0 
                                                 current_amountInvested = 0
                                                 
@@ -70,7 +84,7 @@ strategyEval <- function(s, fund_begin = 10000, amountInvestedMax = 10000, print
                                                 ready_to_sell = FALSE
                                                 ready_to_buy = TRUE
                                         } else {
-                                                current_price = close[i]
+                                                current_price = price[i]
                                                 current_share = 0 
                                                 current_amountInvested = 0
                                                 
@@ -92,8 +106,8 @@ strategyEval <- function(s, fund_begin = 10000, amountInvestedMax = 10000, print
         # set the latest close price to be the current price
         current_price = s$close[nrow(s)]
         
-        # value is settled based on the close price of the trading day
-        evalOut <- data.frame(symbol, date, open, close, message,
+        # value is settled based on the current close of the trading day
+        evalOut <- data.frame(symbol, date, open, high, low, close, price, message,
                               fund = fundList,
                               amountInvested = amountInvestedList,
                               share = shareList) %>%

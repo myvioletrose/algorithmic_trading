@@ -37,7 +37,8 @@ df3 <- df2 %>%
                       adj_close = adjusted_close) %>%
         dplyr::arrange(symbol, date)
 
-#################################
+##########################################################################################################
+# individual symbol
 # parameters
 windows()
 # TA <- function(xtsList, 
@@ -53,7 +54,8 @@ windows()
 
 s = 'SPY'
 start_date = '2022-10-01'
-end_date = Sys.Date()-1
+#end_date = '2020-10-10'
+end_date = Sys.Date()
 
 s1 = df3 %>%
         dplyr::filter(symbol == s) %>%
@@ -69,15 +71,59 @@ s1 = df3 %>%
 x = timetk::tk_xts(s1)
 x2 = x %>% heikin_ashi(., output_as_df = FALSE)
 
-x2 %>%
+x %>%
         quantmod::chartSeries( name = paste0(s),
                                TA = c(addBBands(draw = 'bands'), 
                                       addMACD(),
-                                      #addADX(), 
-                                      addCCI(), 
+                                      addEVWMA(),
+                                      addADX(), 
+                                      #addCCI(), 
                                       addRSI(),                                      
                                       addEMA(n = 10, col = 'red'),
                                       addEMA(n = 30, col = 'blue')                                              
                                ))
+
+
+##########################################################################################################
+# save as bunch of symbols
+
+#focus_group = c()
+
+df4 = df3 %>% 
+        # filter(symbol %in% focus_group) %>%
+        dplyr::select(symbol, date, 
+                      open = adj_open,
+                      high = adj_high,
+                      low = adj_low,
+                      close = adj_close,
+                      volume) %>%
+        arrange(symbol, date)
+
+chart_symbols = df4$symbol %>% unique() %>% sort()
+xtsList = lapply(1:length(df4$symbol %>% unique), function(x)timetk::tk_xts(df4 %>% filter(symbol == chart_symbols[x])))
+names(xtsList) = chart_symbols
+
+TA(xtsList, 
+   start_day_minus = 200, 
+   save_plot_path = PLOT_DIRECTORY, 
+   folder_name = TA_FOLDER, 
+   heikin_ashi = FALSE)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
