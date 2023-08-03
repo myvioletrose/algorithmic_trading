@@ -52,7 +52,7 @@ windows()
 #                heikin_ashi = FALSE
 # )
 
-s = 'SPY'
+s = 'GOOGL'
 start_date = '2022-10-01'
 #end_date = '2020-10-10'
 end_date = Sys.Date()
@@ -69,20 +69,30 @@ s1 = df3 %>%
                               date <= end_date)
 
 x = timetk::tk_xts(s1)
-x2 = x %>% heikin_ashi(., output_as_df = FALSE)
 
-x %>%
+x2 = x %>% heikin_ashi(., output_as_df = TRUE) %>%
+        dplyr::mutate(date = as.Date(date, '%Y-%m-%d')) %>%
+        inner_join(s1 %>% select(date, volume), by = "date") %>%
+        timetk::tk_xts()
+
+x2 %>%
         quantmod::chartSeries( name = paste0(s),
                                TA = c(addBBands(draw = 'bands'), 
                                       addMACD(),
+                                      addZLEMA(col = 'purple'),
                                       addEVWMA(),
+                                      #add_VWAP(),
                                       addADX(), 
-                                      #addCCI(), 
-                                      addRSI(),                                      
-                                      addEMA(n = 10, col = 'red'),
-                                      addEMA(n = 30, col = 'blue')                                              
+                                      addCCI(), 
+                                      addRSI()
+                                      #addSMA(n = 50, col = 'red'),
+                                      #addSMA(n = 200, col = 'blue')
+                                      #addEMA(n = 10, col = 'red'),
+                                      #addEMA(n = 30, col = 'blue')                                              
                                ))
 
+# add Chandelier
+addTA(chandelier(x), on = 1)
 
 ##########################################################################################################
 # save as bunch of symbols

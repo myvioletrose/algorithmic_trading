@@ -6,7 +6,7 @@ av_api_key(ALPHA_VANTAGE_API)
 
 # symbols
 symbols = c("SPY", "GOOGL", "META", "AMC", "TSLA",
-            "UBER", "AMZN", "NIO", "PRPL", "PLUG") %>%
+            "UBER", "AMZN", "DKNG", "PRPL", "PLUG") %>%
         sort()
 s = symbols
 
@@ -18,7 +18,30 @@ df = symbols %>%
 
 ##################################################################
 ########################### SP500 ###############################
+#symbols = tq_exchange("NASDAQ")$symbol %>% sort()
+# Getting data...
+# 
+# Error in open.connection(con, "rb") : 
+#         cannot open the connection to 'https://api.nasdaq.com/api/screener/stocks?tableonly=true&exchange=nasdaq&download=true'
+# In addition: Warning message:
+#         In open.connection(con, "rb") :
+#         URL 'https://api.nasdaq.com/api/screener/stocks?tableonly=true&exchange=nasdaq&download=true': Timeout of 60 seconds was reached
+
+# # temp solution 1 - not working
+# library(jsonlite)
+# tmp <- jsonlite::fromJSON('https://api.nasdaq.com/api/screener/stocks?tableonly=true&exchange=nasdaq&download=true')
+# head(tmp$data$rows)
+# 
+# # temp solution 2 - ran too long (>10 min) and had to suspend it
+# library(curl)
+# library(readr)
+# handle <- new_handle(verbose = TRUE) 
+# temp_con <- curl("https://api.nasdaq.com/api/screener/stocks?tableonly=true&exchange=nasdaq&download=true", handle = handle)
+# temp_fix = read_csv(temp_con)
+# dim(temp_fix); temp_fix %>% head()
+
 symbols = tq_index("SP500")$symbol %>% sort()
+#symbols = tq_exchange("NASDAQ")$symbol %>% sort()
 symbols = c(symbols, "SPY") %>% sort()
 symbols = symbols[symbols %nin% "-"]  # remove "-" from result
 s = symbols 
@@ -220,7 +243,7 @@ adx <- t0 %>%
         arrange(symbol, date) %>%
         group_by(symbol) %>%
         tq_transmute(select = c("high", "low", "close"),
-                     n = 15, 
+                     n = 14, 
                      mutate_fun = ADX,
                      col_rename = c("dmi_p", "dmi_n", "dx", "adx")) %>%
         ungroup() %>%
@@ -233,12 +256,12 @@ adx <- t0 %>%
                       dmi_n_cross_above_yn_lag1 = dplyr::lag(dmi_n_cross_above_yn, 1),
                       dmi_n_cross_above_yn_lag2 = dplyr::lag(dmi_n_cross_above_yn, 2),
                       dmi_n_cross_above_yn_lag3 = dplyr::lag(dmi_n_cross_above_yn, 3)) %>%
-        dplyr::mutate(dmi_entry_flag = dplyr::case_when(adx >= 25 &
+        dplyr::mutate(dmi_entry_flag = dplyr::case_when(adx > 20 &
                                                                 dmi_p_cross_above_yn_lag3 == 0 &
                                                                 dmi_p_cross_above_yn_lag2 == 0 &
                                                                 dmi_p_cross_above_yn_lag1 == 0 &
                                                                 dmi_p_cross_above_yn == 1 ~ 1,
-                                                        adx >= 25 &
+                                                        adx > 20 &
                                                                 dmi_p_cross_above_yn_lag3 == 0 &
                                                                 dmi_p_cross_above_yn_lag2 == 0 &
                                                                 dmi_p_cross_above_yn_lag1 == 1 &
@@ -258,21 +281,105 @@ adx <- t0 %>%
 
 ############################
 # rsi
-rsi <- t0 %>%
+rsi0 <- t0 %>%
         arrange(symbol, date) %>%
         group_by(symbol) %>%
         tq_transmute(select = close,
                      mutate_fun = RSI) %>%
+        dplyr::mutate(rsi_lag1 = dplyr::lag(rsi, 1),
+                      rsi_lag2 = dplyr::lag(rsi, 2)) %>%
         ungroup()
+
+rsi_step_a <- rsi0 %>%
+        arrange(symbol, date) %>%
+        group_by(symbol) %>%
+        dplyr::mutate(rsi_oversold_yn1 = dplyr::case_when(rsi < 35 &
+                                                                  rsi > rsi_lag1 &
+                                                                  rsi_lag1 > rsi_lag2 ~ 1,
+                                                          TRUE ~ 0),
+                      rsi_overbought_yn1 = dplyr::case_when(rsi > 70 &
+                                                                    rsi < rsi_lag1 &
+                                                                    rsi < rsi_lag2 ~ 1,
+                                                            TRUE ~ 0)) %>%
+        ungroup()
+
+rsi_step_b <- rsi0 %>%
+        arrange(symbol, date) %>%
+        group_by(symbol) %>%
+        dplyr::mutate(rsi_oversold_temp = dplyr::case_when(rsi > 35 &
+                                                                   rsi_lag1 <= 35 &
+                                                                   rsi_lag2 <= 35 ~ 1,
+                                                           rsi > 35 &
+                                                                   rsi > rsi_lag1 &
+                                                                   rsi_lag1 > 35 &
+                                                                   rsi_lag2 <= 35 ~ 1,
+                                                           TRUE ~ 0),
+                      ma = pracma::movavg(rsi_oversold_temp, n = 2, type = "s"),
+                      rsi_oversold_yn2 = dplyr::case_when(ma > 0 &
+                                                                  rsi > 35 ~ 1, TRUE ~ 0)
+                      ) %>%
+        ungroup
+
+rsi <- dplyr::inner_join(rsi_step_a %>% select(symbol, date, rsi_oversold_yn1, rsi_overbought_flag = rsi_overbought_yn1),
+                         rsi_step_b %>% select(symbol, date, 
+                                               rsi_oversold_temp, ma, 
+                                               rsi_oversold_yn2),
+                         by = c("symbol", "date")) %>%
+        dplyr::mutate(rsi_oversold_flag = dplyr::case_when((rsi_oversold_yn1 + rsi_oversold_yn2) >0 ~ 1, TRUE ~ 0)) %>%
+        dplyr::inner_join(rsi0 %>% select(symbol, date, rsi, rsi_lag1, rsi_lag2), by = c("symbol", "date")) %>%
+        #dplyr::select(symbol, date, rsi, rsi_lag1, rsi_lag2, rsi_oversold_flag, rsi_bought_flag) %>%
+        arrange(symbol, date)
 
 ############################
 # cci
-cci <- t0 %>%
+cci0 <- t0 %>%
         arrange(symbol, date) %>%
         group_by(symbol) %>%
         tq_transmute(select = c("high", "low", "close"),
                      mutate_fun = CCI) %>%
+        dplyr::mutate(cci_lag1 = dplyr::lag(cci, 1),
+                      cci_lag2 = dplyr::lag(cci, 2)) %>%
         ungroup()
+
+cci_step_a <- cci0 %>%
+        arrange(symbol, date) %>%
+        group_by(symbol) %>%
+        dplyr::mutate(cci_oversold_yn1 = dplyr::case_when(cci < -100 &
+                                                                  cci > cci_lag1 &
+                                                                  cci_lag1 > cci_lag2 ~ 1,
+                                                          TRUE ~ 0),
+                      cci_overbought_yn1 = dplyr::case_when(cci > 100 &
+                                                                    cci < cci_lag1 &
+                                                                    cci_lag1 < cci_lag2 ~ 1,
+                                                            TRUE ~ 0)) %>%
+        ungroup()
+
+cci_step_b <- cci0 %>%
+        arrange(symbol, date) %>%
+        group_by(symbol) %>%
+        dplyr::mutate(cci_oversold_temp = dplyr::case_when(cci > -100 &
+                                                                   cci_lag1 <= -100 &
+                                                                   cci_lag2 <= -100 ~ 1,
+                                                           cci > -100 &
+                                                                   cci > cci_lag1 &
+                                                                   cci_lag1 > -100 &
+                                                                   cci_lag2 <= -100 ~ 1,
+                                                           TRUE ~ 0),
+                      ma = pracma::movavg(cci_oversold_temp, n = 2, type = "s"),
+                      cci_oversold_yn2 = dplyr::case_when(ma > 0 &
+                                                                  cci > -100 ~ 1, TRUE ~ 0)
+        ) %>%
+        ungroup
+
+cci <- dplyr::inner_join(cci_step_a %>% select(symbol, date, cci_oversold_yn1, cci_overbought_flag = cci_overbought_yn1),
+                         cci_step_b %>% select(symbol, date, 
+                                               cci_oversold_temp, ma, 
+                                               cci_oversold_yn2),
+                         by = c("symbol", "date")) %>%
+        dplyr::mutate(cci_oversold_flag = dplyr::case_when((cci_oversold_yn1 + cci_oversold_yn2) >0 ~ 1, TRUE ~ 0)) %>%
+        dplyr::inner_join(cci0 %>% select(symbol, date, cci, cci_lag1, cci_lag2), by = c("symbol", "date")) %>%
+        #dplyr::select(symbol, date, cci, cci_lag1, cci_lag2, cci_oversold_flag, cci_bought_flag) %>%
+        arrange(symbol, date)
 
 ############################
 # obv
@@ -319,18 +426,20 @@ overnight <- t0 %>%
         ungroup()
 
 ############################
-# sma5, ema10, ema30, ema50, ema100, ema200, zlema, proxy_flag
+# sma5, sma50, sma200, ema10, ema30, ema100, zlema, proxy_flag
 ma <- t0 %>%
         # very important for calculating SMA and EMA by having asec(date)
         arrange(symbol, date) %>%
         group_by(symbol) %>%
         ############################### SMA, EMA ###############################
 dplyr::mutate(sma5 = pracma::movavg(close, n = 5, type = "s"),
+              sma50 = pracma::movavg(close, n = 50, type = "s"),
+              sma200 = pracma::movavg(close, n = 200, type = "s"), 
+              
               ema10 = pracma::movavg(close, n = 10, type = "e"),  
               ema30 = pracma::movavg(close, n = 30, type = "e"),  
-              ema50 = pracma::movavg(close, n = 50, type = "e"),
               ema100 = pracma::movavg(close, n = 100, type = "e"),
-              ema200 = pracma::movavg(close, n = 200, type = "e"),
+              
               close_lead1 = dplyr::lead(close, 1),
               sma5_lead1 = dplyr::lead(sma5, 1)) %>%
         ############################### Zero Lag EMA ###############################
@@ -353,48 +462,25 @@ arrange(symbol, desc(date)) %>%
                       proxy_vote = dplyr::case_when(temp_flag == 1 ~ proxy_vote),
                       proxy_flag = dplyr::case_when(temp_flag == 1 ~ proxy_flag)) %>%
         dplyr::select(-close_lead1, -sma5_lead1, -index) %>%
-        ############################### ema50 flag ###############################
-arrange(symbol, date) %>%
-        group_by(symbol) %>%
-        dplyr::mutate(close_lag1 = dplyr::lag(close, 1),
-                      close_lag2 = dplyr::lag(close, 2),
-                      close_lag3 = dplyr::lag(close, 3),
-                      ema50_lag1 = dplyr::lag(ema50, 1),
-                      ema50_lag2 = dplyr::lag(ema50, 2),
-                      ema50_lag3 = dplyr::lag(ema50, 3),
-                      ema50_flag = dplyr::case_when( (close >ema50) & (close_lag1 <ema50_lag1) & (close_lag2 <ema50_lag2) & (close_lag3 <ema50_lag3) ~ 1,
-                                                     (close >ema50) & (close_lag1 >ema50_lag1) & (close_lag2 <ema50_lag2) & (close_lag3 <ema50_lag3) ~ 1,
-                                                     (close <ema50) & (close_lag1 >ema50_lag1) & (close_lag2 >ema50_lag2) & (close_lag3 >ema50_lag3) ~ -1,
-                                                     (close <ema50) & (close_lag1 <ema50_lag1) & (close_lag2 >ema50_lag2) & (close_lag3 >ema50_lag3) ~ -1,
-                                                     TRUE ~ 0 )
-        ) %>%
-        ############################### ema10 flag ###############################
-dplyr::mutate(ema10_lag1 = dplyr::lag(ema10, 1),
-              ema10_lag2 = dplyr::lag(ema10, 2),
-              ema10_lag3 = dplyr::lag(ema10, 3),
-              ema30_lag1 = dplyr::lag(ema30, 1),
-              ema30_lag2 = dplyr::lag(ema30, 2),
-              ema30_lag3 = dplyr::lag(ema30, 3),
-              ema10_flag = dplyr::case_when( (ema10 >ema30) & (ema10_lag1 <ema30_lag1) & (ema10_lag2 <ema30_lag2) & (ema10_lag3 <ema30_lag3) ~ 1,
-                                             (ema10 >ema30) & (ema10_lag1 >ema30_lag1) & (ema10_lag2 <ema30_lag2) & (ema10_lag3 <ema30_lag3) ~ 1,
-                                             (ema10 <ema30) & (ema10_lag1 >ema30_lag1) & (ema10_lag2 >ema30_lag2) & (ema10_lag3 >ema30_lag3) ~ -1,
-                                             (ema10 <ema30) & (ema10_lag1 <ema30_lag1) & (ema10_lag2 >ema30_lag2) & (ema10_lag3 >ema30_lag3) ~ -1,
-                                             TRUE ~ 0 )
-) %>%
         ############################### sma5 flag ###############################
-dplyr::mutate(sma5_lag1 = dplyr::lag(sma5, 1),
+arrange(symbol, date) %>%
+dplyr::mutate(close_lag1 = dplyr::lag(close, 1),
+              close_lag2 = dplyr::lag(close, 2),
+              close_lag3 = dplyr::lag(close, 3),
+              
+              sma5_lag1 = dplyr::lag(sma5, 1),
               sma5_lag2 = dplyr::lag(sma5, 2),
               sma5_lag3 = dplyr::lag(sma5, 3),
+              
               sma5_flag = dplyr::case_when( (close >sma5) & (close_lag1 <sma5_lag1) & (close_lag2 <sma5_lag2) & (close_lag3 <sma5_lag3) ~ 1,
                                             (close >sma5) & (close_lag1 >sma5_lag1) & (close_lag2 <sma5_lag2) & (close_lag3 <sma5_lag3) ~ 1,
+                                            
                                             (close <sma5) & (close_lag1 >sma5_lag1) & (close_lag2 >sma5_lag2) & (close_lag3 >sma5_lag3) ~ -1,
                                             (close <sma5) & (close_lag1 <sma5_lag1) & (close_lag2 >sma5_lag2) & (close_lag3 >sma5_lag3) ~ -1,
                                             TRUE ~ 0 )
 ) %>%
         dplyr::select(-close_lag1, -close_lag2, -close_lag3, 
-                      -ema10_lag1, -ema10_lag2, -ema10_lag3,
-                      -ema30_lag1, -ema30_lag2, -ema30_lag3,
-                      -ema50_lag1, -ema50_lag2, -ema50_lag3
+                      -sma5_lag1, -sma5_lag2, -sma5_lag3
         ) %>%
         ungroup
 
@@ -404,7 +490,7 @@ atr0 <- t0 %>%
         arrange(symbol, date) %>%
         group_by(symbol) %>%
         tq_transmute(select = c("high", "low", "close"),
-                     n = 20, 
+                     n = 14, 
                      mutate_fun = ATR,
                      col_rename = c("tr", "atr", "trueHigh", "trueLow")) %>%
         ungroup()
@@ -414,7 +500,7 @@ higherH <- t0 %>%
         group_by(symbol) %>%
         tq_transmute(select = "high",
                      mutate_fun = rollapply,
-                     width = 20,
+                     width = 14,
                      FUN = max,
                      by.column = FALSE,
                      col_rename = "higherHigh") %>%
@@ -425,7 +511,7 @@ lowerL <- t0 %>%
         group_by(symbol) %>%
         tq_transmute(select = "low",
                      mutate_fun = rollapply,
-                     width = 20,
+                     width = 14,
                      FUN = min,
                      by.column = FALSE,
                      col_rename = "lowerLow") %>%
@@ -514,17 +600,17 @@ favorable_conditions <- atr %>%
                                                    intraday_lag1 < intraday_lag2 ~ -1, 
                                            TRUE ~ 0),
                 # adx flag
-                adx_flag = dplyr::case_when((adx >=25 & dmi_p > dmi_n) ~ 1, 
+                adx_flag = dplyr::case_when((adx > 20 & dmi_p > dmi_n) ~ 1, 
                                             dmi_p < dmi_n ~ -1,
                                             TRUE ~ 0)
         ) %>%
         dplyr::mutate(
                 # buy condition(s)
                 buy_condition = dplyr::case_when((macd_flag + macd_ha_flag + ha_flag) >=1 ~ 1, TRUE ~ 0),
-                buy_condition = dplyr::case_when((buy_condition == 1 & adx_flag != -1) ~ 1, TRUE ~ 0),                
+                #buy_condition = dplyr::case_when((buy_condition == 1 & adx_flag != -1) ~ 1, TRUE ~ 0),                
                 # sell condition(s)
                 sell_condition = dplyr::case_when((macd_flag + macd_ha_flag + ha_flag) <=-1 ~ 1, TRUE ~ 0),
-                sell_condition = dplyr::case_when(sell_condition == 1 & adx_flag != 1 ~ 1, TRUE ~ 0),
+                #sell_condition = dplyr::case_when(sell_condition == 1 & adx_flag != 1 ~ 1, TRUE ~ 0),
                 sell_condition = dplyr::case_when(below_chanExit_long_flag == 1 & adx_flag == -1 ~ 1, TRUE ~ sell_condition)
         ) %>%
         dplyr::arrange(symbol, date)
@@ -590,8 +676,8 @@ as (
         --, sum(case when is_close_above_ce_short_yn = 1 then 1 else 0 end) over(partition by symbol order by date ROWS BETWEEN 10 preceding AND 1 preceding) as ce_up_flag
         --, sum(case when is_close_below_ce_long_yn = 1 then 1 else 0 end) over(partition by symbol order by date ROWS BETWEEN 10 preceding AND 1 preceding) as ce_down_flag
         
-        , sum(case when dmi_p_cross_above_yn = 1 and adx >25 then 1 else 0 end) over(partition by symbol order by date ROWS BETWEEN 10 preceding AND 1 preceding) as adx_up_flag
-        , sum(case when dmi_n_cross_above_yn = 1 then 1 else 0 end) over(partition by symbol order by date ROWS BETWEEN 10 preceding AND 1 preceding) as adx_down_flag
+        --, sum(case when dmi_p_cross_above_yn = 1 and adx > 20 then 1 else 0 end) over(partition by symbol order by date ROWS BETWEEN 10 preceding AND 1 preceding) as adx_up_flag
+        --, sum(case when dmi_n_cross_above_yn = 1 then 1 else 0 end) over(partition by symbol order by date ROWS BETWEEN 10 preceding AND 1 preceding) as adx_down_flag
         
         , sum(case when is_ema10_above_ema30_yn = 1 then 1 else 0 end) over(partition by symbol order by date ROWS BETWEEN 10 preceding AND 1 preceding) as ema10_up_flag
         , sum(case when is_ema10_above_ema30_yn = -1 then 1 else 0 end) over(partition by symbol order by date ROWS BETWEEN 10 preceding AND 1 preceding) as ema10_down_flag
@@ -608,8 +694,8 @@ as (
         --, case when is_close_above_ce_short_yn = 1 and ce_down_flag = 10 then 1 else 0 end as ce_up_flag
         --, case when is_close_below_ce_long_yn = 1 and ce_up_flag = 10 then 1 else 0 end as ce_down_flag        
         
-        , case when dmi_p_cross_above_yn = 1 and adx > 25 and adx_down_flag = 10 then 1 else 0 end as adx_up_flag
-        , case when dmi_n_cross_above_yn = 1 and adx_up_flag = 10 then 1 else 0 end as adx_down_flag                
+        --, case when dmi_p_cross_above_yn = 1 and adx > 20 and adx_down_flag = 10 then 1 else 0 end as adx_up_flag
+        --, case when dmi_n_cross_above_yn = 1 and adx_up_flag = 10 then 1 else 0 end as adx_down_flag                
         
         , case when is_ema10_above_ema30_yn = 1 and ema10_down_flag = 10 then 1 else 0 end as ema_up_flag
         , case when is_ema10_above_ema30_yn = -1 and ema10_up_flag = 10 then 1 else 0 end as ema_down_flag        
@@ -632,14 +718,14 @@ vwap2 <- stock_pick2 %>%
         arrange(symbol, date)
 
 # additional confirmations - adx_breakout_flag, ema_breakout_flag
-adx2 <- stock_pick2 %>%
-        dplyr::select(symbol, date, 
-                      adx_breakout_up_flag = adx_up_flag, 
-                      adx_breakout_down_flag = adx_down_flag) %>%
-        dplyr::mutate(adx_breakout_flag = dplyr::case_when(adx_breakout_up_flag == 1 ~ 1,
-                                                           TRUE ~ adx_breakout_down_flag*-1)) %>%
-        select(-adx_breakout_up_flag, -adx_breakout_down_flag) %>%
-        arrange(symbol, date)
+# adx2 <- stock_pick2 %>%
+#         dplyr::select(symbol, date, 
+#                       adx_breakout_up_flag = adx_up_flag, 
+#                       adx_breakout_down_flag = adx_down_flag) %>%
+#         dplyr::mutate(adx_breakout_flag = dplyr::case_when(adx_breakout_up_flag == 1 ~ 1,
+#                                                            TRUE ~ adx_breakout_down_flag*-1)) %>%
+#         select(-adx_breakout_up_flag, -adx_breakout_down_flag) %>%
+#         arrange(symbol, date)
 
 ema2 <- stock_pick2 %>%
         dplyr::select(symbol, date, 
@@ -657,31 +743,37 @@ output <- atr %>%
                       open, high, low, close, volume,
                       atr, chanExit_long, chanExit_short,
                       ce_flag = flag) %>%
-        dplyr::inner_join(macd %>% select(symbol, date, macd_flag = flag), by = c("symbol", "date")) %>%
+        dplyr::inner_join(macd %>% select(symbol, date, macd_flag = flag, macd_diff = diff), by = c("symbol", "date")) %>%
         dplyr::inner_join(ha %>% select(symbol, date, ha_flag = flag), by = c("symbol", "date")) %>%
         dplyr::inner_join(macd_ha %>% select(symbol, date, macd_ha_flag = flag), by = c("symbol", "date")) %>%
         dplyr::inner_join(vwap %>% select(symbol, date, vwap, vwap_flag = flag), by = c("symbol", "date")) %>%
         dplyr::inner_join(overnight %>% select(symbol, date, overnight_flag = flag), by = c("symbol", "date")) %>%
-        dplyr::inner_join(ma %>% select(symbol, date, ema10, ema30, ema100, zlema, proxy_flag, 
-                                        sma5_flag, ema10_flag, ema50_flag), by = c("symbol", "date")) %>%
+        dplyr::inner_join(ma %>% select(symbol, date, 
+                                        sma5, sma50, sma200, 
+                                        ema10, ema30, ema100, 
+                                        zlema, proxy_flag, sma5_flag), 
+                          by = c("symbol", "date")) %>%
         dplyr::inner_join(adx %>% select(symbol, date, dmi_p, dmi_n, adx, adx_flag = flag), by = c("symbol", "date")) %>%
-        dplyr::inner_join(rsi %>% select(symbol, date, rsi), by = c("symbol", "date")) %>%
-        dplyr::inner_join(cci %>% select(symbol, date, cci), by = c("symbol", "date")) %>%
+        dplyr::inner_join(rsi %>% select(symbol, date, rsi, rsi_oversold_flag, rsi_overbought_flag), by = c("symbol", "date")) %>%
+        dplyr::inner_join(cci %>% select(symbol, date, cci, cci_oversold_flag, cci_overbought_flag), by = c("symbol", "date")) %>%
         dplyr::inner_join(vwap2 %>% select(symbol, date, vwap_breakout_flag), by = c("symbol", "date")) %>%
-        dplyr::inner_join(adx2 %>% select(symbol, date, adx_breakout_flag), by = c("symbol", "date")) %>%
+        #dplyr::inner_join(adx2 %>% select(symbol, date, adx_breakout_flag), by = c("symbol", "date")) %>%
         dplyr::inner_join(ema2 %>% select(symbol, date, ema_breakout_flag), by = c("symbol", "date")) %>%
         dplyr::select(symbol, date,
-                      open, high, low, close, zlema, vwap, ema10, ema30, ema100, proxy_flag, volume, 
-                      atr, chanExit_long, chanExit_short, 
-                      dmi_p, dmi_n, adx, rsi, cci, adx_flag,
+                      open, high, low, close, zlema, vwap, sma5, sma50, sma200, ema10, ema30, ema100, proxy_flag, volume, 
+                      macd_diff, atr, chanExit_long, chanExit_short, 
+                      dmi_p, dmi_n, adx, rsi, cci, adx_flag, rsi_oversold_flag, rsi_overbought_flag, cci_oversold_flag, cci_overbought_flag,
                       everything()) %>%
         arrange(symbol, date)
 
 output2 <- output %>%
         dplyr::mutate(signal = macd_flag + macd_ha_flag + ha_flag + vwap_flag + vwap_breakout_flag,
                       confirmation = macd_flag + macd_ha_flag + ha_flag + vwap_flag + vwap_breakout_flag +                     
-                              ce_flag + adx_flag + overnight_flag + sma5_flag + ema10_flag + ema50_flag +
-                              adx_breakout_flag + ema_breakout_flag) %>%
+                              ce_flag + 
+                              #adx_flag + 
+                              overnight_flag + sma5_flag + 
+                              #adx_breakout_flag + 
+                              ema_breakout_flag) %>%
         arrange(symbol, date) %>%
         # rule, logic combine
         dplyr::mutate(signal_lag1 = dplyr::lag(signal,1),
@@ -698,13 +790,13 @@ output2 <- output %>%
                               # buy
                               confirmation >0 & signal_lag1 >0 & confirmation_lag1 >=0 ~ 1,
                               confirmation >0 & signal_lag2 >0 & confirmation_lag1 >=0 ~ 1,
-                              confirmation >0 & signal_lag3 >0 & confirmation_lag1 >=0 ~ 1,
-                              confirmation >0 & signal_lag4 >0 & confirmation_lag1 >=0 ~ 1,
+                              #confirmation >0 & signal_lag3 >0 & confirmation_lag1 >=0 ~ 1,
+                              #confirmation >0 & signal_lag4 >0 & confirmation_lag1 >=0 ~ 1,
                               # sell
                               confirmation <0 & signal_lag1 <0 & confirmation_lag1 <=0 ~ -1,
                               confirmation <0 & signal_lag2 <0 & confirmation_lag1 <=0 ~ -1,
-                              confirmation <0 & signal_lag3 <0 & confirmation_lag1 <=0 ~ -1,
-                              confirmation <0 & signal_lag4 <0 & confirmation_lag1 <=0 ~ -1,
+                              #confirmation <0 & signal_lag3 <0 & confirmation_lag1 <=0 ~ -1,
+                              #confirmation <0 & signal_lag4 <0 & confirmation_lag1 <=0 ~ -1,
                               TRUE ~ 0),
                       # ensurance - zlema, vwap
                       message = dplyr::case_when(message == 1 & (close > zlema) & (close > vwap) ~ 1,
@@ -737,14 +829,11 @@ output2 <- output %>%
                 message == 1 &
                         buy_condition == 1 &
                         market_trend_ema10_flag == -1 &
-                        market_buy_condition == 1 ~ 1,
+                        market_buy_condition == 1 ~ 1,                                
                 # sell if,
                 signal <0 & 
                         signal_lag1 <0 &                        
-                        (close < zlema | close < vwap) ~ -1,
-                signal <0 &
-                        confirmation_lag1 <0 &
-                        (adx_flag == -1 | sell_condition == 1) ~ -1,
+                        (close < zlema | close < vwap) ~ -1,                
                 confirmation <0 &
                         confirmation_lag1 <0 &                        
                         sell_condition == 1 &
@@ -759,6 +848,7 @@ output2 <- output %>%
                         (close < zlema | close < vwap) ~ -1,
                 TRUE ~ 0)) %>%
         # trailing_stop_loss, profit protection
+        group_by(symbol) %>%
         dplyr::mutate(trailing_stop_loss = close - 2*atr,
                       trailing_stop_loss_yesterday = dplyr::lag(trailing_stop_loss, 1),
                       message = dplyr::case_when(close < trailing_stop_loss_yesterday ~ -1, 
@@ -767,6 +857,7 @@ output2 <- output %>%
                                                  close < chanExit_long &
                                                          market_trend_ema10_flag == -1 ~ -1,
                                                  TRUE ~ message)) %>%
+        ungroup() %>%
         dplyr::select(-signal_lag1, -signal_lag2, -signal_lag3, -signal_lag4, 
                       -confirmation_lag1, -confirmation_lag2, -confirmation_lag3, -confirmation_lag4, 
                       -trailing_stop_loss) %>%
@@ -797,6 +888,9 @@ poc <- output2 %>%
                       zlema,
                       vwap,
                       trailing_stop_loss_yesterday,
+                      sma5,
+                      sma50,
+                      sma200,
                       ema10,
                       ema30,
                       ema100,
@@ -808,19 +902,22 @@ poc <- output2 %>%
                       adx,
                       rsi,
                       cci,
+                      macd_diff,
                       macd_flag,
                       macd_ha_flag,
                       ha_flag,
                       ce_flag,
                       vwap_flag,
                       vwap_breakout_flag,
-                      adx_flag,
-                      adx_breakout_flag,
+                      adx_flag,                      
+                      #adx_breakout_flag,
                       overnight_flag,
                       sma5_flag,
-                      ema10_flag,
-                      ema50_flag,
                       ema_breakout_flag,
+                      rsi_oversold_flag, 
+                      rsi_overbought_flag, 
+                      cci_oversold_flag, 
+                      cci_overbought_flag,
                       signal,
                       confirmation,
                       buy_condition,
@@ -831,12 +928,33 @@ poc <- output2 %>%
         ) %>%
         arrange(symbol, date)
 
+
+##############################################################################################################
+#########################################################
+# save tbl
+schema = "adhoc"
+tbl_name = "poc"
+tbl = paste0(schema, ".", tbl_name)
+DB = "stg"
+
+# create connection
+con <- DBI::dbConnect(RPostgres::Postgres(), dbname = DB, host = HOST_DB, port = DB_PORT, user = DB_USER, password = DB_PASSWORD)
+
+# save_tbl_action
+dim(poc)
+tic()
+save_tbl_action(tbl, poc, overwrite = TRUE)
+toc()
+
+# check table
+d(glue::glue("select count(1) from {tbl}"))
+
+# disconnect db
+dbDisconnect(con)
+
 ########################################################################################################################################################################################
 ############################################################# backtest simulation #####################################################
 ########################################################################################################################
-
-#symbols
-#[1] "AMC"   "AMZN"  "GOOGL" "META"  "NIO"   "PLUG"  "PRPL"  "SPY"   "TSLA"  "UBER"
 
 temp_df <- poc %>% dplyr::select(symbol, year) %>% distinct()
 temp_list = vector(mode = "list", length = nrow(temp_df))
