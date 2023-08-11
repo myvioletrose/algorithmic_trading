@@ -688,11 +688,7 @@ output2 <- output %>%
                           by = "symbol") %>%
         dplyr::inner_join(situation_df %>% select(symbol, date, situation), by = c("symbol", "date")) %>%
         dplyr::mutate(year = lubridate::year(date),
-                      is_today = dplyr::case_when(max_date == date ~ 1, TRUE ~ 0),
-                      # trailing_stop_loss
-                      trailing_stop_loss = close - 1.5*atr,
-                      trailing_stop_loss_yesterday = dplyr::lag(trailing_stop_loss, 1),
-                      message = "hold") %>%
+                      is_today = dplyr::case_when(max_date == date ~ 1, TRUE ~ 0)) %>%
         dplyr::select(symbol,
                       date,
                       year,
@@ -701,15 +697,13 @@ output2 <- output %>%
                       open,
                       high,
                       low,
-                      close,
-                      message,
+                      close,                      
                       proxy_flag,
                       zlema,                      
                       evwma,
                       chanExit_long,
                       chanExit_short,
-                      atr,
-                      trailing_stop_loss_yesterday,
+                      atr,                      
                       sma5,
                       sma50,
                       sma200,

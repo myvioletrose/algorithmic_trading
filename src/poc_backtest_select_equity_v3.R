@@ -1,9 +1,14 @@
-tic()
 seed = 8321
-n = 30
-fund_begin = 1000
-days_after_signal = 3
+n = 100
+days_after_signal = 5
 #symbol_to_study = c("UBER")
+#symbol %in% symbol_to_study &
+
+# choose message_s* for random evaluation
+#message_list <- names(poc) %>% grep(pattern = "message_s([[:digit:]]$)", ignore.case = TRUE, value = TRUE)
+message_list <- names(poc) %>% grep(pattern = "message_s", ignore.case = TRUE, value = TRUE)
+fund_begin = c(10000, 2000, 3000, 5000)
+fund_df = data.frame(message_type = message_list, fund_begin)
 
 unique_trading_date = poc %>% select(date) %>% arrange(date) %>% distinct %>% .$date
 
@@ -25,9 +30,9 @@ msg_string_update <- function(x) {
 
 set.seed(seed)
 rand_list_target_dates <- poc %>%
-        dplyr::mutate_at("message_s1", msg_string_update) %>%
+        dplyr::mutate_at("message_s", msg_string_update) %>%
         filter(year >= 2007 &
-                       message_s1 == "buy" &
+                       message_s == "buy" &
                        #situation %in% desirable_situations &
                        #symbol %in% symbol_to_study &
                        #date > '2023-01-01' &
@@ -51,14 +56,14 @@ for(i in 1:length(rand_list_target_dates)){
         target_lookback_date = as.Date(target_lookback_date)
         
         combined_shortList_symbols = poc %>% 
-                dplyr::mutate_at("message_s1", msg_string_update) %>%
-                dplyr::mutate(message_s1 = case_when(message_s1 == "buy" ~ 1,
-                                                     message_s1 == "sell" ~ -1,
-                                                     TRUE ~ 0)) %>%
+                dplyr::mutate_at("message_s", msg_string_update) %>%
+                dplyr::mutate(message_s = case_when(message_s == "buy" ~ 1,
+                                                    #message_s == "sell" ~ -1,
+                                                    TRUE ~ 0)) %>%
                 filter(date == target_date & 
                                #situation %in% desirable_situations &
                                #symbol %in% symbol_to_study &
-                               message_s1 == 1) %>% .$symbol
+                               message_s == 1) %>% .$symbol
         
         #combined_shortList_symbols = base::intersect(combined_shortList_symbols, symbol_to_study)
         
@@ -137,7 +142,7 @@ for(i in 1:length(rand_list_target_dates)){
         for(j in 1:length(refined_symbols)){
                 
                 s = refined_symbols[j]
-                message_list = grep(pattern = "message_s", names(poc), ignore.case = TRUE, value = TRUE)
+                
                 message_list_result = vector(mode = "list", length = length(message_list))
                 
                 for(k in 1:length(message_list)){
@@ -145,20 +150,41 @@ for(i in 1:length(rand_list_target_dates)){
                         col = message_list[k]
                         
                         try({
+                                stop_loss_base = daily_price_target %>% filter(symbol == s & date == eval_start_date) %>% .$stop_loss_base_line
+                                support1 = daily_price_target %>% filter(symbol == s & date == eval_start_date) %>% .$support1_line
+                                support2 = daily_price_target %>% filter(symbol == s & date == eval_start_date) %>% .$support2_line
+                                support3 = daily_price_target %>% filter(symbol == s & date == eval_start_date) %>% .$support3_line
                                 
                                 eval_end_date_step1 = let(c(COL = col),
                                                           poc %>%
                                                                   filter(symbol == s & date >= eval_start_date) %>%
-                                                                  dplyr::mutate(message = COL) %>%
+                                                                  dplyr::mutate(message = COL,
+                                                                                stop_loss_base_line = stop_loss_base,
+                                                                                support1_line = support1,
+                                                                                support2_line = support2,
+                                                                                support3_line = support3) %>%
+                                                                  dplyr::mutate(message = case_when(col == "message_s1" & close > support1_line ~ "sell - target1",
+                                                                                                    col == "message_s1" & close < stop_loss_base_line ~ "sell - stop-loss (msg1)",
+                                                                                                    col == "message_s2" & close > support2_line ~ "sell - target2",
+                                                                                                    col == "message_s2" & close_lag1 >= support1_line & close < support1_line ~ "sell - stop-loss (msg2)",
+                                                                                                    col == "message_s2" & close < stop_loss_base_line ~ "sell - stop-loss (msg2)",
+                                                                                                    col == "message_s3" & close > support3_line ~ "sell - target3", 
+                                                                                                    col == "message_s3" & close_lag1 >= support2_line & close < support2_line ~ "sell - stop-loss (msg3)",
+                                                                                                    col == "message_s3" & close < stop_loss_base_line ~ "sell - stop-loss (msg3)",
+                                                                                                    TRUE ~ message_s)) %>%
                                                                   dplyr::mutate_at("message", msg_string_update) %>%
                                                                   dplyr::mutate(message = case_when(message == "buy" ~ 1,
                                                                                                     message == "sell" ~ -1,
                                                                                                     TRUE ~ 0)) %>%
-                                                                  select(date, symbol, message))
+                                                                  select(date, symbol, message, 
+                                                                         stop_loss_base_line,
+                                                                         support1_line,
+                                                                         support2_line,
+                                                                         support3_line))
                                 
                                 eval_end_date_step2 = eval_end_date_step1 %>%
                                         filter(message == -1) %>%
-                                        group_by(symbol) %>%
+                                        group_by() %>%
                                         summarise(sell_on_date = min(date)) %>%
                                         ungroup %>%
                                         .$sell_on_date
@@ -172,12 +198,26 @@ for(i in 1:length(rand_list_target_dates)){
                                                  dplyr::filter(date >= eval_start_date & 
                                                                        date <= eval_end_date &
                                                                        symbol == s) %>%
-                                                 dplyr::mutate(message = COL) %>%
+                                                 dplyr::mutate(message = COL,
+                                                               stop_loss_base_line = stop_loss_base,
+                                                               support1_line = support1,
+                                                               support2_line = support2,
+                                                               support3_line = support3) %>%
+                                                 dplyr::mutate(message = case_when(col == "message_s1" & close > support1_line ~ "sell - target1",
+                                                                                   col == "message_s1" & close < stop_loss_base_line ~ "sell - stop-loss (msg1)",
+                                                                                   col == "message_s2" & close > support2_line ~ "sell - target2",
+                                                                                   col == "message_s2" & close_lag1 >= support1_line & close < support1_line ~ "sell - stop-loss (msg2)",
+                                                                                   col == "message_s2" & close < stop_loss_base_line ~ "sell - stop-loss (msg2)",
+                                                                                   col == "message_s3" & close > support3_line ~ "sell - target3", 
+                                                                                   col == "message_s3" & close_lag1 >= support2_line & close < support2_line ~ "sell - stop-loss (msg3)",
+                                                                                   col == "message_s3" & close < stop_loss_base_line ~ "sell - stop-loss (msg3)",
+                                                                                   TRUE ~ message_s)) %>%
                                                  dplyr::mutate_at("message", msg_string_update) %>%
                                                  dplyr::select(symbol, date, open, high, low, close, message))
                                 
                                 # strategyEval
-                                y1 <- strategyEval(fund_begin = fund_begin, x) %>% .$net_value
+                                fund = fund_begin[k]
+                                y1 <- strategyEval(fund_begin = fund, x) %>% .$net_value
                                 
                                 z <- data.frame(symbol = s,
                                                 net_value = y1,
@@ -187,7 +227,7 @@ for(i in 1:length(rand_list_target_dates)){
                                                       message_type = message_list[k])
                                 
                                 message_list_result[[k]] = z
-
+                                
                         }, 
                         silent = TRUE
                         )
@@ -195,7 +235,7 @@ for(i in 1:length(rand_list_target_dates)){
                 
                 # combine messages result together 
                 message_result_combined <- do.call(rbind, message_list_result)
-                        
+                
                 ###########################################################################################
                 # what happened in the next X day (after message == 1)?
                 eval_start_date_plusX_index = which(unique_trading_date == eval_start_date)+days_after_signal
@@ -225,7 +265,7 @@ for(i in 1:length(rand_list_target_dates)){
                 
                 combined_df <- daysPlus_z %>% 
                         dplyr::inner_join(message_result_combined, by = c("symbol", "eval_start_date"), multiple = "all")
-                        
+                
                 eval_list[[j]] <- combined_df
                 
         }
@@ -254,6 +294,7 @@ toc()
 
 backtest_rand_evalDf <- backtest_rand_list %>% 
         plyr::ldply() %>%
+        dplyr::inner_join(fund_df, by = "message_type") %>%
         dplyr::mutate(is_win_yn = case_when(net_value >0 ~ 1, TRUE ~ 0),
                       percent_chg = net_value / fund_begin) %>%
         arrange(rand_eval_index, desc(net_value)) %>%
@@ -281,6 +322,7 @@ backtest_rand_evalDf <- backtest_rand_list %>%
                plus_x_date,
                chg_in_close,
                message_type,
+               fund_begin,
                days_between,
                net_value, 
                is_win_yn, 
@@ -293,7 +335,7 @@ msg_summary <- backtest_rand_evalDf %>%
                   avg_days_of_hold = mean(days_between),
                   min_days_of_hold = min(days_between),
                   max_days_of_hold = max(days_between),
-                  percent_chg = mean(percent_chg)) %>%
+                  percent_chg = sum(net_value) / sum(fund_begin)) %>%
         arrange(desc(percent_chg))
 
 ############################################################################################################        
@@ -422,10 +464,10 @@ msg_compare2 <- backtest_rand_evalDf %>%
 #         summarise(n = n(),
 #                   win_loss_rate = round(sum(is_win_yn) / n, 3),
 #                   avg_days_hold = round(mean(days_between)),
-#                   mu_percent_change = sum(net_value) / (n * fund_begin)) %>%
+#                   mu_percent_change = sum(net_value) / (n * sum(fund_begin))) %>%
 #         ungroup() %>%
 #         inner_join(backtest_rand_evalDf2 %>%
-#                            dplyr::mutate(percent_change = net_value / fund_begin) %>%
+#                            dplyr::mutate(percent_change = net_value / sum(fund_begin)) %>%
 #                            group_by(year) %>%
 #                            summarise(sd_percent_change = sd(percent_change)) %>%
 #                            ungroup,
@@ -442,10 +484,10 @@ msg_compare2 <- backtest_rand_evalDf %>%
 #         summarise(n = n(),
 #                   win_loss_rate = round(sum(is_win_yn) / n, 3),
 #                   avg_days_hold = round(mean(days_between)),
-#                   mu_percent_change = sum(net_value) / (n * fund_begin)) %>%
+#                   mu_percent_change = sum(net_value) / (n * sum(fund_begin))) %>%
 #         ungroup() %>%
 #         inner_join(backtest_rand_evalDf2 %>%
-#                            dplyr::mutate(percent_change = net_value / fund_begin) %>%
+#                            dplyr::mutate(percent_change = net_value / sum(fund_begin)) %>%
 #                            group_by(situation) %>%
 #                            summarise(sd_percent_change = sd(percent_change)) %>%
 #                            ungroup,

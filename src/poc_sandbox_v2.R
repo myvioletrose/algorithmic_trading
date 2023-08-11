@@ -16,42 +16,27 @@ output2_transformed <- output2 %>%
                 
                 # signal buy if,
                 message_b = case_when(macd_flag == 1 & close > zlema & (candle_stick_pattern == 1 | (candle_stick_pattern == 0 & candle_stick_pattern_lag1 == 1)) ~ "buy - macd",
-                                      macd_ha_flag == 1 & close > zlema & (candle_stick_pattern == 1 | (candle_stick_pattern == 0 & candle_stick_pattern_lag1 == 1)) ~ "buy - macd_ha",
-                                      #ha_flag == 1 & close > zlema & (candle_stick_pattern == 1 | (candle_stick_pattern == 0 & candle_stick_pattern_lag1 == 1)) ~ "buy - ha",
+                                      macd_ha_flag == 1 & close > zlema & (candle_stick_pattern == 1 | (candle_stick_pattern == 0 & candle_stick_pattern_lag1 == 1)) ~ "buy - macd_ha",                                      
                                       evwma_flag == 1 & close > zlema & (candle_stick_pattern == 1 | (candle_stick_pattern == 0 & candle_stick_pattern_lag1 == 1)) ~ "buy - evwma",
                                       TRUE ~ message),
                 
-                # close lag, percent change, message lag
+                # close lag, percent change
                 close_lag1 = lag(close, 1),
                 percent_change_lag1_day = (close - close_lag1)/ close_lag1,
-                
-                #close_lag2 = lag(close, 2),
-                #percent_change_lag2_day = (close - close_lag2)/ close_lag2,
-                
+                                
                 close_lag3 = lag(close, 3),
                 percent_change_lag3_day = (close - close_lag3)/ close_lag3,
                 
-                # close_lag4 = lag(close, 4),
-                # percent_change_lag4_day = (close - close_lag4)/ close_lag4,
-                
                 close_lag5 = lag(close, 5),
                 percent_change_lag5_day = (close - close_lag5)/ close_lag5,  
-                
-                #close_lag7 = lag(close, 7),
-                #percent_change_lag7_day = (close - close_lag7)/ close_lag7, 
-                
+                                
                 percent_change_lag5_day_lag1 = lag(percent_change_lag5_day, 1),
                 percent_change_lag5_day_lag2 = lag(percent_change_lag5_day, 2),
                 percent_change_lag5_day_lag3 = lag(percent_change_lag5_day, 3),
-                percent_change_lag5_day_lag4 = lag(percent_change_lag5_day, 4),
-                
-                # message_lag_3 = lag(message_b, 3),
-                # message_lag_5 = lag(message_b, 5),
-                # message_lag_7 = lag(message_b, 7),
-                
+                #percent_change_lag5_day_lag4 = lag(percent_change_lag5_day, 4),
+                                
                 # sell if,
-                message_s1 = case_when(macd_flag == -1 & close < zlema & candle_stick_pattern == -1 ~ "sell - macd",
-                                       #ha_flag == -1 & close < zlema & candle_stick_pattern == -1 ~ "sell - ha",
+                message_s1 = case_when(macd_flag == -1 & close < zlema & candle_stick_pattern == -1 ~ "sell - macd",                
                                        macd_ha_flag == -1 & close < zlema & candle_stick_pattern == -1 ~ "sell - macd_ha",
                                        evwma_flag == -1 & close < zlema & candle_stick_pattern == -1 ~ "sell - evwma",
                                        TRUE ~ message_b),                                                               
@@ -59,15 +44,11 @@ output2_transformed <- output2 %>%
                 message_s2 = case_when(candle_stick_pattern == -1 & close < zlema & (close < evwma | close < chanExit_long) ~ "sell - evwma/ce_long",                                       
                                        TRUE ~ message_b),
                 
-                # message_s3 = case_when((message_lag_7 %in% c("buy - macd", "buy - ha", "buy - evwma") & percent_change_lag7_day <0.01) ~ "sell - 7-day rule",
-                #                        (message_lag_3 %in% c("buy - macd", "buy - ha", "buy - evwma") & percent_change_lag3_day >=0.01) ~ "sell - 3-day rule",
-                #                        TRUE ~ message_b)          
-
-                message_s3 = case_when(percent_change_lag5_day <0 &
+                message_s3 = case_when(percent_change_lag5_day <0 &                                        
                                                percent_change_lag5_day_lag1 <0 &
                                                percent_change_lag5_day_lag2 <0 &
                                                percent_change_lag5_day_lag3 <0 &
-                                               percent_change_lag5_day_lag4 <0 &
+                                               #percent_change_lag5_day_lag4 <0 &
                                                close < zlema ~ "sell - consecutive lost",
                                        TRUE ~ message_b)
 
@@ -125,13 +106,13 @@ output2_transformed <- output2 %>%
 tic()
 
 s4 = output2_transformed %>% 
-        select(symbol, date, close, message_b) %>%
+        select(symbol, date, close, message_b, atr) %>%
         dplyr::mutate(message_s4 = "hold")
 
 hard_stop_down_by = 0.1
 hard_stop_up_by = 0.2
-down_by = 0.02
-up_by = 0.04
+atr_stop_limit = 1.5
+atr_stop_limit3 = 3
 
 s4_df = sqldf(glue::glue("
 with sub 
@@ -139,6 +120,7 @@ as (
         select symbol,
         date,
         close,
+        atr,
         message_b,
         message_s4
         from s4
@@ -160,7 +142,8 @@ as (
         select s2.symbol,
         s2.date,
         s2.last_buy_date,
-        sub.close as close_flagged_by_last_buy
+        sub.close as close_flagged_by_last_buy,
+        sub.atr as atr_flagged_by_last_buy
         from sub2 s2
         left join sub on s2.symbol = sub.symbol and s2.last_buy_date = sub.date
 ),
@@ -172,7 +155,9 @@ as (
         s3.last_buy_date,
         s4.message_b,
         s4.close,
-        case when s3.close_flagged_by_last_buy is null then s4.close else s3.close_flagged_by_last_buy end as close_flagged_by_last_buy
+        s4.atr,
+        case when s3.close_flagged_by_last_buy is null then s4.close else s3.close_flagged_by_last_buy end as close_flagged_by_last_buy,
+        case when s3.atr_flagged_by_last_buy is null then s4.atr else s3.atr_flagged_by_last_buy end as atr_flagged_by_last_buy
         from sub3 s3
         join s4 on s3.symbol = s4.symbol and s3.date = s4.date
 ),
@@ -183,12 +168,20 @@ as (
         date,
         last_buy_date,
         message_b,
+        
         close,
-        close_flagged_by_last_buy,        
-        close_flagged_by_last_buy * (1 - {down_by}) as down_limit,
-        close_flagged_by_last_buy * (1 + {up_by}) as up_limit,
+        atr,
+
+        close_flagged_by_last_buy, 
+        atr_flagged_by_last_buy,
+        
+        close_flagged_by_last_buy - ({atr_stop_limit} * atr_flagged_by_last_buy) as atr_stop_loss,
+        close_flagged_by_last_buy + ({atr_stop_limit} * atr_flagged_by_last_buy) as atr_stop_opp,
+        close_flagged_by_last_buy + ({atr_stop_limit3} * atr_flagged_by_last_buy) as atr_stop_opp3,
+        
         close_flagged_by_last_buy * (1 - {hard_stop_down_by}) as hard_stop_down_limit,
         close_flagged_by_last_buy * (1 + {hard_stop_up_by}) as hard_stop_up_limit
+        
         from fillna
 ),
 
@@ -199,15 +192,15 @@ as (
         last_buy_date,
         message_b,
         close,
+        atr,
         close_flagged_by_last_buy,        
-        down_limit,
-        up_limit,
+        atr_flagged_by_last_buy,
+        atr_stop_loss,
+        atr_stop_opp,        
+        atr_stop_opp3,
         hard_stop_down_limit,
         hard_stop_up_limit,
-        case when close < down_limit then 'sell - s4 (down)'
-                when close > up_limit then 'sell - s4 (up)'
-                else message_b
-                end as message_s4
+        case when close > atr_stop_opp then 'sell - s4 (up)' else message_b end as message_s4
         from up_and_down
 ),
 
@@ -228,9 +221,12 @@ as (
         x.last_buy_date,
         x.message_b,
         x.close,
+        x.atr,
         x.close_flagged_by_last_buy,
-        x.down_limit,
-        x.up_limit,
+        x.atr_flagged_by_last_buy,
+        x.atr_stop_loss,
+        x.atr_stop_opp,
+        x.atr_stop_opp3,        
         x.hard_stop_down_limit,
         x.hard_stop_up_limit,
         case when y.first_sell_date = x.date then x.message_s4 else x.message_b end as message_s4
@@ -247,14 +243,14 @@ toc()
 
 #####################################
 hard_stop_limit_df <- s4_df %>%
-        dplyr::select(symbol, date, close, close_flagged_by_last_buy, message_b, hard_stop_down_limit, hard_stop_up_limit) %>%
+        dplyr::select(symbol, date, close, atr, close_flagged_by_last_buy, atr_flagged_by_last_buy, atr_stop_loss, atr_stop_opp, atr_stop_opp3, hard_stop_down_limit, hard_stop_up_limit, message_b, message_s4) %>%
         arrange(symbol, date)
 
 poc <- output2_transformed %>%
         dplyr::inner_join(s4_df %>% select(symbol, date, message_s4), by = c("symbol", "date")) %>%
-        dplyr::inner_join(hard_stop_limit_df %>% select(symbol, date, hard_stop_down_limit, hard_stop_up_limit), by = c("symbol", "date")) %>%
+        dplyr::inner_join(hard_stop_limit_df %>% select(symbol, date, atr_stop_loss, atr_stop_opp, atr_stop_opp3, hard_stop_up_limit), by = c("symbol", "date")) %>%
         dplyr::mutate(
-                # profit_protection - sell immediately if,
+                # profit protection - sell immediately if,
                 message_s1 = case_when(close < trailing_stop_loss_yesterday ~ "sell - profit protect", 
                                        TRUE ~ message_s1),
                 message_s2 = case_when(close < trailing_stop_loss_yesterday ~ "sell - profit protect", 
@@ -264,10 +260,9 @@ poc <- output2_transformed %>%
                 message_s4 = case_when(close < trailing_stop_loss_yesterday ~ "sell - profit protect", 
                                        TRUE ~ message_s4),
                 # stop-loss
-                message_s1 = case_when(close > hard_stop_up_limit ~ "sell - stop loss (hard)", TRUE ~ message_s1),
-                message_s2 = case_when(close > hard_stop_up_limit ~ "sell - stop loss (hard)", TRUE ~ message_s2),
-                message_s3 = case_when(close > hard_stop_up_limit ~ "sell - stop loss (hard)", TRUE ~ message_s3)
-                #message_s4 = case_when(close > hard_stop_up_limit ~ "sell - stop loss (hard)", TRUE ~ message_s4)                
+                message_s1 = case_when(close > atr_stop_opp3 | close > hard_stop_up_limit ~ "sell - stop loss (up)", TRUE ~ message_s1),
+                message_s2 = case_when(close > atr_stop_opp3 | close > hard_stop_up_limit ~ "sell - stop loss (up)", TRUE ~ message_s2),                
+                message_s3 = case_when(close > atr_stop_opp3 | close > hard_stop_up_limit ~ "sell - stop loss (up)", TRUE ~ message_s3)
         ) %>%
         arrange(symbol, date)
 
