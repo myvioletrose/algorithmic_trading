@@ -52,6 +52,7 @@ output2_transformed <- output2 %>%
         ungroup() %>%
         select(symbol, 
                date,
+               is_today,
                year,
                volume,
                open,

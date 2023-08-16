@@ -4,6 +4,7 @@ CandleStickPattern
 caret
 clipr
 cluster
+correlationfunnel
 DBI
 doParallel
 doSNOW
