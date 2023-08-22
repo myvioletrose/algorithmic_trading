@@ -5,9 +5,12 @@ days_after_signal = 5
 #symbol %in% symbol_to_study &
 
 # choose message_s* for random evaluation
-#message_list <- names(poc) %>% grep(pattern = "message_s([[:digit:]]$)", ignore.case = TRUE, value = TRUE)
-message_list <- names(poc) %>% grep(pattern = "message_s", ignore.case = TRUE, value = TRUE)
-fund_begin = c(10000, 2000, 3000, 5000)
+message_list <- names(poc) %>% grep(pattern = "message_s([[:digit:]]$)", ignore.case = TRUE, value = TRUE)
+fund_begin = c(2000, 3000, 5000)
+
+#message_list <- names(poc) %>% grep(pattern = "message_s", ignore.case = TRUE, value = TRUE)
+#fund_begin = c(10000, 2000, 3000, 5000)
+
 fund_df = data.frame(message_type = message_list, fund_begin)
 
 unique_trading_date = poc %>% select(date) %>% arrange(date) %>% distinct %>% .$date
@@ -29,14 +32,18 @@ msg_string_update <- function(x) {
 # )
 
 set.seed(seed)
+# rule 1: first_buy date only
+# rule 2: cci_overbought_flag == 0
 rand_list_target_dates <- poc %>%
         dplyr::mutate_at("message_s", msg_string_update) %>%
         filter(year >= 2007 &
                        message_s == "buy" &
+                       cci_overbought_flag == 0 &
                        #situation %in% desirable_situations &
                        #symbol %in% symbol_to_study &
                        #date > '2023-01-01' &
                        date < '2023-07-01') %>%
+        inner_join(first_buy, by = c("symbol" = "symbol", "date" = "first_buy_date")) %>%
         .$date %>%
         unique() %>% 
         sample(n) %>% 
@@ -61,9 +68,12 @@ for(i in 1:length(rand_list_target_dates)){
                                                     #message_s == "sell" ~ -1,
                                                     TRUE ~ 0)) %>%
                 filter(date == target_date & 
+                               cci_overbought_flag == 0 &
                                #situation %in% desirable_situations &
                                #symbol %in% symbol_to_study &
-                               message_s == 1) %>% .$symbol
+                               message_s == 1) %>% 
+                inner_join(first_buy, by = c("symbol" = "symbol", "date" = "first_buy_date")) %>%
+                .$symbol
         
         #combined_shortList_symbols = base::intersect(combined_shortList_symbols, symbol_to_study)
         

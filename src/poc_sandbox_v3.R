@@ -78,6 +78,10 @@ output2_transformed <- output2 %>%
                macd_trend_dir,
                is_intraday_green_yn_ha,
                
+               rsi_oversold_flag, 
+               rsi_overbought_flag, 
+               cci_oversold_flag, 
+               cci_overbought_flag,
                situation,
                
                contains("csp_"),
@@ -176,6 +180,19 @@ daily_price_target = output2_transformed %>%
         mutate(support1_line = case_when(support1_line > support2_line ~ support2_line, TRUE ~ support1_line),
                support2_line = case_when(support1_line > support2_line ~ support1_line, TRUE ~ support2_line)) %>%
         arrange(symbol, date)
+
+#################################################################################################################
+################## <<< identify first-buy >>> ########################################
+first_buy = target3 %>%
+        left_join(target2, join_by(symbol, date >= buy_date, last_sell_date < buy_date)) %>%
+        group_by(symbol, date, last_sell_date) %>%
+        summarise(first_buy_date = min(buy_date)) %>%
+        ungroup() %>%
+        filter(!is.na(first_buy_date)) %>%
+        select(symbol, first_buy_date) %>%
+        mutate(is_first_buy_yn = 1) %>%
+        distinct() %>%
+        arrange(symbol, first_buy_date)
 
 ###########################################
 poc <- output2_transformed %>%

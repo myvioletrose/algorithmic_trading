@@ -68,12 +68,12 @@ t0 <- df3 %>%
 windows()
 
 # parameters
-s = "PLUG"
+s = "TSLA"
 
 # look back: 504 (24M) / 252 (12M) / 189 (9M) / 126 (6M) / 63 (3M)
 days_look_back = 252
-#end_date = Sys.Date()
-end_date = "2014-01-02"
+end_date = Sys.Date()
+#end_date = "2014-01-02"
 
 unique_trading_date = poc %>% select(date) %>% arrange(date) %>% distinct %>% .$date
 target_date_index = which(unique_trading_date == end_date)
@@ -140,7 +140,16 @@ addRSI()
 #addROC(n = 5, col = "yellow")
 zooom()
 
-# visual 2 - price, resistance/support
+# visual 2 - Heikin Ashi
+v1(2)
+addSAR()
+addZLEMA(col = "purple")
+#addEVWMA(col = "darkorange")
+addCCI() 
+addRSI()
+zooom()
+
+# visual 3 - price, resistance/support
 v1(1)
 addTA(chandelier(c1, coef = 2, trend = "up"), col = "darkgreen", on = 1, lty = "longdash")
 #addTA(chandelier(c1, coef = 2, trend = "down"), col = "darkblue", on = 1, lty = "longdash")
@@ -149,18 +158,13 @@ addEVWMA(col = "darkorange")
 #addZigZag(col = "yellow")
 zooom()
 
-# visual 3 - Heikin Ashi
-v1(2)
-addSAR()
-addEVWMA(col = "darkorange")
-zooom()
-
 # visual 4 - "the chart"
 v1(1)
-addTA(chandelier(c1, coef = 2, trend = "up"), col = "darkgreen", on = 1, lty = "longdash")
-#addTA(chandelier(c1, coef = 2, trend = "down"), col = "darkblue", on = 1, lty = "longdash")
 addSAR()
 addCCI() 
+addTA(chandelier(c1, coef = 2, trend = "up"), col = "darkgreen", on = 1, lty = "longdash")
+#addTA(chandelier(c1, coef = 2, trend = "down"), col = "darkblue", on = 1, lty = "longdash")
+#addEVWMA(col = "darkorange")
 zooom()
 
 ################### additonal features
@@ -200,10 +204,13 @@ TA2 <- function(df, s, start_date, end_date, version, xts_type_index, save_plot_
         # delete folder if exists and then create one again; create it if it does not exist
         #if(dir.exists(path)){unlink(path, recursive = TRUE); dir.create(path)} else {dir.create(path)}
         
+        # create dir if it does not exist
+        if(!dir.exists(path)){dir.create(path)}
+        
         # version 1
         if(version == 1){
                 name = paste(s, "_v1.png", sep = "")
-                png(filename = paste(path, name, sep = "/"), width = 1500, height = 1200, res = 100)
+                png(filename = paste(path, name, sep = "/"), width = 1800, height = 1200, res = 120)
                 switch(xts_type_index, c1, c1ha) %>%
                         quantmod::chartSeries( name = s,
                                                TA = c(addBBands(draw = "bands"), 
@@ -220,65 +227,77 @@ TA2 <- function(df, s, start_date, end_date, version, xts_type_index, save_plot_
         # version 2
         if(version == 2){
                 name = paste(s, "_v2.png", sep = "")
-                png(filename = paste(path, name, sep = "/"), width = 1500, height = 1200, res = 100)
-                switch(xts_type_index, c1, c1ha) %>%
-                        quantmod::chartSeries( name = s,
-                                               TA = c(addBBands(draw = "bands"), 
-                                                      addMACD(),
-                                                      #addZLEMA(col = "purple"),
-                                                      addEVWMA(col = "darkorange")
-                                               )
-                        )
-                
-                addTA(chandelier(c1, coef = 2, trend = "up"), col = "darkgreen", on = 1, lty = "longdash")
-                #addTA(chandelier(c1, coef = 2, trend = "down"), col = "darkblue", on = 1, lty = "longdash")
-                
-                dev.off()                
-        }
-        
-        # version 3
-        if(version == 3){
-                name = paste(s, "_v3.png", sep = "")
-                png(filename = paste(path, name, sep = "/"), width = 1500, height = 1200, res = 100)
+                png(filename = paste(path, name, sep = "/"), width = 1800, height = 1200, res = 120)
                 switch(xts_type_index, c1, c1ha) %>%
                         quantmod::chartSeries( name = s,
                                                TA = c(addBBands(draw = "bands"), 
                                                       addMACD(),
                                                       addSAR(),
-                                                      addEVWMA(col = "darkorange")
+                                                      #addEVWMA(col = "darkorange"),
+                                                      addZLEMA(col = "purple"),
+                                                      addCCI(),
+                                                      addRSI()
                                                )
                         )
                 dev.off()
         }
         
+        # version 3
+        if(version == 3){
+                name = paste(s, "_v3.png", sep = "")
+                png(filename = paste(path, name, sep = "/"), width = 1800, height = 1200, res = 120)
+                switch(xts_type_index, c1, c1ha) %>%
+                        quantmod::chartSeries( name = s,
+                                               TA = c(addBBands(draw = "bands"), 
+                                                      addTA(chandelier(c1, coef = 2, trend = "up"), col = "darkgreen", on = 1, lty = "longdash"),
+                                                      #addTA(chandelier(c1, coef = 2, trend = "down"), col = "darkblue", on = 1, lty = "longdash"),
+                                                      addMACD(),
+                                                      addEVWMA(col = "darkorange")
+                                                      #addZLEMA(col = "purple"),
+                                                      )
+                        )
+                dev.off()                
+        }                
+        
         # version 4
         if(version == 4){
                 name = paste(s, "_v4.png", sep = "")
-                png(filename = paste(path, name, sep = "/"), width = 1500, height = 1200, res = 100)
+                png(filename = paste(path, name, sep = "/"), width = 1800, height = 1200, res = 120)
                 switch(xts_type_index, c1, c1ha) %>%
                         quantmod::chartSeries( name = s,
                                                TA = c(addBBands(draw = "bands"), 
                                                       addMACD(),
                                                       addSAR(),
-                                                      addCCI()
+                                                      addCCI(),
+                                                      addEVWMA(col = "darkorange")
+                                                      #addTA(chandelier(c1, coef = 2, trend = "up"), col = "darkgreen", on = 1, lty = "longdash")
+                                                      #addTA(chandelier(c1, coef = 2, trend = "down"), col = "darkblue", on = 1, lty = "longdash")
                                                )
                         )
-                
-                addTA(chandelier(c1, coef = 2, trend = "up"), col = "darkgreen", on = 1, lty = "longdash")
-                #addTA(chandelier(c1, coef = 2, trend = "down"), col = "darkblue", on = 1, lty = "longdash")
-                
                 dev.off()
         }
         
 }
 
 # symbols signal buy
-s = poc %>% filter(grepl("buy", message_b, ignore.case = TRUE) & is_today == 1) %>% .$symbol %>% unique()
+# s = poc %>% filter(grepl("buy", message_b, ignore.case = TRUE) & is_today == 1) %>%
+#         inner_join(first_buy, by = c("symbol" = "symbol", "date" = "first_buy_date")) %>%
+#         filter(cci_overbought_flag == 0) %>%
+#         .$symbol %>%
+#         unique()
+
+end_date = "2021-04-26"
+s = poc %>% filter(grepl("buy", message_b, ignore.case = TRUE)) %>%
+        filter(date == end_date) %>%
+        inner_join(first_buy, by = c("symbol" = "symbol", "date" = "first_buy_date")) %>%
+        filter(cci_overbought_flag == 0) %>%
+        .$symbol %>% 
+        unique()
+s
 
 # look back: 504 (24M) / 252 (12M) / 189 (9M) / 126 (6M) / 63 (3M)
 days_look_back = 252
-end_date = Sys.Date()
-#end_date = "2014-01-02"
+#end_date = Sys.Date()
 
 unique_trading_date = poc %>% select(date) %>% arrange(date) %>% distinct %>% .$date
 target_date_index = which(unique_trading_date == end_date)
@@ -293,20 +312,19 @@ print(end_date)
 
 # charts parameters
 para_df <- data.frame(ver = c(1, 2, 3, 4), 
-                      xts_type_ind = c(1, 1, 2, 1),
-                      folder_name = c("v1", "v2", "v3", "v4"))
+                      xts_type_ind = c(1, 2, 1, 1))
 
 # for() loop
 for(i in 1:length(s)){
         
         sapply(1:nrow(para_df), function(x) {TA2(t0,
-                                              s[i], 
-                                              start_date = start_date, 
-                                              end_date = end_date, 
-                                              version = para_df$ver[x], 
-                                              xts_type_index = para_df$xts_type_ind[x],
-                                              save_plot_path = PLOT_DIRECTORY,
-                                              folder_name = para_df$folder_name[x])}) %>% 
+                                                 s[i], 
+                                                 start_date = start_date, 
+                                                 end_date = end_date, 
+                                                 version = para_df$ver[x], 
+                                                 xts_type_index = para_df$xts_type_ind[x],
+                                                 save_plot_path = PLOT_DIRECTORY,
+                                                 folder_name = s[i])}) %>% 
                 invisible()
         
         print(paste0(s[i], " done!"))
