@@ -68,7 +68,7 @@ t0 <- df3 %>%
 windows()
 
 # parameters
-s = "TSLA"
+s = "SPY"
 
 # look back: 504 (24M) / 252 (12M) / 189 (9M) / 126 (6M) / 63 (3M)
 days_look_back = 252
@@ -152,7 +152,7 @@ zooom()
 # visual 3 - price, resistance/support
 v1(1)
 addTA(chandelier(c1, coef = 2, trend = "up"), col = "darkgreen", on = 1, lty = "longdash")
-#addTA(chandelier(c1, coef = 2, trend = "down"), col = "darkblue", on = 1, lty = "longdash")
+#addTA(chandelier(c1, coef = 2, trend = "down"), col = "darkviolet", on = 1, lty = "longdash")
 addEVWMA(col = "darkorange")
 #addZLEMA(col = "purple")
 #addZigZag(col = "yellow")
@@ -162,8 +162,8 @@ zooom()
 v1(1)
 addSAR()
 addCCI() 
-addTA(chandelier(c1, coef = 2, trend = "up"), col = "darkgreen", on = 1, lty = "longdash")
-#addTA(chandelier(c1, coef = 2, trend = "down"), col = "darkblue", on = 1, lty = "longdash")
+#addTA(chandelier(c1, coef = 2, trend = "up"), col = "darkgreen", on = 1, lty = "longdash")
+addTA(chandelier(c1, coef = 2, trend = "down"), col = "darkviolet", on = 1, lty = "longdash")
 #addEVWMA(col = "darkorange")
 zooom()
 
@@ -250,7 +250,7 @@ TA2 <- function(df, s, start_date, end_date, version, xts_type_index, save_plot_
                         quantmod::chartSeries( name = s,
                                                TA = c(addBBands(draw = "bands"), 
                                                       addTA(chandelier(c1, coef = 2, trend = "up"), col = "darkgreen", on = 1, lty = "longdash"),
-                                                      #addTA(chandelier(c1, coef = 2, trend = "down"), col = "darkblue", on = 1, lty = "longdash"),
+                                                      #addTA(chandelier(c1, coef = 2, trend = "down"), col = "darkviolet", on = 1, lty = "longdash"),
                                                       addMACD(),
                                                       addEVWMA(col = "darkorange")
                                                       #addZLEMA(col = "purple"),
@@ -271,7 +271,7 @@ TA2 <- function(df, s, start_date, end_date, version, xts_type_index, save_plot_
                                                       addCCI(),
                                                       addEVWMA(col = "darkorange")
                                                       #addTA(chandelier(c1, coef = 2, trend = "up"), col = "darkgreen", on = 1, lty = "longdash")
-                                                      #addTA(chandelier(c1, coef = 2, trend = "down"), col = "darkblue", on = 1, lty = "longdash")
+                                                      #addTA(chandelier(c1, coef = 2, trend = "down"), col = "darkviolet", on = 1, lty = "longdash")
                                                )
                         )
                 dev.off()
@@ -286,7 +286,7 @@ TA2 <- function(df, s, start_date, end_date, version, xts_type_index, save_plot_
 #         .$symbol %>%
 #         unique()
 
-end_date = "2021-04-26"
+end_date = "2021-05-26"
 s = poc %>% filter(grepl("buy", message_b, ignore.case = TRUE)) %>%
         filter(date == end_date) %>%
         inner_join(first_buy, by = c("symbol" = "symbol", "date" = "first_buy_date")) %>%

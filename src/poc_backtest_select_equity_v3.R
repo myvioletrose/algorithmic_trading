@@ -309,6 +309,8 @@ backtest_rand_evalDf <- backtest_rand_list %>%
                       percent_chg = net_value / fund_begin) %>%
         arrange(rand_eval_index, desc(net_value)) %>%
         janitor::clean_names() %>%
+        inner_join(poc %>% select(symbol, date, close_start_date = close), by = c("symbol" = "symbol", "eval_start_date" = "date")) %>%
+        inner_join(poc %>% select(symbol, date, close_end_date = close), by = c("symbol" = "symbol", "eval_end_date" = "date")) %>%
         select(rand_eval_index, 
                symbol, 
                # active_premium, 
@@ -323,6 +325,8 @@ backtest_rand_evalDf <- backtest_rand_list %>%
                # r_squared, 
                # tracking_error, 
                # treynor_ratio, 
+               close_start_date,
+               close_end_date,
                close2, 
                atr2, 
                diff, 

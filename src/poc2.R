@@ -606,6 +606,45 @@ atr <- t0 %>%
         dplyr::inner_join(atr14, by = c("symbol", "date")) %>%
         ungroup()
 
+chanExit <- atr %>%
+        select(symbol, date, close, chanExit_long, chanExit_short) %>%
+        group_by(symbol) %>%
+        dplyr::mutate(close_lag1 = lag(close, 1),
+                      close_lag2 = lag(close, 2),
+                      close_lag3 = lag(close, 3),
+                      close_lag4 = lag(close, 4),
+                      ce_long_lag1 = lag(chanExit_long, 1),
+                      ce_long_lag2 = lag(chanExit_long, 2),
+                      ce_long_lag3 = lag(chanExit_long, 3),
+                      ce_long_lag4 = lag(chanExit_long, 4),
+                      ce_short_lag1 = lag(chanExit_short, 1),
+                      ce_short_lag2 = lag(chanExit_short, 2),
+                      ce_short_lag3 = lag(chanExit_short, 3),
+                      ce_short_lag4 = lag(chanExit_short, 4)) %>%
+        dplyr::mutate(ce_long_dip_flag = case_when(close < chanExit_long & 
+                                                       close_lag1 > ce_long_lag1 & 
+                                                       close_lag2 > ce_long_lag2 &
+                                                       close_lag3 > ce_long_lag3 & 
+                                                       close_lag4 > ce_long_lag4 ~ 1,
+                                                   close < chanExit_long &
+                                                           close_lag1 < ce_long_lag1 & 
+                                                           close_lag2 > ce_long_lag2 &
+                                                           close_lag3 > ce_long_lag3 & 
+                                                           close_lag4 > ce_long_lag4 ~ 1,
+                                                   TRUE ~ 0),
+                      ce_short_spike_flag = case_when(close > chanExit_short & 
+                                                              close_lag1 < ce_short_lag1 & 
+                                                              close_lag2 < ce_short_lag2 &
+                                                              close_lag3 < ce_short_lag3 & 
+                                                              close_lag4 < ce_short_lag4 ~ 1,
+                                                      close > chanExit_short &
+                                                              close_lag1 > ce_short_lag1 & 
+                                                              close_lag2 < ce_short_lag2 &
+                                                              close_lag3 < ce_short_lag3 & 
+                                                              close_lag4 < ce_short_lag4 ~ 1,
+                                                      TRUE ~ 0)) %>%
+        ungroup()
+
 ############################
 ### "tradable" conditions - safety measures ###
 
@@ -631,6 +670,7 @@ output <- atr %>%
         dplyr::select(symbol, date,
                       open, high, low, close, volume,
                       atr, chanExit_long, chanExit_short) %>%
+        dplyr::inner_join(chanExit %>% select(symbol, date, ce_long_dip_flag, ce_short_spike_flag), by = c("symbol", "date")) %>%
         dplyr::inner_join(macd %>% select(symbol, date, macd_flag = flag, macd_diff = diff, macd_trend_dir = trend_dir), by = c("symbol", "date")) %>%
         dplyr::inner_join(ha %>% select(symbol, date, ha_flag = flag, is_intraday_green_yn_ha = is_intraday_green_yn), by = c("symbol", "date")) %>%   
         dplyr::inner_join(macd_ha %>% select(symbol, date, macd_ha_flag = flag), by = c("symbol", "date")) %>%             
@@ -648,7 +688,7 @@ output <- atr %>%
         dplyr::select(symbol, date,
                       open, high, low, close, zlema, sma5, sma50, sma200, ema10, ema30, ema100, proxy_flag, volume, 
                       macd_diff, atr, chanExit_long, chanExit_short, 
-                      dmi_p, dmi_n, adx, rsi, cci, rsi_oversold_flag, rsi_overbought_flag, cci_oversold_flag, cci_overbought_flag, macd_trend_dir,
+                      dmi_p, dmi_n, adx, rsi, cci, rsi_oversold_flag, rsi_overbought_flag, cci_oversold_flag, cci_overbought_flag, ce_long_dip_flag, ce_short_spike_flag, macd_trend_dir,
                       everything()) %>%
         arrange(symbol, date)
 
@@ -728,8 +768,34 @@ output2 <- output %>%
                       rsi_overbought_flag, 
                       cci_oversold_flag, 
                       cci_overbought_flag,
+                      ce_long_dip_flag, 
+                      ce_short_spike_flag,
                       situation,
-                      everything()) %>%
+                      csp_doji, 
+                      csp_dragonfly_doji, 
+                      csp_gravestone_doji, 
+                      csp_hammer, 
+                      csp_inverted_harmer, 
+                      csp_bullish_engulfing, 
+                      csp_bearish_engulfing, 
+                      csp_bullish_harami, 
+                      csp_bearish_harami, 
+                      csp_piercing_line, 
+                      csp_dark_cloud_cover, 
+                      csp_kick_up, 
+                      csp_kick_down, 
+                      csp_three_white_soliders, 
+                      csp_three_black_crows, 
+                      csp_morning_star, 
+                      csp_evening_star, 
+                      csp_rising_three, 
+                      csp_failling_three, 
+                      csp_up_trend, 
+                      csp_down_trend, 
+                      csp_bullish_candle, 
+                      csp_bearish_candle, 
+                      csp_candle_stick_signal, 
+                      max_date) %>%
         arrange(symbol, date)
 
 output2$symbol %>% unique() %>% length()
