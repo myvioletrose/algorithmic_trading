@@ -20,8 +20,8 @@ output2_transformed <- output2 %>%
                 message_b = case_when(macd_flag == 1 & close > zlema & (candle_stick_pattern == 1 | (candle_stick_pattern == 0 & candle_stick_pattern_lag1 == 1)) ~ "buy - macd",
                                       macd_ha_flag == 1 & close > zlema & (candle_stick_pattern == 1 | (candle_stick_pattern == 0 & candle_stick_pattern_lag1 == 1)) ~ "buy - macd_ha",
                                       evwma_flag == 1 & close > zlema & (candle_stick_pattern == 1 | (candle_stick_pattern == 0 & candle_stick_pattern_lag1 == 1)) ~ "buy - evwma",                                      
-                                      ce_short_spike_flag == 1 & close > zlema & (candle_stick_pattern == 1 | (candle_stick_pattern == 0 & candle_stick_pattern_lag1 == 1)) ~ "buy - ce_spike",
-                                      cci_oversold_flag == 1 & close > zlema & (candle_stick_pattern == 1 | (candle_stick_pattern == 0 & candle_stick_pattern_lag1 == 1)) ~ "buy - cci",
+                                      #ce_short_spike_flag == 1 & close > zlema & (candle_stick_pattern == 1 | (candle_stick_pattern == 0 & candle_stick_pattern_lag1 == 1)) ~ "buy - ce_spike",
+                                      #cci_oversold_flag == 1 & close > zlema & (candle_stick_pattern == 1 | (candle_stick_pattern == 0 & candle_stick_pattern_lag1 == 1)) ~ "buy - cci",
                                       TRUE ~ message),
                 
                 # close lag, percent change
