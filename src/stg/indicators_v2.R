@@ -40,54 +40,54 @@ df = symbols %>%
 # temp_fix = read_csv(temp_con)
 # dim(temp_fix); temp_fix %>% head()
 
-sp500 = tq_index("SP500") 
-symbols = sp500$symbol %>% sort()
-#symbols = tq_exchange("NASDAQ")$symbol %>% sort()
-symbols = c(symbols, "SPY") %>% sort()
-symbols = symbols[symbols %nin% "-"]  # remove "-" from result
-s = symbols 
-
-symbolDf = data.frame(symbol = symbols) %>%
-        arrange(symbol) %>%
-        dplyr::mutate(id = row_number(),
-                      batch = dplyr::case_when(id >= 1 & id <= 100 ~ 1,
-                                               id >= 101 & id <= 200 ~ 2,
-                                               id >= 201 & id <= 300 ~ 3,
-                                               id >= 301 & id <= 400 ~ 4,
-                                               TRUE ~ 5))
-
-dfList = vector(mode = "list", length = length(symbolDf$batch %>% unique()))
-
-tic()
-for(i in 1:length(dfList)){
-        batch = symbolDf %>%
-                dplyr::filter(batch == i) %>%
-                .$symbol
-        df = batch %>%
-                tq_get(get = "alphavantage", 
-                       av_fun = "TIME_SERIES_DAILY_ADJUSTED", 
-                       outputsize = "full")
-        dfList[[i]] = df        
-        Sys.sleep(15)
-}
-toc()
-
-df <- dfList %>% 
-        plyr::ldply() %>%
-        as.tibble()
-dim(df); head(df)
-
-check = df %>%
-        group_by(symbol) %>%
-        summarise(n = n()) %>%
-        arrange(n)
-check %>% head()
-
-symbols <- check %>%
-        dplyr::filter(n >500) %>%
-        arrange(symbol) %>%
-        .$symbol
-s = symbols 
+# sp500 = tq_index("SP500") 
+# symbols = sp500$symbol %>% sort()
+# #symbols = tq_exchange("NASDAQ")$symbol %>% sort()
+# symbols = c(symbols, "SPY") %>% sort()
+# symbols = symbols[symbols %nin% "-"]  # remove "-" from result
+# s = symbols 
+# 
+# symbolDf = data.frame(symbol = symbols) %>%
+#         arrange(symbol) %>%
+#         dplyr::mutate(id = row_number(),
+#                       batch = dplyr::case_when(id >= 1 & id <= 100 ~ 1,
+#                                                id >= 101 & id <= 200 ~ 2,
+#                                                id >= 201 & id <= 300 ~ 3,
+#                                                id >= 301 & id <= 400 ~ 4,
+#                                                TRUE ~ 5))
+# 
+# dfList = vector(mode = "list", length = length(symbolDf$batch %>% unique()))
+# 
+# tic()
+# for(i in 1:length(dfList)){
+#         batch = symbolDf %>%
+#                 dplyr::filter(batch == i) %>%
+#                 .$symbol
+#         df = batch %>%
+#                 tq_get(get = "alphavantage", 
+#                        av_fun = "TIME_SERIES_DAILY_ADJUSTED", 
+#                        outputsize = "full")
+#         dfList[[i]] = df        
+#         Sys.sleep(15)
+# }
+# toc()
+# 
+# df <- dfList %>% 
+#         plyr::ldply() %>%
+#         as.tibble()
+# dim(df); head(df)
+# 
+# check = df %>%
+#         group_by(symbol) %>%
+#         summarise(n = n()) %>%
+#         arrange(n)
+# check %>% head()
+# 
+# symbols <- check %>%
+#         dplyr::filter(n >500) %>%
+#         arrange(symbol) %>%
+#         .$symbol
+# s = symbols 
 
 ##################################################################
 ########### data transformation #########################
@@ -622,10 +622,10 @@ chanExit <- atr %>%
                       ce_short_lag3 = lag(chanExit_short, 3),
                       ce_short_lag4 = lag(chanExit_short, 4)) %>%
         dplyr::mutate(ce_long_dip_flag = case_when(close < chanExit_long & 
-                                                       close_lag1 > ce_long_lag1 & 
-                                                       close_lag2 > ce_long_lag2 &
-                                                       close_lag3 > ce_long_lag3 & 
-                                                       close_lag4 > ce_long_lag4 ~ 1,
+                                                           close_lag1 > ce_long_lag1 & 
+                                                           close_lag2 > ce_long_lag2 &
+                                                           close_lag3 > ce_long_lag3 & 
+                                                           close_lag4 > ce_long_lag4 ~ 1,
                                                    close < chanExit_long &
                                                            close_lag1 < ce_long_lag1 & 
                                                            close_lag2 > ce_long_lag2 &
@@ -720,7 +720,7 @@ situation_df <- trend_situation %>%
         dplyr::mutate(situation = paste0(equity_situation, "::", market_situation)) %>%
         arrange(symbol, date)
 
-output2 <- output %>%
+indicators <- output %>%
         dplyr::inner_join(output %>%                
                                   group_by(symbol) %>%
                                   summarise(max_date = max(date)) %>%
@@ -798,28 +798,28 @@ output2 <- output %>%
                       max_date) %>%
         arrange(symbol, date)
 
-output2$symbol %>% unique() %>% length()
+indicators$symbol %>% unique() %>% length()
 
 ##############################################################################################################
-############################ <<< save output2 >>> #############################
-# save tbl
-schema = "adhoc"
-tbl_name = "output2"
-tbl = paste0(schema, ".", tbl_name)
-DB = "stg"
-
-# create connection
-con <- DBI::dbConnect(RPostgres::Postgres(), dbname = DB, host = HOST_DB, port = DB_PORT, user = DB_USER, password = DB_PASSWORD)
-
-# save_tbl_action
-dim(output2)
-tic()
-save_tbl_action(tbl, output2, overwrite = TRUE)
-toc()
-
-# check table
-d(glue::glue("select count(1) from {tbl}"))
-#output2 <- d(glue::glue("select * from {tbl} order by symbol, date"))
-
-# disconnect db
-dbDisconnect(con)
+############################ <<< save indicators >>> #############################
+# # save tbl
+# schema = "adhoc"
+# tbl_name = "indicators"
+# tbl = paste0(schema, ".", tbl_name)
+# DB = "stg"
+# 
+# # create connection
+# con <- DBI::dbConnect(RPostgres::Postgres(), dbname = DB, host = HOST_DB, port = DB_PORT, user = DB_USER, password = DB_PASSWORD)
+# 
+# # save_tbl_action
+# dim(indicators)
+# tic()
+# save_tbl_action(tbl, indicators, overwrite = TRUE)
+# toc()
+# 
+# # check table
+# d(glue::glue("select count(1) from {tbl}"))
+# #indicators <- d(glue::glue("select * from {tbl} order by symbol, date"))
+# 
+# # disconnect db
+# dbDisconnect(con)

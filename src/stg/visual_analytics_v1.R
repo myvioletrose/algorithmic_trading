@@ -135,6 +135,7 @@ v1 <- function(xts_type_index){
 v1(1)
 addEMA(n = 5, col = "red")
 addEMA(n = 20, col = "blue")
+addSMA(n = 50, col = "white")
 addCCI() 
 addRSI()
 #addROC(n = 5, col = "yellow")

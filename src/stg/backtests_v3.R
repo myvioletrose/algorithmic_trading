@@ -1,12 +1,12 @@
-seed = 8321
+seed = 99
 n = 100
 days_after_signal = 5
 #symbol_to_study = c("UBER")
 #symbol %in% symbol_to_study &
 
-# choose message_s* for random evaluation
-message_list <- names(poc) %>% grep(pattern = "message_s([[:digit:]]$)", ignore.case = TRUE, value = TRUE)
-fund_begin = c(2000, 3000, 5000)
+# choose message_e*
+message_list <- names(poc) %>% grep(pattern = "message_e([[:digit:]]$)", ignore.case = TRUE, value = TRUE)
+fund_begin = c(1000, 1000)
 
 #message_list <- names(poc) %>% grep(pattern = "message_s", ignore.case = TRUE, value = TRUE)
 #fund_begin = c(10000, 2000, 3000, 5000)
@@ -41,7 +41,7 @@ rand_list_target_dates <- poc %>%
                        cci_overbought_flag == 0 &
                        #situation %in% desirable_situations &
                        #symbol %in% symbol_to_study &
-                       #date > '2023-01-01' &
+                       date >= '2016-01-01' &
                        date < '2023-07-01') %>%
         inner_join(first_buy, by = c("symbol" = "symbol", "date" = "first_buy_date")) %>%
         .$date %>%
@@ -163,7 +163,7 @@ for(i in 1:length(rand_list_target_dates)){
                                 stop_loss_base = daily_price_target %>% filter(symbol == s & date == eval_start_date) %>% .$stop_loss_base_line
                                 support1 = daily_price_target %>% filter(symbol == s & date == eval_start_date) %>% .$support1_line
                                 support2 = daily_price_target %>% filter(symbol == s & date == eval_start_date) %>% .$support2_line
-                                support3 = daily_price_target %>% filter(symbol == s & date == eval_start_date) %>% .$support3_line
+                                support3 = daily_price_target %>% filter(symbol == s & date == eval_start_date) %>% .$support3_line                                
                                 
                                 eval_end_date_step1 = let(c(COL = col),
                                                           poc %>%
@@ -173,15 +173,18 @@ for(i in 1:length(rand_list_target_dates)){
                                                                                 support1_line = support1,
                                                                                 support2_line = support2,
                                                                                 support3_line = support3) %>%
-                                                                  dplyr::mutate(message = case_when(col == "message_s1" & close > support1_line ~ "sell - target1",
-                                                                                                    col == "message_s1" & close < stop_loss_base_line ~ "sell - stop-loss (msg1)",
-                                                                                                    col == "message_s2" & close > support2_line ~ "sell - target2",
-                                                                                                    col == "message_s2" & close_lag1 >= support1_line & close < support1_line ~ "sell - stop-loss (msg2)",
-                                                                                                    col == "message_s2" & close < stop_loss_base_line ~ "sell - stop-loss (msg2)",
-                                                                                                    col == "message_s3" & close > support3_line ~ "sell - target3", 
-                                                                                                    col == "message_s3" & close_lag1 >= support2_line & close < support2_line ~ "sell - stop-loss (msg3)",
-                                                                                                    col == "message_s3" & close < stop_loss_base_line ~ "sell - stop-loss (msg3)",
-                                                                                                    TRUE ~ message_s)) %>%
+                                                                  # dplyr::mutate(message = case_when(col == "message_e1" & close > support1_line ~ "sell - target1",
+                                                                  #                                   col == "message_e1" & close < stop_loss_base_line ~ "sell - stop-loss (msg1)",
+                                                                  #                                   col == "message_e2" & close > support2_line ~ "sell - target2",
+                                                                  #                                   col == "message_e2" & close_lag1 >= support1_line & close < support1_line ~ "sell - stop-loss (msg2)",
+                                                                  #                                   col == "message_e2" & close < stop_loss_base_line ~ "sell - stop-loss (msg2)",
+                                                                  #                                   col == "message_e3" & close > support3_line ~ "sell - target3", 
+                                                                  #                                   col == "message_e3" & close_lag1 >= support2_line & close < support2_line ~ "sell - stop-loss (msg3)",
+                                                                  #                                   col == "message_e3" & close < stop_loss_base_line ~ "sell - stop-loss (msg3)",
+                                                                  #                                   col == "message_e4" ~ message_e4,
+                                                                  #                                   col == "message_e5" ~ message_e5,
+                                                                  #                                   col == "message_e6" ~ message_e6,
+                                                                  #                                   TRUE ~ message_s)) %>%
                                                                   dplyr::mutate_at("message", msg_string_update) %>%
                                                                   dplyr::mutate(message = case_when(message == "buy" ~ 1,
                                                                                                     message == "sell" ~ -1,
@@ -213,15 +216,18 @@ for(i in 1:length(rand_list_target_dates)){
                                                                support1_line = support1,
                                                                support2_line = support2,
                                                                support3_line = support3) %>%
-                                                 dplyr::mutate(message = case_when(col == "message_s1" & close > support1_line ~ "sell - target1",
-                                                                                   col == "message_s1" & close < stop_loss_base_line ~ "sell - stop-loss (msg1)",
-                                                                                   col == "message_s2" & close > support2_line ~ "sell - target2",
-                                                                                   col == "message_s2" & close_lag1 >= support1_line & close < support1_line ~ "sell - stop-loss (msg2)",
-                                                                                   col == "message_s2" & close < stop_loss_base_line ~ "sell - stop-loss (msg2)",
-                                                                                   col == "message_s3" & close > support3_line ~ "sell - target3", 
-                                                                                   col == "message_s3" & close_lag1 >= support2_line & close < support2_line ~ "sell - stop-loss (msg3)",
-                                                                                   col == "message_s3" & close < stop_loss_base_line ~ "sell - stop-loss (msg3)",
-                                                                                   TRUE ~ message_s)) %>%
+                                                 # dplyr::mutate(message = case_when(col == "message_e1" & close > support1_line ~ "sell - target1",
+                                                 #                                   col == "message_e1" & close < stop_loss_base_line ~ "sell - stop-loss (msg1)",
+                                                 #                                   col == "message_e2" & close > support2_line ~ "sell - target2",
+                                                 #                                   col == "message_e2" & close_lag1 >= support1_line & close < support1_line ~ "sell - stop-loss (msg2)",
+                                                 #                                   col == "message_e2" & close < stop_loss_base_line ~ "sell - stop-loss (msg2)",
+                                                 #                                   col == "message_e3" & close > support3_line ~ "sell - target3", 
+                                                 #                                   col == "message_e3" & close_lag1 >= support2_line & close < support2_line ~ "sell - stop-loss (msg3)",
+                                                 #                                   col == "message_e3" & close < stop_loss_base_line ~ "sell - stop-loss (msg3)",
+                                                 #                                   col == "message_e4" ~ message_e4,
+                                                 #                                   col == "message_e5" ~ message_e5,
+                                                 #                                   col == "message_e6" ~ message_e6,
+                                                 #                                   TRUE ~ message_s)) %>%
                                                  dplyr::mutate_at("message", msg_string_update) %>%
                                                  dplyr::select(symbol, date, open, high, low, close, message))
                                 
