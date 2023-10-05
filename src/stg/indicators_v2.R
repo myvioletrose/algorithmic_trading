@@ -5,9 +5,22 @@ ALPHA_VANTAGE_API <- Sys.getenv("ALPHA_VANTAGE_API")
 av_api_key(ALPHA_VANTAGE_API)
 
 # symbols
-symbols = c("SPY", "GOOGL", "META", "AMC", "TSLA",
-            "UBER", "AMZN", "DKNG", "PRPL", "PLUG") %>%
+symbols = c("SPY",
+            "NVDA",
+            "AMD",
+            "TSLA",
+            "META",
+            "GOOGL",
+            "AAPL",
+            "DKNG",
+            "GE",
+            "SLB") %>%
         sort()
+
+# symbols = c("SPY", "GOOGL", "META", "AMC", "TSLA",
+#             "UBER", "AMZN", "DKNG", "PRPL", "PLUG") %>%
+#         sort()
+
 s = symbols
 
 # get data
@@ -146,9 +159,12 @@ macd <- t0 %>%
                       flag_build1 = dplyr::case_when( diff >0 & diff_lag1 <0 & diff_lag2 <0 & diff_lag3 <0 & diff_lag4 <0 ~ 1,
                                                       diff >0 & diff_lag1 >0 & diff_lag2 <0 & diff_lag3 <0 & diff_lag4 <0 ~ 1,
                                                       diff >0 & diff_lag1 >0 & diff_lag2 >0 & diff_lag3 <0 & diff_lag4 <0 ~ 1,
+                                                      diff >0 & diff_lag1 >0 & diff_lag2 >0 & diff_lag3 >0 & diff_lag4 <0 ~ 1,
+
                                                       diff <0 & diff_lag1 >0 & diff_lag2 >0 & diff_lag3 >0 & diff_lag4 >0 ~ -1,
                                                       diff <0 & diff_lag1 <0 & diff_lag2 >0 & diff_lag3 >0 & diff_lag4 >0 ~ -1,
                                                       diff <0 & diff_lag1 <0 & diff_lag2 <0 & diff_lag3 >0 & diff_lag4 >0 ~ -1,
+                                                      diff <0 & diff_lag1 <0 & diff_lag2 <0 & diff_lag3 <0 & diff_lag4 >0 ~ -1,
                                                       TRUE ~ 0 ),
                       flag = dplyr::case_when ( flag_build1 == 1 & 
                                                         (diff > diff_lag1) & 
@@ -201,8 +217,11 @@ ha0 = lapply(1:length(vector_of_symbols), function(x){
                               ema30 = pracma::movavg(close, n = 30, type = "e")) %>%
                 dplyr::mutate(temp_flag = dplyr::case_when( is_intraday_green_yn >0 & is_intraday_green_yn_lag1 >0 & is_intraday_green_yn_lag2 <0 & is_intraday_green_yn_lag3 <0 & is_intraday_green_yn_lag4 <0 ~ 1,
                                                             is_intraday_green_yn >0 & is_intraday_green_yn_lag1 >0 & is_intraday_green_yn_lag2 >0 & is_intraday_green_yn_lag3 <0 & is_intraday_green_yn_lag4 <0 ~ 1,
+                                                            is_intraday_green_yn >0 & is_intraday_green_yn_lag1 >0 & is_intraday_green_yn_lag2 >0 & is_intraday_green_yn_lag3 >0 & is_intraday_green_yn_lag4 <0 ~ 1,
+
                                                             is_intraday_green_yn <0 & is_intraday_green_yn_lag1 <0 & is_intraday_green_yn_lag2 >0 & is_intraday_green_yn_lag3 >0 & is_intraday_green_yn_lag4 >0 ~ -1,
                                                             is_intraday_green_yn <0 & is_intraday_green_yn_lag1 <0 & is_intraday_green_yn_lag2 <0 & is_intraday_green_yn_lag3 >0 & is_intraday_green_yn_lag4 >0 ~ -1,
+                                                            is_intraday_green_yn <0 & is_intraday_green_yn_lag1 <0 & is_intraday_green_yn_lag2 <0 & is_intraday_green_yn_lag3 <0 & is_intraday_green_yn_lag4 >0 ~ -1,
                                                             TRUE ~ 0 ))
         
 }) %>%
@@ -255,9 +274,12 @@ macd_ha <- ha %>%
                       flag_build1 = dplyr::case_when( diff >0 & diff_lag1 <0 & diff_lag2 <0 & diff_lag3 <0 & diff_lag4 <0 ~ 1,
                                                       diff >0 & diff_lag1 >0 & diff_lag2 <0 & diff_lag3 <0 & diff_lag4 <0 ~ 1,
                                                       diff >0 & diff_lag1 >0 & diff_lag2 >0 & diff_lag3 <0 & diff_lag4 <0 ~ 1,
+                                                      diff >0 & diff_lag1 >0 & diff_lag2 >0 & diff_lag3 >0 & diff_lag4 <0 ~ 1,
+
                                                       diff <0 & diff_lag1 >0 & diff_lag2 >0 & diff_lag3 >0 & diff_lag4 >0 ~ -1,
                                                       diff <0 & diff_lag1 <0 & diff_lag2 >0 & diff_lag3 >0 & diff_lag4 >0 ~ -1,
                                                       diff <0 & diff_lag1 <0 & diff_lag2 <0 & diff_lag3 >0 & diff_lag4 >0 ~ -1,
+                                                      diff <0 & diff_lag1 <0 & diff_lag2 <0 & diff_lag3 <0 & diff_lag4 >0 ~ -1,
                                                       TRUE ~ 0 ),
                       flag = dplyr::case_when ( flag_build1 == 1 & 
                                                         (diff > diff_lag1) & 
@@ -472,10 +494,12 @@ evwma <- t0 %>%
                       flag = dplyr::case_when( (close >evwma) & (close_lag1 <evwma_lag1) & (close_lag2 <evwma_lag2) & (close_lag3 <evwma_lag3) & (close_lag4 <evwma_lag4) ~ 1,
                                                (close >evwma) & (close_lag1 >evwma_lag1) & (close_lag2 <evwma_lag2) & (close_lag3 <evwma_lag3) & (close_lag4 <evwma_lag4) ~ 1,
                                                (close >evwma) & (close_lag1 >evwma_lag1) & (close_lag2 >evwma_lag2) & (close_lag3 <evwma_lag3) & (close_lag4 <evwma_lag4) ~ 1,
-                                               
+                                               (close >evwma) & (close_lag1 >evwma_lag1) & (close_lag2 >evwma_lag2) & (close_lag3 >evwma_lag3) & (close_lag4 <evwma_lag4) ~ 1,
+
                                                (close <evwma) & (close_lag1 >evwma_lag1) & (close_lag2 >evwma_lag2) & (close_lag3 >evwma_lag3) & (close_lag4 >evwma_lag4)~ -1,
                                                (close <evwma) & (close_lag1 <evwma_lag1) & (close_lag2 >evwma_lag2) & (close_lag3 >evwma_lag3) & (close_lag4 >evwma_lag4)~ -1,
                                                (close <evwma) & (close_lag1 <evwma_lag1) & (close_lag2 <evwma_lag2) & (close_lag3 >evwma_lag3) & (close_lag4 >evwma_lag4)~ -1,
+                                               (close <evwma) & (close_lag1 <evwma_lag1) & (close_lag2 <evwma_lag2) & (close_lag3 <evwma_lag3) & (close_lag4 >evwma_lag4)~ -1,
                                                TRUE ~ 0 )) %>%
         ungroup()
 
@@ -657,9 +681,15 @@ vector_of_symbols = unique(t0$symbol)
 
 csp <- lapply(1:length(vector_of_symbols), function(x) candle_stick_pattern(t0 %>% filter(symbol == vector_of_symbols[x]))) %>%
         plyr::ldply() %>%
-        dplyr::mutate(candle_stick_signal = case_when(bullish_candle == 1 ~ 1,
-                                                      bearish_candle == 1 ~ -1,
-                                                      TRUE ~ 0)) %>%
+        dplyr::mutate(
+                # candle stick signal
+                candle_stick_signal = case_when(bullish_candle == 1 ~ 1,
+                                                bearish_candle == 1 ~ -1,
+                                                TRUE ~ 0),
+                # candle stick pattern
+                candle_stick_pattern = case_when( up_trend == 1 & candle_stick_signal == 1 ~ 1,
+                                                  down_trend == 1 & candle_stick_signal == -1 ~ -1,
+                                                  TRUE ~ 0 )) %>%
         arrange(symbol, date)
 
 names(csp) = c("symbol", "date", paste0("csp_", names(csp)[names(csp) %nin% c("symbol", "date")]))
@@ -795,6 +825,7 @@ indicators <- output %>%
                       csp_bullish_candle, 
                       csp_bearish_candle, 
                       csp_candle_stick_signal, 
+                      csp_candle_stick_pattern,
                       max_date) %>%
         arrange(symbol, date)
 

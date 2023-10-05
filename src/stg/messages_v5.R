@@ -24,11 +24,11 @@ indicators_transformed <- indicators %>%
                 candle_stick_pattern_lag1 = lag(candle_stick_pattern, 1),
                 
                 # buy if,
-                message_b = case_when(macd_flag == 1 & close > zlema & (candle_stick_pattern == 1 | (candle_stick_pattern == 0 & candle_stick_pattern_lag1 == 1)) ~ "buy - macd",
-                                      macd_ha_flag == 1 & close > zlema & (candle_stick_pattern == 1 | (candle_stick_pattern == 0 & candle_stick_pattern_lag1 == 1)) ~ "buy - macd_ha",
-                                      evwma_flag == 1 & close > zlema & (candle_stick_pattern == 1 | (candle_stick_pattern == 0 & candle_stick_pattern_lag1 == 1)) ~ "buy - evwma",                                      
-                                      #ce_short_spike_flag == 1 & close > zlema & (candle_stick_pattern == 1 | (candle_stick_pattern == 0 & candle_stick_pattern_lag1 == 1)) ~ "buy - ce_spike",
-                                      #cci_oversold_flag == 1 & close > zlema & (candle_stick_pattern == 1 | (candle_stick_pattern == 0 & candle_stick_pattern_lag1 == 1)) ~ "buy - cci",
+                message_b = case_when(macd_flag == 1 & cci_overbought_flag == 0 & close > zlema & (candle_stick_pattern == 1 | candle_stick_pattern_lag1 == 1) ~ "buy - macd",
+                                      macd_ha_flag == 1 & cci_overbought_flag == 0 & close > zlema & (candle_stick_pattern == 1 | candle_stick_pattern_lag1 == 1) ~ "buy - macd_ha",
+                                      evwma_flag == 1 & cci_overbought_flag == 0 & close > zlema & (candle_stick_pattern == 1 | candle_stick_pattern_lag1 == 1) ~ "buy - evwma",                                      
+                                      #ce_short_spike_flag == 1 & cci_overbought_flag == 0 & close > zlema & (candle_stick_pattern == 1 | candle_stick_pattern_lag1 == 1) ~ "buy - ce_spike",
+                                      #cci_oversold_flag == 1 & close > zlema & (candle_stick_pattern == 1 | candle_stick_pattern_lag1 == 1) ~ "buy - cci",
                                       TRUE ~ message),
                 
                 # close lag, percent change
@@ -44,10 +44,10 @@ indicators_transformed <- indicators %>%
                 percent_change_lag5_day_lag4 = lag(percent_change_lag5_day, 4),
                 
                 # sell if,
-                message_s = case_when(macd_flag == -1 & close < zlema & (candle_stick_pattern == -1 | (candle_stick_pattern == 0 & candle_stick_pattern_lag1 == -1)) ~ "sell - macd",
-                                      macd_ha_flag == -1 & close < zlema & (candle_stick_pattern == -1 | (candle_stick_pattern == 0 & candle_stick_pattern_lag1 == -1)) ~ "sell - macd_ha",
-                                      evwma_flag == -1 & close < zlema & (candle_stick_pattern == -1 | (candle_stick_pattern == 0 & candle_stick_pattern_lag1 == -1)) ~ "sell - evwma",                                                                            
-                                      ce_long_dip_flag == 1 & close < zlema & (candle_stick_pattern == -1 | (candle_stick_pattern == 0 & candle_stick_pattern_lag1 == -1)) ~ "sell - ce_dip",                                      
+                message_s = case_when(macd_flag == -1 & close < zlema & (candle_stick_pattern == -1 | candle_stick_pattern_lag1 == -1) ~ "sell - macd",
+                                      macd_ha_flag == -1 & close < zlema & (candle_stick_pattern == -1 | candle_stick_pattern_lag1 == -1) ~ "sell - macd_ha",
+                                      evwma_flag == -1 & close < zlema & (candle_stick_pattern == -1 | candle_stick_pattern_lag1 == -1) ~ "sell - evwma",                                                                            
+                                      ce_long_dip_flag == 1 & close < zlema & (candle_stick_pattern == -1 | candle_stick_pattern_lag1 == -1) ~ "sell - ce_dip",                                      
                                       (percent_change_lag5_day <0 & 
                                                percent_change_lag5_day_lag1 <0 &
                                                percent_change_lag5_day_lag2 <0 &
@@ -347,7 +347,7 @@ targetSubset2 = cbind(targetSubset,
                       daily_target_e = unlist(daily_target_e)
                       #daily_support_s = unlist(daily_support_s), 
                       #daily_target_s = unlist(daily_target_s)
-                      ) %>%
+) %>%
         select(symbol, date, close, close_lag1,
                trailing_stop_loss_yesterday,
                stop_loss_e_base_line,
@@ -368,7 +368,7 @@ targetSubset2 = cbind(targetSubset,
                # profit_secure3_s_line,
                #daily_support_s,
                #daily_target_s
-               ) %>%
+        ) %>%
         arrange(symbol, date)
 
 ###############################################################################################################################
@@ -390,13 +390,13 @@ poc0 <- indicators_transformed %>%
                                      # profit_secure1_s_line,
                                      # profit_secure2_s_line,
                                      # profit_secure3_s_line
-                                     ), 
-                   by = c("symbol", "date")) %>%        
+        ), 
+        by = c("symbol", "date")) %>%        
         left_join(targetSubset2 %>% 
                           select(symbol, date,
                                  daily_support_e, daily_target_e
                                  #daily_support_s, daily_target_s
-                                 ), 
+                          ), 
                   by = c("symbol", "date")) %>%
         # for "forward" evaluatoin, i.e., YTD
         # base on logic from target4 where last_buy_date = min(buy_date)
@@ -431,18 +431,18 @@ poc0 <- indicators_transformed %>%
                 #                        in_the_buy_yn == 1 & close < stop_loss_e_base_line ~ "sell - stop-loss (msg6)",
                 #                        TRUE ~ message_s)
                 message_e1 = case_when(in_the_buy_yn == 1 & 
-                                               (candle_stick_pattern == -1 | (candle_stick_pattern == 0 & candle_stick_pattern_lag1 == -1)) & 
+                                               (candle_stick_pattern == -1 | candle_stick_pattern_lag1 == -1) & 
                                                close < daily_support_e & close_lag1 >= daily_support_e ~ "sell - break support (msg1)",
                                        in_the_buy_yn == 1 & close > support3_e_line ~ "sell - break target (msg1)", 
                                        in_the_buy_yn == 1 & close < stop_loss_e_base_line ~ "sell - stop-loss (msg1)",
                                        TRUE ~ message_s),
                 message_e2 = case_when(in_the_buy_yn == 1 &                                                
-                                               (candle_stick_pattern == -1 | (candle_stick_pattern == 0 & candle_stick_pattern_lag1 == -1)) & 
+                                               (candle_stick_pattern == -1 | candle_stick_pattern_lag1 == -1) & 
                                                close < daily_support_e & close_lag1 >= daily_support_e ~ "sell - break support (msg2)",
                                        in_the_buy_yn == 1 & close > profit_secure3_e_line ~ "sell - break target (msg2)",
                                        in_the_buy_yn == 1 & close < stop_loss_e_base_line ~ "sell - stop-loss (msg2)",
                                        TRUE ~ message_s)
-                ) %>%
+        ) %>%
         # for "random" evaluatoin, i.e., rand_list_target_dates
         # base on logic from target4 where last_buy_date2 = max(buy_date)
         # this method should be more accurate in random evaluaton because it would constantly update (sync up) the base and support lines when the price is moving up
@@ -454,29 +454,29 @@ poc0 <- indicators_transformed %>%
         #         #                        in_the_buy_yn == 1 & close_lag1 >= support1_s_line & close < support1_s_line ~ "sell - stop-loss (msg2)",
         #         #                        in_the_buy_yn == 1 & close < stop_loss_s_base_line ~ "sell - stop-loss (msg2)",
         #         #                        TRUE ~ message_s),
-        #         # message_s3 = case_when(in_the_buy_yn == 1 & close > support3_s_line ~ "sell - target3", 
-        #         #                        in_the_buy_yn == 1 & close_lag1 >= support2_s_line & close < support2_s_line ~ "sell - stop-loss (msg3)",
-        #         #                        in_the_buy_yn == 1 & close < stop_loss_s_base_line ~ "sell - stop-loss (msg3)",
-        #         #                        TRUE ~ message_s),
-        #         message_s4 = case_when(in_the_buy_yn == 1 &                                                
-        #                                        (candle_stick_pattern == -1 | (candle_stick_pattern == 0 & candle_stick_pattern_lag1 == -1)) & 
-        #                                        close < daily_support_s & close_lag1 >= daily_support_s ~ "sell - break support (msg4)",
-        #                                in_the_buy_yn == 1 & close > support3_s_line ~ "sell - break target (msg4)",
-        #                                in_the_buy_yn == 1 & close < stop_loss_s_base_line ~ "sell - stop-loss (msg4)",
-        #                                TRUE ~ message_s),
-        #         message_s5 = case_when(in_the_buy_yn == 1 &                                                
-        #                                        (candle_stick_pattern == -1 | (candle_stick_pattern == 0 & candle_stick_pattern_lag1 == -1)) & 
-        #                                        close < daily_support_s & close_lag1 >= daily_support_s ~ "sell - break support (msg5)",
-        #                                in_the_buy_yn == 1 & close > profit_secure2_s_line ~ "sell - break target (msg5)",
-        #                                in_the_buy_yn == 1 & close < stop_loss_s_base_line ~ "sell - stop-loss (msg5)",
-        #                                TRUE ~ message_s),
-        #         message_s6 = case_when(in_the_buy_yn == 1 &                                                
-        #                                        (candle_stick_pattern == -1 | (candle_stick_pattern == 0 & candle_stick_pattern_lag1 == -1)) & 
-        #                                        close < daily_support_s & close_lag1 >= daily_support_s ~ "sell - break support (msg6)",
-        #                                in_the_buy_yn == 1 & close > profit_secure3_s_line ~ "sell - break target (msg6)",
-        #                                in_the_buy_yn == 1 & close < stop_loss_s_base_line ~ "sell - stop-loss (msg6)",
-        #                                TRUE ~ message_s)) %>%
-        arrange(symbol, date)
+#         # message_s3 = case_when(in_the_buy_yn == 1 & close > support3_s_line ~ "sell - target3", 
+#         #                        in_the_buy_yn == 1 & close_lag1 >= support2_s_line & close < support2_s_line ~ "sell - stop-loss (msg3)",
+#         #                        in_the_buy_yn == 1 & close < stop_loss_s_base_line ~ "sell - stop-loss (msg3)",
+#         #                        TRUE ~ message_s),
+#         message_s4 = case_when(in_the_buy_yn == 1 &                                                
+#                                        (candle_stick_pattern == -1 | (candle_stick_pattern == 0 & candle_stick_pattern_lag1 == -1)) & 
+#                                        close < daily_support_s & close_lag1 >= daily_support_s ~ "sell - break support (msg4)",
+#                                in_the_buy_yn == 1 & close > support3_s_line ~ "sell - break target (msg4)",
+#                                in_the_buy_yn == 1 & close < stop_loss_s_base_line ~ "sell - stop-loss (msg4)",
+#                                TRUE ~ message_s),
+#         message_s5 = case_when(in_the_buy_yn == 1 &                                                
+#                                        (candle_stick_pattern == -1 | (candle_stick_pattern == 0 & candle_stick_pattern_lag1 == -1)) & 
+#                                        close < daily_support_s & close_lag1 >= daily_support_s ~ "sell - break support (msg5)",
+#                                in_the_buy_yn == 1 & close > profit_secure2_s_line ~ "sell - break target (msg5)",
+#                                in_the_buy_yn == 1 & close < stop_loss_s_base_line ~ "sell - stop-loss (msg5)",
+#                                TRUE ~ message_s),
+#         message_s6 = case_when(in_the_buy_yn == 1 &                                                
+#                                        (candle_stick_pattern == -1 | (candle_stick_pattern == 0 & candle_stick_pattern_lag1 == -1)) & 
+#                                        close < daily_support_s & close_lag1 >= daily_support_s ~ "sell - break support (msg6)",
+#                                in_the_buy_yn == 1 & close > profit_secure3_s_line ~ "sell - break target (msg6)",
+#                                in_the_buy_yn == 1 & close < stop_loss_s_base_line ~ "sell - stop-loss (msg6)",
+#                                TRUE ~ message_s)) %>%
+arrange(symbol, date)
 
 ###############################################################################################################################
 # red flag protocol
@@ -552,9 +552,17 @@ step4 %>% head(10)
 
 #########################################################################
 #########################################################################
+# get date train-, test- set 
+unique_trading_date = poc0 %>% select(date) %>% arrange(date) %>% distinct %>% .$date
+set.seed(1234)
+date_index = sample(1:length(unique_trading_date), length(unique_trading_date) * 0.7)
+date_train_set = unique_trading_date[date_index]
+date_test_set = unique_trading_date[-date_index]
+
 # parameters
 bayes_para1 <- csp %>%
-        filter(date < subset_date) %>%
+        #filter(date < subset_date) %>%
+        filter(date %in% date_train_set) %>%
         filter(!is.na(red_flag_yn)) %>%
         group_by(symbol) %>%
         summarise(alpha = sum(red_flag_yn),
@@ -562,7 +570,8 @@ bayes_para1 <- csp %>%
         ungroup()
 
 bayes_para2 <- csp %>%
-        filter(date < subset_date) %>%
+        #filter(date < subset_date) %>%
+        filter(date %in% date_train_set) %>%
         filter(!is.na(red_flag_yn)) %>%
         group_by(symbol, csp_signal) %>%
         summarise(obs = sum(red_flag_yn),
@@ -571,6 +580,7 @@ bayes_para2 <- csp %>%
 
 # bayes_para3 <- csp %>%
 #         filter(date < subset_date) %>%
+#         filter(date %in% date_train_set) %>%
 #         filter(!is.na(red_flag_yn)) %>%
 #         group_by(csp_signal) %>%
 #         summarise(obs = sum(red_flag_yn),
@@ -637,14 +647,14 @@ bayes_results <- cbind(bayes_parameters,
 
 ##############################################################################################
 # poc update
-red_flag_threshold = 0.5
-num_of_day_since_last_buy_date = 11
+red_flag_threshold = 0.65
+num_of_day_since_last_buy_date = 21
 
 poc <- poc0 %>%
         left_join(csp %>% select(symbol, date, csp_signal), by = c("symbol", "date")) %>%
         left_join(bayes_results %>% select(symbol, csp_signal, red_flag_pred = mu), by = c("symbol", "csp_signal")) %>%
-        mutate(message_e1 = case_when(close < sma50 & red_flag_pred > red_flag_threshold & close < support2_e_line & day_since_last_buy <= num_of_day_since_last_buy_date ~ "sell - red flag protocol", TRUE ~ message_e1),
-               message_e2 = case_when(close < sma50 & red_flag_pred > red_flag_threshold & close < support2_e_line & day_since_last_buy <= num_of_day_since_last_buy_date ~ "sell - red flag protocol", TRUE ~ message_e2)
+        mutate(message_e1 = case_when(red_flag_pred > red_flag_threshold & close < support2_e_line & day_since_last_buy <= num_of_day_since_last_buy_date ~ "sell - red flag protocol", TRUE ~ message_e1),
+               message_e2 = case_when(red_flag_pred > red_flag_threshold & close < support2_e_line & day_since_last_buy <= num_of_day_since_last_buy_date ~ "sell - red flag protocol", TRUE ~ message_e2)
         ) %>%
         arrange(symbol, date)
 

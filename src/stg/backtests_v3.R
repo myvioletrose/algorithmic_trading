@@ -6,22 +6,12 @@ days_after_signal = 5
 
 # choose message_e*
 message_list <- names(poc) %>% grep(pattern = "message_e([[:digit:]]$)", ignore.case = TRUE, value = TRUE)
-fund_begin = c(1000, 1000)
+fund_begin = rep(1000, length(message_list))
 
 #message_list <- names(poc) %>% grep(pattern = "message_s", ignore.case = TRUE, value = TRUE)
 #fund_begin = c(10000, 2000, 3000, 5000)
 
 fund_df = data.frame(message_type = message_list, fund_begin)
-
-unique_trading_date = poc %>% select(date) %>% arrange(date) %>% distinct %>% .$date
-
-msg_string_update <- function(x) {
-        ifelse(grepl("buy", x, ignore.case = TRUE), 
-               "buy",
-               ifelse(grepl("sell", x, ignore.case = TRUE), 
-                      "sell",
-                      x))
-}
 
 # desirable_situations = c(
 #         "EBear-EBear::SBull-SBear",
@@ -31,24 +21,29 @@ msg_string_update <- function(x) {
 #         #"EBull-EBull::SBull-SBull"
 # )
 
+unique_trading_date = poc %>% select(date) %>% arrange(date) %>% distinct %>% .$date
+
 set.seed(seed)
-# rule 1: first_buy date only
-# rule 2: cci_overbought_flag == 0
-rand_list_target_dates <- poc %>%
+
+date_subset <- poc %>%
+        # rule 1: first_buy date only
+        #inner_join(first_buy, by = c("symbol" = "symbol", "date" = "first_buy_date")) %>%        
+        # rule 2: filter by date_test_set
+        #filter(date %in% date_test_set) %>%
         dplyr::mutate_at("message_s", msg_string_update) %>%
-        filter(year >= 2007 &
-                       message_s == "buy" &
-                       cci_overbought_flag == 0 &
-                       #situation %in% desirable_situations &
+        # rule 3: filter by symbol, date, and/or situations
+        filter(message_s == "buy" &
                        #symbol %in% symbol_to_study &
-                       date >= '2016-01-01' &
-                       date < '2023-07-01') %>%
-        inner_join(first_buy, by = c("symbol" = "symbol", "date" = "first_buy_date")) %>%
+                       #situation %in% desirable_situations &
+                       #date >= '2016-01-01' &
+                       date < '2023-07-01') %>%        
         .$date %>%
         unique() %>% 
-        sample(n) %>% 
         sort()
 
+if(length(date_subset) < n){n = length(date_subset)}
+
+rand_list_target_dates <- sample(date_subset, n) %>% sort()
 rand_list_target_dates
 
 backtest_rand_list <- vector(mode = "list", length = length(rand_list_target_dates))
@@ -63,27 +58,25 @@ for(i in 1:length(rand_list_target_dates)){
         target_lookback_date = as.Date(target_lookback_date)
         
         combined_shortList_symbols = poc %>% 
+                #inner_join(first_buy, by = c("symbol" = "symbol", "date" = "first_buy_date")) %>%
                 dplyr::mutate_at("message_s", msg_string_update) %>%
                 dplyr::mutate(message_s = case_when(message_s == "buy" ~ 1,
                                                     #message_s == "sell" ~ -1,
                                                     TRUE ~ 0)) %>%
                 filter(date == target_date & 
-                               cci_overbought_flag == 0 &
-                               #situation %in% desirable_situations &
                                #symbol %in% symbol_to_study &
+                               #situation %in% desirable_situations &
                                message_s == 1) %>% 
-                inner_join(first_buy, by = c("symbol" = "symbol", "date" = "first_buy_date")) %>%
                 .$symbol
         
         #combined_shortList_symbols = base::intersect(combined_shortList_symbols, symbol_to_study)
         
-        # upside opportunity - measure the gap between 20% up from close and 2 * ATR, i.e., smaller the better
+        # upside opportunity - measure the percent of upside opp based on ATR * 3, i.e., larger percentage the better
         price_est <- poc %>%
                 dplyr::filter(symbol %in% combined_shortList_symbols & date == target_date) %>%
                 dplyr::select(symbol, close, atr) %>%
-                dplyr::mutate(atr2 = close + atr * 2,
-                              close2 = close * 1.2,
-                              diff = (close2 - atr2) / close) %>%
+                dplyr::mutate(support3_line = close + (atr * 3),
+                              diff = (support3_line - close) / close) %>%
                 arrange(diff) %>%
                 dplyr::mutate(rank_by_upside_opp = row_number())
         
@@ -184,8 +177,8 @@ for(i in 1:length(rand_list_target_dates)){
                                                                   #                                   col == "message_e4" ~ message_e4,
                                                                   #                                   col == "message_e5" ~ message_e5,
                                                                   #                                   col == "message_e6" ~ message_e6,
-                                                                  #                                   TRUE ~ message_s)) %>%
-                                                                  dplyr::mutate_at("message", msg_string_update) %>%
+                                                          #                                   TRUE ~ message_s)) %>%
+                                                          dplyr::mutate_at("message", msg_string_update) %>%
                                                                   dplyr::mutate(message = case_when(message == "buy" ~ 1,
                                                                                                     message == "sell" ~ -1,
                                                                                                     TRUE ~ 0)) %>%
@@ -227,8 +220,8 @@ for(i in 1:length(rand_list_target_dates)){
                                                  #                                   col == "message_e4" ~ message_e4,
                                                  #                                   col == "message_e5" ~ message_e5,
                                                  #                                   col == "message_e6" ~ message_e6,
-                                                 #                                   TRUE ~ message_s)) %>%
-                                                 dplyr::mutate_at("message", msg_string_update) %>%
+                                         #                                   TRUE ~ message_s)) %>%
+                                         dplyr::mutate_at("message", msg_string_update) %>%
                                                  dplyr::select(symbol, date, open, high, low, close, message))
                                 
                                 # strategyEval
@@ -296,7 +289,7 @@ for(i in 1:length(rand_list_target_dates)){
         #         dplyr::mutate(rand_eval_index = i)
         
         evalDf <- eval_list_df %>% 
-                dplyr::inner_join(price_est %>% filter(symbol %in% refined_symbols) %>% select(symbol, close2, atr2, diff, rank_by_upside_opp), by = c("symbol")) %>%
+                dplyr::inner_join(price_est %>% filter(symbol %in% refined_symbols) %>% select(symbol, atr, support3_line, diff, rank_by_upside_opp), by = c("symbol")) %>%
                 dplyr::mutate(rand_eval_index = i)
         
         backtest_rand_list[[i]] <- evalDf
@@ -317,6 +310,9 @@ backtest_rand_evalDf <- backtest_rand_list %>%
         janitor::clean_names() %>%
         inner_join(poc %>% select(symbol, date, close_start_date = close), by = c("symbol" = "symbol", "eval_start_date" = "date")) %>%
         inner_join(poc %>% select(symbol, date, close_end_date = close), by = c("symbol" = "symbol", "eval_end_date" = "date")) %>%
+        mutate(month_key = format(as.Date(eval_start_date), "%Y-%m") %>%
+                       stringr::str_remove(pattern = "-") %>%
+                       as.integer()) %>%
         select(rand_eval_index, 
                symbol, 
                # active_premium, 
@@ -333,10 +329,11 @@ backtest_rand_evalDf <- backtest_rand_list %>%
                # treynor_ratio, 
                close_start_date,
                close_end_date,
-               close2, 
-               atr2, 
+               atr,
+               support3_line, 
                diff, 
                rank_by_upside_opp,
+               month_key,
                eval_start_date, 
                eval_end_date,
                plus_x_date,
