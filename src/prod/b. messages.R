@@ -2,8 +2,8 @@
 risk_tolerance = 2
 
 # subset data
-subset_date = "1990-01-01"
-subset_symbols = symbols
+#subset_date = "1990-01-01"
+#subset_symbols = symbols
 
 # begin transformation
 indicators_transformed <- indicators %>%

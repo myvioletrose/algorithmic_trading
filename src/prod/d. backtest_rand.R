@@ -1,15 +1,23 @@
-seed = 99
-n = 100
-days_after_signal = 5
-#symbol_to_study = c("UBER")
-#symbol %in% symbol_to_study &
+#seed = 99
+#n = 100
+#days_after_signal = 10
+#symbol_to_study = poc$symbol %>% unique()
+#rand_date_start = '1990-01-01'
+#rand_date_end = '2023-07-01'
+#first_buy_only = FALSE
+
+# msg_string_update function
+msg_string_update <- function(x) {
+        ifelse(grepl("buy", x, ignore.case = TRUE), 
+               "buy",
+               ifelse(grepl("sell", x, ignore.case = TRUE), 
+                      "sell",
+                      x))
+}
 
 # choose message_e*
 message_list <- names(poc) %>% grep(pattern = "message_e([[:digit:]]$)", ignore.case = TRUE, value = TRUE)
 fund_begin = rep(1000, length(message_list))
-
-#message_list <- names(poc) %>% grep(pattern = "message_s", ignore.case = TRUE, value = TRUE)
-#fund_begin = c(10000, 2000, 3000, 5000)
 
 fund_df = data.frame(message_type = message_list, fund_begin)
 
@@ -21,30 +29,28 @@ fund_df = data.frame(message_type = message_list, fund_begin)
 #         #"EBull-EBull::SBull-SBull"
 # )
 
-unique_trading_date = poc %>% select(date) %>% arrange(date) %>% distinct %>% .$date
+unique_trading_date = poc %>% filter(symbol == "SPY") %>% select(date) %>% arrange(date) %>% distinct %>% .$date
 
 set.seed(seed)
 
-date_subset <- poc %>%
-        # rule 1: first_buy date only
-        #inner_join(first_buy, by = c("symbol" = "symbol", "date" = "first_buy_date")) %>%        
-        # rule 2: filter by date_test_set
+date_subset_df <- poc %>%        
+        dplyr::mutate_at("message_s", msg_string_update) %>%        
         #filter(date %in% date_test_set) %>%
-        dplyr::mutate_at("message_s", msg_string_update) %>%
-        # rule 3: filter by symbol, date, and/or situations
         filter(message_s == "buy" &
-                       #symbol %in% symbol_to_study &
+                       symbol %in% symbol_to_study &
                        #situation %in% desirable_situations &
-                       #date >= '2016-01-01' &
-                       date < '2023-07-01') %>%        
-        .$date %>%
-        unique() %>% 
-        sort()
+                       date >= as.Date(rand_date_start, '%Y-%m-%d') &
+                       date < as.Date(rand_date_end, '%Y-%m-%d')) %>% 
+        select(symbol, date)
 
+if(first_buy_only){date_subset_df = date_subset_df %>% inner_join(first_buy, by = c("symbol" = "symbol", "date" = "first_buy_date"))}
+
+date_subset = date_subset_df$date %>% unique() %>% sort()
+        
 if(length(date_subset) < n){n = length(date_subset)}
 
 rand_list_target_dates <- sample(date_subset, n) %>% sort()
-rand_list_target_dates
+print(rand_list_target_dates)
 
 backtest_rand_list <- vector(mode = "list", length = length(rand_list_target_dates))
 
@@ -57,19 +63,30 @@ for(i in 1:length(rand_list_target_dates)){
         target_lookback_date = unique_trading_date[target_date_index -20]
         target_lookback_date = as.Date(target_lookback_date)
         
-        combined_shortList_symbols = poc %>% 
-                #inner_join(first_buy, by = c("symbol" = "symbol", "date" = "first_buy_date")) %>%
-                dplyr::mutate_at("message_s", msg_string_update) %>%
-                dplyr::mutate(message_s = case_when(message_s == "buy" ~ 1,
-                                                    #message_s == "sell" ~ -1,
-                                                    TRUE ~ 0)) %>%
-                filter(date == target_date & 
-                               #symbol %in% symbol_to_study &
-                               #situation %in% desirable_situations &
-                               message_s == 1) %>% 
-                .$symbol
-        
-        #combined_shortList_symbols = base::intersect(combined_shortList_symbols, symbol_to_study)
+        if(first_buy_only){
+                combined_shortList_symbols = poc %>% 
+                        inner_join(first_buy, by = c("symbol" = "symbol", "date" = "first_buy_date")) %>%
+                        dplyr::mutate_at("message_s", msg_string_update) %>%
+                        dplyr::mutate(message_s = case_when(message_s == "buy" ~ 1,
+                                                            #message_s == "sell" ~ -1,
+                                                            TRUE ~ 0)) %>%
+                        filter(date == target_date & 
+                                       symbol %in% symbol_to_study &
+                                       #situation %in% desirable_situations &
+                                       message_s == 1) %>% 
+                        .$symbol 
+        } else {
+                combined_shortList_symbols = poc %>% 
+                        dplyr::mutate_at("message_s", msg_string_update) %>%
+                        dplyr::mutate(message_s = case_when(message_s == "buy" ~ 1,
+                                                            #message_s == "sell" ~ -1,
+                                                            TRUE ~ 0)) %>%
+                        filter(date == target_date & 
+                                       symbol %in% symbol_to_study &
+                                       #situation %in% desirable_situations &
+                                       message_s == 1) %>% 
+                        .$symbol 
+        }               
         
         # upside opportunity - measure the percent of upside opp based on ATR * 3, i.e., larger percentage the better
         price_est <- poc %>%
@@ -313,6 +330,8 @@ backtest_rand_evalDf <- backtest_rand_list %>%
         mutate(month_key = format(as.Date(eval_start_date), "%Y-%m") %>%
                        stringr::str_remove(pattern = "-") %>%
                        as.integer()) %>%
+        left_join(first_buy, by = c("symbol" = "symbol", "eval_start_date" = "first_buy_date")) %>%
+        mutate(is_first_buy_yn = case_when(is.na(is_first_buy_yn) ~ 0, TRUE ~ is_first_buy_yn)) %>%
         select(rand_eval_index, 
                symbol, 
                # active_premium, 
@@ -343,7 +362,8 @@ backtest_rand_evalDf <- backtest_rand_list %>%
                days_between,
                net_value, 
                is_win_yn, 
-               percent_chg)
+               percent_chg,
+               is_first_buy_yn)
 
 # high level summary across messages
 msg_summary <- backtest_rand_evalDf %>%
@@ -561,7 +581,7 @@ msg_compare2 <- backtest_rand_evalDf %>%
 #backtest_rand_evalDf
 #msg_summary
 
-overall_compare
+print(overall_compare)
 #session_compare
-msg_compare 
+print(msg_compare)
 #msg_compare2

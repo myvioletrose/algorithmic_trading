@@ -1,26 +1,4 @@
-# initiate set up
-source("~/algorithmic_trading/config/setup.R")
-readRenviron("~/algorithmic_trading/config/.env")
-ALPHA_VANTAGE_API <- Sys.getenv("ALPHA_VANTAGE_API")
-av_api_key(ALPHA_VANTAGE_API)
-
 # symbols
-symbols = c("SPY",
-            "NVDA",
-            "AMD",
-            "TSLA",
-            "META",
-            "GOOGL",
-            "AAPL",
-            "DKNG",
-            "GE",
-            "SLB") %>%
-        sort()
-
-# symbols = c("SPY", "GOOGL", "META", "AMC", "TSLA",
-#             "UBER", "AMZN", "DKNG", "PRPL", "PLUG") %>%
-#         sort()
-
 s = symbols
 
 # get data

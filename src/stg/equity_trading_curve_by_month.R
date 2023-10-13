@@ -37,9 +37,9 @@ date_df <- date_df0 %>%
 # dim(date_df)
 # [1] 6012    7
 
-etca_start = 201601
+etca_start = 202201
 etca_end = 202309
-etca_look_back_period = 3
+etca_look_back_period = 6
 
 etca_start_base_begin = date_df %>%
         filter(month_key < etca_start) %>%
@@ -79,13 +79,13 @@ etca_para <- etca_para1 %>%
         group_by(eval_month_key) %>%
         mutate(index = row_number(end_month_key)) %>%
         ungroup()
-        
+
 ###########################################################################################
 ############# <<< begin evaluation >>> ###############################
 
 # symbols to eval
-symbols_to_eval = c("WMT")
-#symbols_to_eval = poc$symbol %>% unique()
+#symbols_to_eval = c("WMT")
+symbols_to_eval = poc$symbol %>% unique()
 
 # message & fund - choose message_e*
 message = "message_e1"
@@ -99,46 +99,43 @@ etca_nested = cross_join(symbols_to_eval %>% as.data.frame() %>% select(symbol =
 output_list = vector(mode = "list", length = nrow(etca_nested))
 
 tic()
-for(i in 1:nrow(etca_nested)){                
+for(j in 1:nrow(etca_nested)){
         
-        for(j in 1:nrow(etca_nested)){
+        s = etca_nested$symbol[j]
+        col = message
+        f = fund
+        temp_df = etca_nested$data[[j]]
+        net_value_output <- vector(mode = "list", length = nrow(temp_df))
+        
+        for(k in 1:nrow(temp_df)){
                 
-                s = etca_nested$symbol[j]
-                col = message
-                f = fund
-                temp_df = etca_nested$data[[j]]
-                net_value_output <- vector(mode = "list", length = nrow(temp_df))
+                eval_month_key = temp_df$eval_month_key[k]
+                start_date = temp_df$start_date[k]
+                end_date = temp_df$end_date[k]
                 
-                for(k in 1:nrow(temp_df)){
-                        
-                        eval_month_key = temp_df$eval_month_key[k]
-                        start_date = temp_df$start_date[k]
-                        end_date = temp_df$end_date[k]
-                                
-                        # get data
-                        x <- let(c(COL = col),
-                                 poc %>%
-                                         dplyr::filter(symbol == s &
-                                                               date >= start_date & 
-                                                               date <= end_date) %>%
-                                         dplyr::mutate(message = COL) %>%
-                                         dplyr::mutate_at("message", msg_string_update) %>%
-                                         dplyr::select(symbol, date, open, high, low, close, message))
-                        
-                        # strategyEval
-                        try({y <- strategyEval(fund_begin = fund, x) %>% .$net_value}, silent = TRUE)
-                        
-                        net_value_output[[k]] = y
-                        
-                }
+                # get data
+                x <- let(c(COL = col),
+                         poc %>%
+                                 dplyr::filter(symbol == s &
+                                                       date >= start_date & 
+                                                       date <= end_date) %>%
+                                 dplyr::mutate(message = COL) %>%
+                                 dplyr::mutate_at("message", msg_string_update) %>%
+                                 dplyr::select(symbol, date, open, high, low, close, message))
                 
-                # put together
-                temp_df$symbol = s
-                temp_df$net_value_output = unlist(net_value_output)
+                # strategyEval
+                try({y <- strategyEval(fund_begin = fund, x) %>% .$net_value}, silent = TRUE)
                 
-                output_list[[j]] = temp_df
-                print(paste0("<<< ", glue(s), " done >>>"))
+                net_value_output[[k]] = y
+                
         }
+        
+        # put together
+        temp_df$symbol = s
+        temp_df$net_value_output = unlist(net_value_output)
+        
+        output_list[[j]] = temp_df
+        print(paste0("<<< ", glue(s), " done >>>"))
         
 }
 toc()
@@ -155,35 +152,7 @@ etca_df = output_list %>% plyr::ldply() %>%
         select(symbol, year, index, eval_month_key, start_month_key, end_month_key, net_value_output, flag) %>%
         arrange(symbol, eval_month_key)
 
-etca_df %>% write_clip()
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+#etca_df %>% write_clip()
+etca_df
 
 

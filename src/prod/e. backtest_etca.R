@@ -1,15 +1,15 @@
 #########################################
 # date parameters
-etca_start = "2023-10-06"
-etca_end = "2023-10-10"
-etca_look_back_period = 63
+#etca_start = "2023-10-06"
+#etca_end = "2023-10-10"
+#etca_look_back_period = 63
 
 # symbols to eval
 #symbols_to_eval = poc$symbol %>% unique()
-symbols_to_eval = c("DKNG", "AMD")
+#symbols_to_eval = c("DKNG", "AMD")
 
 # message & fund - choose message_e*
-message_to_eval = "message_s"
+#message_to_eval = "message_s"
 fund = 1000
 
 # equity trading curve analysis - day
@@ -46,7 +46,7 @@ date_df <- date_df1 %>%
         select(date, start_date, end_date = etca_date, index) %>%
         arrange(date, start_date, end_date)
 
-date_df
+#date_df
 # A tibble: 130 × 4
 # date       start_date end_date  index
 # <date>     <date>     <date>     <int>
