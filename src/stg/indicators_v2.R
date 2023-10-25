@@ -129,8 +129,12 @@ df3 <- df2 %>%
         dplyr::arrange(symbol, date)
 
 ###########################################################################################################
+# filter out symbols that have less than 6-month of trading date data
+exclude_symbols = df3 %>% group_by(symbol) %>% summarise(n = n()) %>% filter(n < 126) %>% .$symbol
+
 # begin transformation
 t0 <- df3 %>%        
+        dplyr::filter(symbol %nin% exclude_symbols) %>%
         dplyr::select(symbol,
                       date, 
                       open = adj_open,
