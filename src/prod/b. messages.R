@@ -12,8 +12,9 @@ indicators_transformed <- indicators %>%
         arrange(symbol, date) %>%
         group_by(symbol) %>%        
         dplyr::mutate(                        
-                # candle stick pattern lag1                
+                # candle stick pattern lag 1
                 csp_candle_stick_pattern_lag1 = lag(csp_candle_stick_pattern, 1),
+                csp_trend_dir_lag1 = lag(csp_trend_dir, 1),              
                 
                 # buy if,
                 message_b = case_when(macd_flag == 1 & close > zlema & (csp_candle_stick_pattern == 1 | csp_candle_stick_pattern_lag1 == 1) ~ "buy - macd",
@@ -84,26 +85,33 @@ indicators_transformed <- indicators %>%
                rsi,
                macd_diff,
                macd_trend_dir,
+               macd_flag,
                is_intraday_green_yn_ha,
+               evwma_flag,
                
                red_flag,
                green_flag,
                proxy_flag,
                sma5_flag,
-               rsi_oversold_flag, 
-               rsi_overbought_flag, 
-               cci_oversold_flag, 
+
+               rsi_oversold_yn,
+               rsi_oversold_flag,
+               rsi_overbought_yn, 
+               rsi_overbought_flag,
+               cci_oversold_yn, 
+               cci_oversold_flag,
+               cci_overbought_yn, 
                cci_overbought_flag,
                
                ce_short_spike_flag,
                ce_long_dip_flag,
                
                situation,
-               
-               csp_candle_stick_pattern,
-               csp_candle_stick_pattern_lag1,
-               
+                       
                contains("csp_"),
+               csp_trend_dir_lag1,
+               csp_candle_stick_pattern_lag1,
+
                matches("message_[bs]")
         ) %>%
         arrange(symbol, date)
@@ -418,7 +426,7 @@ poc <- indicators_transformed %>%
                                        in_the_buy_yn == 1 & (close > profit_secure1_line | close > support1_line) ~ "sell - meet target (msg0)",
                                        TRUE ~ message_s),
                 message_e1 = case_when(in_the_buy_yn == 1 & 
-                                               (csp_candle_stick_pattern == -1 | csp_candle_stick_pattern_lag1 == -1) & 
+                                               (csp_trend_dir == -1 | csp_trend_dir_lag1 == -1) & 
                                                close < daily_support & close_lag1 >= daily_support ~ "sell - break support (msg1)",
                                        in_the_buy_yn == 1 & red_flag == 1 & day_since_last_buy2 <= num_of_day_since_last_buy_date ~ "sell - red flag flight (msg1)",
                                        # choose the "e" line - take minimum profit and leave when still ahead
@@ -428,7 +436,7 @@ poc <- indicators_transformed %>%
                                        in_the_buy_yn == 1 & close > support3_line ~ "sell - meet target (msg1)", 
                                        TRUE ~ message_s),
                 message_e2 = case_when(in_the_buy_yn == 1 &                                                
-                                               (csp_candle_stick_pattern == -1 | csp_candle_stick_pattern_lag1 == -1) & 
+                                               (csp_trend_dir == -1 | csp_trend_dir_lag1 == -1) & 
                                                close < daily_support & close_lag1 >= daily_support ~ "sell - break support (msg2)",
                                        in_the_buy_yn == 1 & red_flag == 1 & day_since_last_buy <= num_of_day_since_last_buy_date ~ "sell - red flag flight (msg2)", 
                                        in_the_buy_yn == 1 & close < stop_loss_base_line ~ "sell - stop-loss (msg2)",
@@ -481,20 +489,26 @@ poc <- indicators_transformed %>%
                 rsi, 
                 macd_diff,
                 macd_trend_dir, 
-                is_intraday_green_yn_ha, 
+                macd_flag,
+                is_intraday_green_yn_ha,
+                evwma_flag,                
                 red_flag, 
                 green_flag, 
                 proxy_flag, 
-                sma5_flag, 
-                rsi_oversold_flag, 
-                rsi_overbought_flag, 
-                cci_oversold_flag, 
-                cci_overbought_flag, 
+                sma5_flag,                 
+                rsi_oversold_yn,
+                rsi_oversold_flag,
+                rsi_overbought_yn, 
+                rsi_overbought_flag,
+                cci_oversold_yn, 
+                cci_oversold_flag,
+                cci_overbought_yn, 
+                cci_overbought_flag,
                 ce_short_spike_flag, 
                 ce_long_dip_flag, 
                 situation, 
                 csp_candle_stick_pattern, 
-                csp_candle_stick_pattern_lag1, 
+                csp_trend_dir,                
                 csp_doji, 
                 csp_dragonfly_doji, 
                 csp_gravestone_doji, 

@@ -123,9 +123,9 @@ etca_df = output_list %>% plyr::ldply() %>%
                macd = fast - slow,
                sig = pracma::movavg(macd, n = 9, type = "e"),
                diff = macd - sig) %>%
-        mutate(diff_lag1 = lag(sig, 1),
-               diff_lag2 = lag(sig, 2),
-               diff_lag3 = lag(sig, 3),
+        mutate(diff_lag1 = lag(diff, 1),
+               diff_lag2 = lag(diff, 2),
+               diff_lag3 = lag(diff, 3),
                flag = case_when(diff > diff_lag1 & diff_lag1 > diff_lag2 & diff_lag2 > diff_lag3 & diff >0 ~ 1,
                                 diff < diff_lag1 & diff_lag1 < diff_lag2 & diff_lag2 < diff_lag3 & diff <0 ~ -1,
                                 TRUE ~ 0)) %>%

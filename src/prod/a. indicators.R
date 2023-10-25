@@ -312,126 +312,68 @@ adx <- t0 %>%
 
 ############################
 # rsi
-rsi0 <- t0 %>%
+rsi <- t0 %>%
         arrange(symbol, date) %>%
         group_by(symbol) %>%
         tq_transmute(select = close,
                      mutate_fun = RSI) %>%
         dplyr::mutate(rsi_lag1 = dplyr::lag(rsi, 1),
                       rsi_lag2 = dplyr::lag(rsi, 2)) %>%
-        ungroup()
-
-rsi_step_a <- rsi0 %>%
-        arrange(symbol, date) %>%
-        group_by(symbol) %>%
-        dplyr::mutate(rsi_oversold_yn1 = dplyr::case_when(rsi < 30 &
-                                                                  rsi > rsi_lag1 &
-                                                                  rsi_lag1 > rsi_lag2 ~ 1,
-                                                          TRUE ~ 0),
-                      rsi_overbought_yn1 = dplyr::case_when(rsi > 70 &
-                                                                    rsi < rsi_lag1 &
-                                                                    rsi < rsi_lag2 ~ 1,
-                                                            TRUE ~ 0)) %>%
-        ungroup()
-
-rsi_step_b <- rsi0 %>%
-        arrange(symbol, date) %>%
-        group_by(symbol) %>%
-        dplyr::mutate(rsi_oversold_temp = dplyr::case_when(rsi > 30 &
-                                                                   rsi_lag1 <= 30 &
-                                                                   rsi_lag2 <= 30 ~ 1,
-                                                           rsi > 30 &
-                                                                   rsi > rsi_lag1 &
-                                                                   rsi_lag1 > 30 &
-                                                                   rsi_lag2 <= 30 ~ 1,
+        dplyr::mutate(rsi_oversold_yn = dplyr::case_when(rsi < 30 &
+                                                                 rsi > rsi_lag1 &
+                                                                 rsi_lag1 > rsi_lag2 ~ 1,
+                                                         rsi > 30 &
+                                                                 rsi_lag1 <= 30 &
+                                                                 rsi_lag2 <= 30 ~ 1,
+                                                         rsi > 30 &
+                                                                 rsi > rsi_lag1 &
+                                                                 rsi_lag1 > 30 &
+                                                                 rsi_lag2 <= 30 ~ 1,
+                                                         TRUE ~ 0),
+                      rsi_overbought_yn = dplyr::case_when(rsi > 70 &
+                                                                   rsi < rsi_lag1 &
+                                                                   rsi < rsi_lag2 ~ 1,
                                                            TRUE ~ 0),
-                      ma = pracma::movavg(rsi_oversold_temp, n = 2, type = "s"),
-                      rsi_oversold_yn2 = dplyr::case_when(ma > 0 &
-                                                                  rsi > 30 ~ 1, TRUE ~ 0)
-        ) %>%
-        ungroup()
-
-rsi <- dplyr::inner_join(rsi_step_a %>% select(symbol, date, rsi_oversold_yn1, rsi_overbought_yn = rsi_overbought_yn1),
-                         rsi_step_b %>% select(symbol, date, 
-                                               rsi_oversold_temp, ma, 
-                                               rsi_oversold_yn2),
-                         by = c("symbol", "date")) %>%
-        dplyr::mutate(rsi_oversold_yn = dplyr::case_when((rsi_oversold_yn1 + rsi_oversold_yn2) >0 ~ 1, TRUE ~ 0)) %>%
-        dplyr::inner_join(rsi0 %>% select(symbol, date, rsi, rsi_lag1, rsi_lag2), by = c("symbol", "date")) %>%
-        arrange(symbol, date) %>%
-        group_by(symbol) %>%
-        dplyr::mutate(
-                # oversold
-                rsi_oversold_ma = pracma::movavg(rsi_oversold_yn, n = 10, type = "s"),
-                rsi_oversold_flag = dplyr::case_when(rsi_oversold_ma >0 & rsi < 50 ~ 1, TRUE ~ 0),
-                # overbought
-                rsi_overbought_ma = pracma::movavg(rsi_overbought_yn, n = 10, type = "s"),
-                rsi_overbought_flag = dplyr::case_when(rsi_overbought_ma >0 & rsi > 50 ~ 1, TRUE ~ 0)
-        ) %>%
+                      # oversold
+                      rsi_oversold_ma = pracma::movavg(rsi_oversold_yn, n = 10, type = "s"),
+                      rsi_oversold_flag = dplyr::case_when(rsi_oversold_ma >0 & rsi < 50 ~ 1, TRUE ~ 0),
+                      # overbought
+                      rsi_overbought_ma = pracma::movavg(rsi_overbought_yn, n = 10, type = "s"),
+                      rsi_overbought_flag = dplyr::case_when(rsi_overbought_ma >0 & rsi > 50 ~ 1, TRUE ~ 0)) %>%
         ungroup() %>%
-        #dplyr::select(symbol, date, rsi, rsi_lag1, rsi_lag2, rsi_oversold_flag, rsi_overbought_flag) %>%
         arrange(symbol, date)
 
 ############################
 # cci
-cci0 <- t0 %>%
+cci <- t0 %>%
         arrange(symbol, date) %>%
         group_by(symbol) %>%
         tq_transmute(select = close,
                      mutate_fun = CCI) %>%
         dplyr::mutate(cci_lag1 = dplyr::lag(cci, 1),
                       cci_lag2 = dplyr::lag(cci, 2)) %>%
-        ungroup()
-
-cci_step_a <- cci0 %>%
-        arrange(symbol, date) %>%
-        group_by(symbol) %>%
-        dplyr::mutate(cci_oversold_yn1 = dplyr::case_when(cci < -100 &
-                                                                  cci > cci_lag1 &
-                                                                  cci_lag1 > cci_lag2 ~ 1,
-                                                          TRUE ~ 0),
-                      cci_overbought_yn1 = dplyr::case_when(cci > 100 &
-                                                                    cci < cci_lag1 &
-                                                                    cci < cci_lag2 ~ 1,
-                                                            TRUE ~ 0)) %>%
-        ungroup()
-
-cci_step_b <- cci0 %>%
-        arrange(symbol, date) %>%
-        group_by(symbol) %>%
-        dplyr::mutate(cci_oversold_temp = dplyr::case_when(cci > -100 &
-                                                                   cci_lag1 <= -100 &
-                                                                   cci_lag2 <= -100 ~ 1,
-                                                           cci > -100 &
-                                                                   cci > cci_lag1 &
-                                                                   cci_lag1 > -100 &
-                                                                   cci_lag2 <= -100 ~ 1,
+        dplyr::mutate(cci_oversold_yn = dplyr::case_when(cci < -100 &
+                                                                 cci > cci_lag1 &
+                                                                 cci_lag1 > cci_lag2 ~ 1,
+                                                         cci > -100 &
+                                                                 cci_lag1 <= -100 &
+                                                                 cci_lag2 <= -100 ~ 1,
+                                                         cci > -100 &
+                                                                 cci > cci_lag1 &
+                                                                 cci_lag1 > -100 &
+                                                                 cci_lag2 <= -100 ~ 1,
+                                                         TRUE ~ 0),
+                      cci_overbought_yn = dplyr::case_when(cci > 100 &
+                                                                   cci < cci_lag1 &
+                                                                   cci < cci_lag2 ~ 1,
                                                            TRUE ~ 0),
-                      ma = pracma::movavg(cci_oversold_temp, n = 2, type = "s"),
-                      cci_oversold_yn2 = dplyr::case_when(ma > 0 &
-                                                                  cci > -100 ~ 1, TRUE ~ 0)
-        ) %>%
-        ungroup()
-
-cci <- dplyr::inner_join(cci_step_a %>% select(symbol, date, cci_oversold_yn1, cci_overbought_yn = cci_overbought_yn1),
-                         cci_step_b %>% select(symbol, date, 
-                                               cci_oversold_temp, ma, 
-                                               cci_oversold_yn2),
-                         by = c("symbol", "date")) %>%
-        dplyr::mutate(cci_oversold_yn = dplyr::case_when((cci_oversold_yn1 + cci_oversold_yn2) >0 ~ 1, TRUE ~ 0)) %>%
-        dplyr::inner_join(cci0 %>% select(symbol, date, cci, cci_lag1, cci_lag2), by = c("symbol", "date")) %>%
-        arrange(symbol, date) %>%
-        group_by(symbol) %>%
-        dplyr::mutate(
-                # oversold
-                cci_oversold_ma = pracma::movavg(cci_oversold_yn, n = 10, type = "s"),
-                cci_oversold_flag = dplyr::case_when(cci_oversold_ma >0 & cci < 100 ~ 1, TRUE ~ 0),
-                # overbought
-                cci_overbought_ma = pracma::movavg(cci_overbought_yn, n = 10, type = "s"),
-                cci_overbought_flag = dplyr::case_when(cci_overbought_ma >0 & cci > -100 ~ 1, TRUE ~ 0)
-        ) %>%
+                      # oversold
+                      cci_oversold_ma = pracma::movavg(cci_oversold_yn, n = 10, type = "s"),
+                      cci_oversold_flag = dplyr::case_when(cci_oversold_ma >0 & cci < 100 ~ 1, TRUE ~ 0),
+                      # overbought
+                      cci_overbought_ma = pracma::movavg(cci_overbought_yn, n = 10, type = "s"),
+                      cci_overbought_flag = dplyr::case_when(cci_overbought_ma >0 & cci > -100 ~ 1, TRUE ~ 0)) %>%
         ungroup() %>%
-        #dplyr::select(symbol, date, cci, cci_lag1, cci_lag2, cci_oversold_flag, cci_overbought_flag) %>%
         arrange(symbol, date)
 
 ############################
@@ -707,14 +649,17 @@ output <- atr %>%
                                         zlema, proxy_flag, sma5_flag), 
                           by = c("symbol", "date")) %>%
         dplyr::inner_join(adx %>% select(symbol, date, dmi_p, dmi_n, adx), by = c("symbol", "date")) %>%
-        dplyr::inner_join(rsi %>% select(symbol, date, rsi, rsi_oversold_flag, rsi_overbought_flag), by = c("symbol", "date")) %>%
-        dplyr::inner_join(cci %>% select(symbol, date, cci, cci_oversold_flag, cci_overbought_flag), by = c("symbol", "date")) %>%
+        dplyr::inner_join(rsi %>% select(symbol, date, rsi, rsi_oversold_yn, rsi_oversold_flag, rsi_overbought_yn, rsi_overbought_flag), by = c("symbol", "date")) %>%
+        dplyr::inner_join(cci %>% select(symbol, date, cci, cci_oversold_yn, cci_oversold_flag, cci_overbought_yn, cci_overbought_flag), by = c("symbol", "date")) %>%
         dplyr::inner_join(csp, by = c("symbol", "date")) %>%
+        dplyr::mutate(csp_trend_dir = case_when(csp_candle_stick_signal == 1 & macd_trend_dir == 1 ~ 1,
+                                                csp_candle_stick_signal == -1 & macd_trend_dir == -1 ~ -1,
+                                                TRUE ~ 0)) %>%
         dplyr::select(symbol, date,
-                      open, high, low, close, zlema, sma5, sma50, sma200, ema10, ema30, ema100, proxy_flag, volume, 
-                      macd_diff, atr, chanExit_long, chanExit_short, 
-                      dmi_p, dmi_n, adx, rsi, cci, rsi_oversold_flag, rsi_overbought_flag, cci_oversold_flag, cci_overbought_flag, ce_long_dip_flag, ce_short_spike_flag, macd_trend_dir,
-                      everything()) %>%
+              open, high, low, close, zlema, sma5, sma50, sma200, ema10, ema30, ema100, proxy_flag, volume, 
+              macd_diff, atr, chanExit_long, chanExit_short, 
+              dmi_p, dmi_n, adx, rsi, cci, rsi_oversold_yn, rsi_oversold_flag, rsi_overbought_yn, rsi_overbought_flag, cci_oversold_yn, cci_oversold_flag, cci_overbought_yn, cci_overbought_flag, ce_long_dip_flag, ce_short_spike_flag, macd_trend_dir,
+              everything()) %>%
         arrange(symbol, date)
 
 trend_situation <- output %>%
@@ -789,9 +734,13 @@ indicators <- output %>%
                       evwma_flag,
                       overnight_flag,
                       sma5_flag,
-                      rsi_oversold_flag, 
-                      rsi_overbought_flag, 
-                      cci_oversold_flag, 
+                      rsi_oversold_yn,
+                      rsi_oversold_flag,
+                      rsi_overbought_yn, 
+                      rsi_overbought_flag,
+                      cci_oversold_yn, 
+                      cci_oversold_flag,
+                      cci_overbought_yn, 
                       cci_overbought_flag,
                       ce_long_dip_flag, 
                       ce_short_spike_flag,
@@ -821,6 +770,7 @@ indicators <- output %>%
                       csp_bearish_candle, 
                       csp_candle_stick_signal, 
                       csp_candle_stick_pattern,
+                      csp_trend_dir,
                       max_date) %>%
         arrange(symbol, date)
 

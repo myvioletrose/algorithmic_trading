@@ -20,7 +20,7 @@ symbols = c("AAPL", "AMD", "ANET", "CZR", "DASH",
 
 # subset data, symbol (for poc, smaller subset faster processing but less data for strategy evaluation)
 subset_date = "2019-01-01"
-subset_symbols = symbols
+subset_symbols = c(symbols, "BTC-USD") %>% sort()
 
 tic()
 source("a. indicators.R")
@@ -32,7 +32,6 @@ toc()
 
 ##################################### part II ###############################################
 ############## > backtest YTD
-
 # look back: 504 (24M) / 252 (12M) / 189 (9M) / 126 (6M) / 63 (3M)
 backtest_ytd_symbols = poc$symbol %>% unique()
 backtest_days_look_back = 126
@@ -55,7 +54,7 @@ toc()
 
 ################################## part III ############################################
 ############### > backtest random evaluation
-seed = 2485
+seed = 8892
 n = 100
 days_after_signal = 10
 symbol_to_study = poc$symbol %>% unique()
@@ -69,21 +68,32 @@ toc()
 
 ################################## part IV #####################################
 ################## > equity trading analysis curve
-# date parameters
-etca_start = Sys.Date()
-etca_end = Sys.Date()
-etca_look_back_period = 63
-
-# symbols to eval
-symbols_to_eval = poc$symbol %>% unique()
-#symbols_to_eval = c("SPY", "TSLA")
-
-# message to eval
-message_to_eval = "message_s"
-
-tic()
-source("e. backtest_etca.R")
-toc()
+# # date parameters
+# etca_start = Sys.Date()
+# etca_end = Sys.Date()
+# etca_look_back_period = 63
+# 
+# # symbols to eval
+# symbols_to_eval = poc$symbol %>% unique()
+# #symbols_to_eval = c("SPY", "TSLA")
+# 
+# # message to eval
+# message_to_eval = "message_s"
+# 
+# tic()
+# source("e. backtest_etca.R")
+# toc()
+# 
+# # etca_df2
+# etca_df2 <- etca_df %>%
+#         inner_join(poc %>% select(symbol, date, close, 
+#                                   matches("message_[bs]"),
+#                                   matches("message_e([[:digit:]]$)")), 
+#                    by = c("symbol" = "symbol", "end_date" = "date")) %>%
+#         select(symbol, year, date, index, start_date, end_date, 
+#                close, starts_with("message_"),
+#                everything()) %>%
+#         arrange(symbol, index, end_date)
 
 #######################################################################################
 # major output
@@ -128,7 +138,7 @@ quick_take <- poc %>%
         arrange(symbol, date) %>%
         group_by(symbol) %>%
         mutate(upside_opp = (support3_line - close) / close,
-               downsize_risk = (stop_loss_base_line - close) / close,
+               downsize_risk = (stop_loss_base_line - close) / close,               
                close_lag1 = lag(close, 1),
                close_lag3 = lag(close, 3),
                close_lag5 = lag(close, 5),
@@ -146,6 +156,20 @@ quick_take <- poc %>%
                 date, 
                 is_today, 
                 
+                csp_candle_stick_pattern,
+                csp_trend_dir,
+                
+                rsi_oversold_yn, 
+                cci_oversold_yn, 
+                macd_flag,
+                evwma_flag,
+                is_intraday_green_yn_ha,
+                ce_short_spike_flag,
+                ce_long_dip_flag,
+                
+                rsi_oversold_flag,
+                cci_oversold_flag,
+                
                 volume, 
                 open, 
                 high, 
@@ -160,8 +184,7 @@ quick_take <- poc %>%
                 
                 cci, 
                 rsi, 
-                macd_diff,
-                is_intraday_green_yn_ha,
+                macd_diff,                
                 
                 red_flag, 
                 green_flag, 
@@ -201,4 +224,6 @@ quick_take <- poc %>%
         ) %>%
         arrange(symbol, date)
 
+############################################
 quick_take %>% write_clip()
+# etca_df2 %>% write_clip()
