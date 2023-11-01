@@ -10,14 +10,19 @@ setwd("src/prod")
 ################################################ part I ###################################################################
 ############# > source indicators.R, messages.R
 # symbols
-# symbols = c("AAPL", "AMD", "ANET", "CZR", "DASH", 
-#             "DIS", "DKNG", "GOOGL", "MDB", "META", 
-#             "MSFT", "NFLX", "NVDA", "ORCL", "PLUG", 
-#             "SPY", "TGT", "TSLA", "VRT", "ZS",
-#             "SNAP")
+symbols = c("AAPL", "AMD", "ANET", "CZR", "DASH",
+            "DIS", "DKNG", "GOOGL", "MDB", "META",
+            "MSFT", "NFLX", "NVDA", "ORCL", "PLUG",
+            "SPY", "TGT", "TSLA", "VRT", "ZS",
+            "SNAP") %>%
+        sort()
 
 sp500 = tq_index("SP500")
-symbols = c("SPY", sp500$symbol) %>% sort()
+symbols = c("SPY",
+            sp500$symbol,
+            symbols) %>%
+        unique() %>%
+        sort()
 
 # subset data, symbol (for poc, smaller subset faster processing but less data for strategy evaluation)
 subset_date = "2019-01-01"
