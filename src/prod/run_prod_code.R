@@ -7,19 +7,26 @@ av_api_key(ALPHA_VANTAGE_API)
 # set directory
 setwd("src/prod")
 
+# overwrite the watchlist csv file or not
+overwrite_watchlist_csv_yn = FALSE
+
 ################################################ part I ###################################################################
 ############# > source indicators.R, messages.R
+# watchlist
+watchlist_input = read.csv(WATCHLIST_PATH, header = TRUE)
+watchlist_symbols = watchlist_input$symbol
+
 # symbols
 symbols = c("AAPL", "AMD", "ANET", "CZR", "DASH",
-            "DIS", "DKNG", "GOOGL", "MDB", "META",
-            "MSFT", "NFLX", "NVDA", "ORCL", "PLUG",
-            "SPY", "TGT", "TSLA", "VRT", "ZS",
-            "SNAP") %>%
+            "DIS", "DKNG", "GOOGL", "META", "MSFT", 
+            "NFLX", "NVDA", "ORCL", "PLUG", "SPY", 
+            "TGT", "TSLA", "VRT", "ZS", "SNAP") %>%
         sort()
 
-sp500 = tq_index("SP500")
+#sp500 = tq_index("SP500")
 symbols = c("SPY",
-            sp500$symbol,
+            #sp500$symbol,
+            #watchlist_symbols,
             symbols) %>%
         unique() %>%
         sort()
@@ -40,6 +47,7 @@ toc()
 ############## > backtest YTD
 # look back: 504 (24M) / 252 (12M) / 189 (9M) / 126 (6M) / 63 (3M)
 backtest_ytd_symbols = poc$symbol %>% unique()
+#backtest_ytd_symbols = "SNAP"
 backtest_days_look_back = 126
 backtest_end_date = poc$date %>% max() 
 
@@ -151,7 +159,6 @@ quick_take <- poc %>%
                pct_chg1 = (close - close_lag1) / close_lag1,
                pct_chg3 = (close - close_lag3) / close_lag3,
                pct_chg5 = (close - close_lag5) / close_lag5,
-               support = case_when(is.na(daily_support) ~ trailing_stop_loss_yesterday, TRUE ~ daily_support),
                target_e0 = case_when(profit_secure1_line < support1_line ~ profit_secure1_line, TRUE ~ support1_line),
                target_e1 = support3_line,
                target_e2 = profit_secure3_line) %>%
@@ -210,8 +217,7 @@ quick_take <- poc %>%
                 
                 stop_loss_base_line, 
                 trailing_stop_loss_yesterday, 
-                #daily_support,
-                #daily_target, 
+                trailing_stop_loss,
                 
                 downsize_risk,
                 upside_opp,
@@ -223,6 +229,9 @@ quick_take <- poc %>%
                 message_e1, 
                 message_e2,
                 
+                today_support,
+                today_target,
+                
                 support,
                 target_e0,
                 target_e1,
@@ -230,6 +239,39 @@ quick_take <- poc %>%
         ) %>%
         arrange(symbol, date)
 
-############################################
+############################
 quick_take %>% write_clip()
 # etca_df2 %>% write_clip()
+
+########################################################################################################
+# filter watchlist
+watchlist_today = quick_take %>%
+        filter(is_today == 1 & 
+                       is_first_buy_yn == 1 &
+                       (
+                               str_detect(tolower(message_b), 'buy') |
+                                       rsi_oversold_yn == 1 |
+                                       cci_oversold_yn == 1 |
+                                       macd_flag == 1 |
+                                       ce_short_spike_flag == 1
+                       )
+        ) %>%
+        select(symbol, date, close, atr,
+               is_first_buy_yn, message_b,
+               rsi_oversold_yn,
+               cci_oversold_yn,
+               macd_flag,
+               ce_short_spike_flag) %>%
+        arrange(symbol, date)
+
+# print number of flagged symbols today
+print(nrow(watchlist_today))
+
+# save csv
+if(overwrite_watchlist_csv_yn){
+        print(paste0("overwrite_watchlist_csv_yn: ", overwrite_watchlist_csv_yn))
+} else {
+        watchlist_today = rbind(watchlist_today, watchlist_input) %>% arrange(symbol) %>% distinct()
+}
+
+write.csv(watchlist_today, WATCHLIST_PATH, row.names = FALSE)

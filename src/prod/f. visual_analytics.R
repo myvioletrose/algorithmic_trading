@@ -68,7 +68,7 @@ t0 <- df3 %>%
 windows()
 
 # parameters
-s = "SPY"
+s = "VRT"
 
 # look back: 504 (24M) / 252 (12M) / 189 (9M) / 126 (6M) / 63 (3M)
 days_look_back = 252
@@ -152,10 +152,10 @@ zooom()
 
 # visual 3 - price, resistance/support
 v1(1)
-addTA(chandelier(c1, coef = 2, trend = "up"), col = "darkgreen", on = 1, lty = "longdash")
+#addTA(chandelier(c1, coef = 2, trend = "up"), col = "darkgreen", on = 1, lty = "longdash")
 #addTA(chandelier(c1, coef = 2, trend = "down"), col = "darkviolet", on = 1, lty = "longdash")
 addEVWMA(col = "darkorange")
-#addZLEMA(col = "purple")
+addZLEMA(col = "purple")
 #addZigZag(col = "yellow")
 zooom()
 
@@ -247,18 +247,21 @@ TA2 <- function(df, s, start_date, end_date, version, xts_type_index, save_plot_
         if(version == 3){
                 name = paste(s, "_v3.png", sep = "")
                 png(filename = paste(path, name, sep = "/"), width = 1800, height = 1200, res = 120)
-                switch(xts_type_index, c1, c1ha) %>%
-                        quantmod::chartSeries( name = s,
-                                               TA = c(addBBands(draw = "bands"), 
-                                                      addTA(chandelier(c1, coef = 2, trend = "up"), col = "darkgreen", on = 1, lty = "longdash"),
-                                                      #addTA(chandelier(c1, coef = 2, trend = "down"), col = "darkviolet", on = 1, lty = "longdash"),
-                                                      addMACD(),
-                                                      addEVWMA(col = "darkorange")
-                                                      #addZLEMA(col = "purple"),
-                                               )
+                try(
+                        switch(xts_type_index, c1, c1ha) %>%
+                                quantmod::chartSeries( name = s,
+                                                       TA = c(addBBands(draw = "bands"), 
+                                                              addTA(chandelier(c1, coef = 2, trend = "up"), col = "darkgreen", on = 1, lty = "longdash"),
+                                                              #addTA(chandelier(c1, coef = 2, trend = "down"), col = "darkviolet", on = 1, lty = "longdash"),
+                                                              addMACD(),
+                                                              addEVWMA(col = "darkorange")
+                                                              #addZLEMA(col = "purple"),
+                                                       )
+                                ),
+                        silent = TRUE
                         )
-                dev.off()                
-        }                
+                dev.off()
+        }         
         
         # version 4
         if(version == 4){
@@ -303,6 +306,7 @@ from_date = as.Date(from_date)
 #         .$symbol %>%
 #         unique()
 s = t0$symbol %>% unique()
+#s = c("CZR", "VRT", "SNAP", "GOOGL")
 s
 
 #start_date = "2022-06-01"
@@ -312,8 +316,8 @@ print(from_date)
 print(end_date)
 
 # charts parameters
-#version = c(1, 2, 3, 4)
-#xts_type = c(1, 2, 1, 1)
+# version = c(1, 2, 3, 4)
+# xts_type = c(1, 2, 1, 1)
 version = c(4)
 xts_type = c(1)
 para_df <- data.frame(ver = version,
@@ -329,9 +333,9 @@ for(i in 1:length(s)){
                                                  end_date = end_date, 
                                                  version = para_df$ver[x], 
                                                  xts_type_index = para_df$xts_type_ind[x],
-                                                 save_plot_path = PLOT_DIRECTORY,
-                                                 #folder_name = s[i],
-                                                 folder_name = "v4"
+                                                 folder_name = s[i],
+                                                 #folder_name = "v4",
+                                                 save_plot_path = PLOT_DIRECTORY
         )}) %>% 
                 invisible()
         

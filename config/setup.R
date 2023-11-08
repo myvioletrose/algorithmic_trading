@@ -17,6 +17,7 @@ if(tolower(Sys.getenv("username")) == "jng410"){
 # set local environment variables using global environment
 PACKAGE_PATH <- Sys.getenv("PACKAGE_PATH")
 STOCK_DIM_PATH <- Sys.getenv("STOCK_DIM_PATH")
+WATCHLIST_PATH <- Sys.getenv("WATCHLIST_PATH")
 DECRYPT_FUNC <- Sys.getenv("DECRYPT_FUNC")
 DATA_DIRECTORY <- Sys.getenv("DATA_DIRECTORY")
 FUNCTION_DIRECTORY <- Sys.getenv("FUNCTION_DIRECTORY")

@@ -66,6 +66,7 @@ indicators_transformed <- indicators %>%
                low,
                close,
                close_lag1,
+               trailing_stop_loss,
                trailing_stop_loss_yesterday,
                atr,
                
@@ -115,6 +116,21 @@ indicators_transformed <- indicators %>%
                matches("message_[bs]")
         ) %>%
         arrange(symbol, date)
+
+# add "buy - handpicked"
+indicators_transformed <- indicators_transformed %>%
+        mutate(message_b = case_when(symbol == "CZR" & date == "2023-10-31" ~ "buy - handpicked",
+                                     symbol == "GOOGL" & date == "2023-11-01" ~ "buy - handpicked",
+                                     symbol == "SNAP" & date == "2023-10-31" ~ "buy - handpicked",
+                                     symbol == "VRT" & date == "2023-10-31" ~ "buy - handpicked",
+                                     symbol == "TSLA" & date == "2023-11-07" ~ "buy - handpicked",
+                                     TRUE ~ message_b),
+               message_s = case_when(symbol == "CZR" & date == "2023-10-31" ~ message_b,
+                                     symbol == "GOOGL" & date == "2023-11-01" ~ message_b,
+                                     symbol == "SNAP" & date == "2023-10-31" ~ message_b,
+                                     symbol == "VRT" & date == "2023-10-31" ~ message_b,
+                                     symbol == "TSLA" & date == "2023-11-07" ~ message_b,
+                                     TRUE ~ message_s))
 
 #################################################################################################################
 ################## <<< stop-loss, stop (support), target (resistance) calculation >>> ########################################
@@ -378,11 +394,12 @@ targetSubset2 = cbind(targetSubset,
         arrange(symbol, date)
 
 ###############################################################################################################################
+###############################################################################################################################
 # red flag protocol
 num_of_day_since_last_buy_date = 11
 
 # put together - specify daily support, target, (re)define selling conditions
-poc <- indicators_transformed %>%
+poc0 <- indicators_transformed %>%
         inner_join(target %>% select(symbol, date, 
                                      in_the_buy_yn, day_since_last_buy, day_since_last_buy2,
                                      stop_loss_e_base_line, 
@@ -462,7 +479,52 @@ poc <- indicators_transformed %>%
                -daily_support_s, 
                -daily_target_s
         ) %>%
-        arrange(symbol, date) %>%
+        arrange(symbol, date)
+
+###############################################################################################################################
+# find support (for next trading day)
+supportSubset = poc0 %>%
+        filter(in_the_buy_yn == 1) %>%
+        filter(date >= subset_date) %>%
+        select(symbol, date, 
+               close, 
+               daily_support,
+               trailing_stop_loss,
+               support1_line,
+               support2_line,
+               support3_line) %>%
+        arrange(symbol, date)
+
+next_day_support = vector(mode = "list", length = nrow(supportSubset))
+
+tic()
+
+for(i in 1:nrow(supportSubset)){
+        
+        compare_this_value = supportSubset$close[i]
+        
+        next_day_support[i] = apply(supportSubset[i, ] %>% select(daily_support,
+                                                                  trailing_stop_loss,
+                                                                  support1_line,
+                                                                  support2_line,
+                                                                  support3_line),
+                                    MARGIN = 1, 
+                                    FUN = value_return_by_pos, 
+                                    compare_with = compare_this_value, 
+                                    return = "prior")
+        
+}
+
+toc()
+
+supportSubset2 = cbind(supportSubset %>% select(symbol, date), 
+                       support = unlist(next_day_support)) %>% 
+        arrange(symbol, date)
+
+###############################################################################################################################
+# final poc - include "support" for next trading day
+poc <- poc0 %>%
+        left_join(supportSubset2, by = c("symbol", "date")) %>%
         select(
                 symbol, 
                 date, 
@@ -475,6 +537,7 @@ poc <- indicators_transformed %>%
                 close, 
                 close_lag1, 
                 trailing_stop_loss_yesterday, 
+                trailing_stop_loss,
                 atr, 
                 percent_change_lag1_day, 
                 percent_change_lag3_day, 
@@ -545,13 +608,15 @@ poc <- indicators_transformed %>%
                 support3_line, 
                 profit_secure1_line, 
                 profit_secure2_line, 
-                profit_secure3_line, 
-                daily_support, 
-                daily_target, 
+                profit_secure3_line,                 
+                today_support = daily_support,
+                today_target = daily_target, 
                 message_e0, 
                 message_e1, 
-                message_e2
-        )
+                message_e2,
+                support
+        ) %>%
+        arrange(symbol, date)
 
 ############################ <<< save poc >>> #############################
 # # save tbl

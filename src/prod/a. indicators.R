@@ -107,8 +107,8 @@ df3 <- df2 %>%
         dplyr::arrange(symbol, date)
 
 ###########################################################################################################
-# filter out symbols that have less than 6-month of trading date data
-exclude_symbols = df3 %>% group_by(symbol) %>% summarise(n = n()) %>% filter(n < 126) %>% .$symbol
+# filter out symbols that have 200 or less trading days of data
+exclude_symbols = df3 %>% group_by(symbol) %>% summarise(n = n()) %>% filter(n <= 200) %>% .$symbol
 
 # begin transformation
 t0 <- df3 %>%        
@@ -122,23 +122,23 @@ t0 <- df3 %>%
                       volume) %>%
         dplyr::arrange(symbol, date)
 
-# add crypto
-crypto <- "BTC-USD" %>%
-        tq_get() %>%
-        dplyr::mutate(adj_coefficient = adjusted / close,
-                      adj_open = open * adj_coefficient,
-                      adj_high = high * adj_coefficient,
-                      adj_low = low * adj_coefficient) %>%
-        dplyr::select(symbol,
-                      date, 
-                      open = adj_open,
-                      high = adj_high,
-                      low = adj_low,
-                      close = adjusted,
-                      volume) %>%
-        dplyr::arrange(symbol, date)
-
-t0 = rbind(t0, crypto)
+# # add crypto
+# crypto <- "BTC-USD" %>%
+#         tq_get() %>%
+#         dplyr::mutate(adj_coefficient = adjusted / close,
+#                       adj_open = open * adj_coefficient,
+#                       adj_high = high * adj_coefficient,
+#                       adj_low = low * adj_coefficient) %>%
+#         dplyr::select(symbol,
+#                       date, 
+#                       open = adj_open,
+#                       high = adj_high,
+#                       low = adj_low,
+#                       close = adjusted,
+#                       volume) %>%
+#         dplyr::arrange(symbol, date)
+# 
+# t0 = rbind(t0, crypto)
 
 ############################
 # macd
