@@ -20,27 +20,27 @@ watchlist_symbols = watchlist_input$symbol
 symbols = c("AAPL", "AMD", "ANET", "CZR", "DASH",
             "DIS", "DKNG", "GOOGL", "META", "MSFT", 
             "NFLX", "NVDA", "ORCL", "PLUG", "SPY", 
+            "BAX", "EBAY",
             "TGT", "TSLA", "VRT", "ZS", "SNAP") %>%
         sort()
 
 #sp500 = tq_index("SP500")
 symbols = c("SPY",
             #sp500$symbol,
-            #watchlist_symbols,
+            watchlist_symbols,
             symbols) %>%
         unique() %>%
         sort()
 
 # subset data, symbol (for poc, smaller subset faster processing but less data for strategy evaluation)
-subset_date = "2019-01-01"
+subset_date = "2020-01-01"
 subset_symbols = c(symbols, "BTC-USD") %>% sort()
 
-tic()
-source("a. indicators.R")
-toc()
+tic("<<< ETL >>>")
 
-tic()
+source("a. indicators.R")
 source("b. messages.R")
+
 toc()
 
 ##################################### part II ###############################################
@@ -136,6 +136,42 @@ toc()
 #etca_df  # <pay attention>
 
 ####################################################################################################################################################
+########################################################################################################
+# filter watchlist
+watchlist_today = poc %>%
+        filter(is_today == 1 & 
+                       #is_first_buy_yn == 1 &
+                       (
+                               str_detect(tolower(message_b), 'buy') |
+                                       ( macd_trend_dir == 1 & close <= evwma & (green_flag == 1 | rsi_oversold_yn == 1 | cci_oversold_yn == 1) ) |
+                                       ( (macd_flag == 1 | evwma_flag == 1 | ce_short_spike_flag == 1) & (rsi_oversold_yn == 1 | cci_oversold_yn == 1) ) 
+                       )
+        ) %>%
+        select(symbol, date, close, evwma, zlema, atr,
+               is_first_buy_yn, message_b,
+               rsi_oversold_yn,
+               cci_oversold_yn,
+               macd_flag,
+               evwma_flag, 
+               ce_short_spike_flag) %>%
+        arrange(symbol, date)
+
+# print number of flagged symbols today
+print(nrow(watchlist_today))
+
+# print symbol(s)
+highlight_symbols = watchlist_today$symbol %>% unique() %>% sort()
+print(highlight_symbols)
+
+# save csv
+if(overwrite_watchlist_csv_yn){
+        print(paste0("overwrite_watchlist_csv_yn: ", overwrite_watchlist_csv_yn))
+} else {
+        watchlist_today = rbind(watchlist_today, watchlist_input) %>% arrange(symbol) %>% distinct()
+}
+
+write.csv(watchlist_today, WATCHLIST_PATH, row.names = FALSE)
+
 ################################################# analysis begin here ###########################################
 # simpoc2
 # backtest_rand_evalDf
@@ -151,7 +187,9 @@ quick_take <- poc %>%
         ungroup() %>%
         arrange(symbol, date) %>%
         group_by(symbol) %>%
-        mutate(upside_opp = (support3_line - close) / close,
+        mutate(highlight_yn = case_when(symbol %in% highlight_symbols ~ 1,
+                                        TRUE ~ 0),
+               upside_opp = (support3_line - close) / close,
                downsize_risk = (stop_loss_base_line - close) / close,               
                close_lag1 = lag(close, 1),
                close_lag3 = lag(close, 3),
@@ -168,6 +206,7 @@ quick_take <- poc %>%
                 symbol, 
                 date, 
                 is_today, 
+                highlight_yn,
                 
                 csp_candle_stick_pattern,
                 csp_trend_dir,
@@ -243,35 +282,3 @@ quick_take <- poc %>%
 quick_take %>% write_clip()
 # etca_df2 %>% write_clip()
 
-########################################################################################################
-# filter watchlist
-watchlist_today = quick_take %>%
-        filter(is_today == 1 & 
-                       is_first_buy_yn == 1 &
-                       (
-                               str_detect(tolower(message_b), 'buy') |
-                                       rsi_oversold_yn == 1 |
-                                       cci_oversold_yn == 1 |
-                                       macd_flag == 1 |
-                                       ce_short_spike_flag == 1
-                       )
-        ) %>%
-        select(symbol, date, close, atr,
-               is_first_buy_yn, message_b,
-               rsi_oversold_yn,
-               cci_oversold_yn,
-               macd_flag,
-               ce_short_spike_flag) %>%
-        arrange(symbol, date)
-
-# print number of flagged symbols today
-print(nrow(watchlist_today))
-
-# save csv
-if(overwrite_watchlist_csv_yn){
-        print(paste0("overwrite_watchlist_csv_yn: ", overwrite_watchlist_csv_yn))
-} else {
-        watchlist_today = rbind(watchlist_today, watchlist_input) %>% arrange(symbol) %>% distinct()
-}
-
-write.csv(watchlist_today, WATCHLIST_PATH, row.names = FALSE)

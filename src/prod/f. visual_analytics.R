@@ -218,6 +218,7 @@ TA2 <- function(df, s, start_date, end_date, version, xts_type_index, save_plot_
                                                       addMACD(),
                                                       addEMA(n = 5, col = "red"),
                                                       addEMA(n = 20, col = "blue"),
+                                                      addZLEMA(col = "purple"),
                                                       addCCI(),
                                                       addRSI()
                                                )
@@ -280,6 +281,23 @@ TA2 <- function(df, s, start_date, end_date, version, xts_type_index, save_plot_
                         )
                 dev.off()
         }
+
+        # version 5
+        if(version == 5){
+                name = paste(s, "_v5.png", sep = "")
+                png(filename = paste(path, name, sep = "/"), width = 1800, height = 1200, res = 120)
+                switch(xts_type_index, c1, c1ha) %>%
+                        quantmod::chartSeries( name = s,
+                                               TA = c(addBBands(draw = "bands"), 
+                                                      addEVWMA(col = "darkorange"),
+                                                      addZLEMA(col = "purple"),
+                                                      addMACD(),
+                                                      addCCI(),
+                                                      addRSI()                                                    
+                                               )
+                        )
+                dev.off()
+        }
         
 }
 
@@ -316,10 +334,11 @@ print(from_date)
 print(end_date)
 
 # charts parameters
-# version = c(1, 2, 3, 4)
-# xts_type = c(1, 2, 1, 1)
+# version = c(1, 2, 3, 4, 5)
+# xts_type = c(1, 2, 1, 1, 1)
 version = c(4)
 xts_type = c(1)
+folder_name = "v4"
 para_df <- data.frame(ver = version,
                       xts_type_ind = xts_type)
 
@@ -333,8 +352,8 @@ for(i in 1:length(s)){
                                                  end_date = end_date, 
                                                  version = para_df$ver[x], 
                                                  xts_type_index = para_df$xts_type_ind[x],
-                                                 folder_name = s[i],
-                                                 #folder_name = "v4",
+                                                 #folder_name = s[i],
+                                                 folder_name = folder_name,
                                                  save_plot_path = PLOT_DIRECTORY
         )}) %>% 
                 invisible()
