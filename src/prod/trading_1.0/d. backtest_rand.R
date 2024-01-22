@@ -459,33 +459,33 @@ msg_compare <- backtest_rand_evalDf %>%
         select(message_type, n, avg_days_of_hold, win_rate, win, loss, win_loss_ratio, avg_percent_chg, CI.down, CI.up) %>%
         arrange(message_type)
 
-# message level2 (with situations)
-msg_compare2 <- backtest_rand_evalDf %>%
-        dplyr::inner_join(poc %>%
-                                  select(symbol, eval_start_date = date,
-                                         year, volume, situation),
-                          by = c("symbol", "eval_start_date")) %>%
-        dplyr::mutate(win_rate_flag = case_when(net_value >0 ~ 1, TRUE ~ 0),
-                      win = case_when(net_value >0 ~ net_value, TRUE ~ 0),
-                      loss = case_when(net_value <=0 ~ abs(net_value), TRUE ~ 0)) %>%
-        group_by(message_type, situation) %>%
-        summarise(n = n(),
-                  win_rate = sum(win_rate_flag) / n,
-                  avg_days_of_hold = round(mean(days_between)),
-                  win = sum(win),
-                  loss = sum(loss),
-                  avg_percent_chg = round(mean(percent_chg), 3),
-                  sd_percent_chg = sd(percent_chg)) %>%
-        ungroup() %>%
-        group_by(message_type, situation, n, win_rate, avg_days_of_hold, win, loss, avg_percent_chg, sd_percent_chg) %>%
-        dplyr::mutate(loss = case_when(loss == 0 ~ 1, TRUE ~ loss)) %>%
-        summarise(win_loss_ratio = sum(win) / sum(loss)) %>%
-        ungroup() %>%
-        dplyr::mutate(margin_of_error = round(1.96 * sd_percent_chg / sqrt(n-1), 3),
-                      CI.up = avg_percent_chg + margin_of_error,
-                      CI.down = avg_percent_chg - margin_of_error) %>%
-        select(message_type, situation, n, avg_days_of_hold, win_rate, win, loss, win_loss_ratio, avg_percent_chg, CI.down, CI.up) %>%
-        arrange(message_type, situation)
+# # message level2 (with situations)
+# msg_compare2 <- backtest_rand_evalDf %>%
+#         dplyr::inner_join(poc %>%
+#                                   select(symbol, eval_start_date = date,
+#                                          year, volume, situation),
+#                           by = c("symbol", "eval_start_date")) %>%
+#         dplyr::mutate(win_rate_flag = case_when(net_value >0 ~ 1, TRUE ~ 0),
+#                       win = case_when(net_value >0 ~ net_value, TRUE ~ 0),
+#                       loss = case_when(net_value <=0 ~ abs(net_value), TRUE ~ 0)) %>%
+#         group_by(message_type, situation) %>%
+#         summarise(n = n(),
+#                   win_rate = sum(win_rate_flag) / n,
+#                   avg_days_of_hold = round(mean(days_between)),
+#                   win = sum(win),
+#                   loss = sum(loss),
+#                   avg_percent_chg = round(mean(percent_chg), 3),
+#                   sd_percent_chg = sd(percent_chg)) %>%
+#         ungroup() %>%
+#         group_by(message_type, situation, n, win_rate, avg_days_of_hold, win, loss, avg_percent_chg, sd_percent_chg) %>%
+#         dplyr::mutate(loss = case_when(loss == 0 ~ 1, TRUE ~ loss)) %>%
+#         summarise(win_loss_ratio = sum(win) / sum(loss)) %>%
+#         ungroup() %>%
+#         dplyr::mutate(margin_of_error = round(1.96 * sd_percent_chg / sqrt(n-1), 3),
+#                       CI.up = avg_percent_chg + margin_of_error,
+#                       CI.down = avg_percent_chg - margin_of_error) %>%
+#         select(message_type, situation, n, avg_days_of_hold, win_rate, win, loss, win_loss_ratio, avg_percent_chg, CI.down, CI.up) %>%
+#         arrange(message_type, situation)
 
 ###############################################################################################
 ########### <<< detail report >>>

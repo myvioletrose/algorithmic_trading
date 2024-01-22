@@ -315,6 +315,39 @@ adx <- t0 %>%
         ungroup()
 
 ############################
+# Donchian Channel
+dcc <- t0 %>%
+        arrange(symbol, date) %>%
+        group_by(symbol) %>%
+        tq_transmute(select = c("high", "low"),
+                     n = 10, 
+                     mutate_fun = DonchianChannel,
+                     include.lag = TRUE,
+                     col_rename = c("dcc_high", "dcc_mid", "dcc_low")) %>%
+        ungroup() %>%
+        inner_join(t0 %>% 
+                           select(symbol, date, close), 
+                   by = c("symbol", "date")) %>%
+        group_by(symbol) %>%
+        mutate(dcc_mid_lag1 = lag(dcc_mid, 1),
+               dcc_mid_lag2 = lag(dcc_mid, 2),
+               dcc_mid_lag3 = lag(dcc_mid, 3),
+               dcc_mid_lag4 = lag(dcc_mid, 4),
+               close_lag1 = lag(close, 1),
+               close_lag2 = lag(close, 2),
+               close_lag3 = lag(close, 3),
+               close_lag4 = lag(close, 4),
+               dcc_flag = case_when( (close > dcc_mid) & (close_lag1 < dcc_mid_lag1) & (close_lag2 < dcc_mid_lag2) & (close_lag3 < dcc_mid_lag3) & (close_lag4 < dcc_mid_lag4) ~ 1,
+                                     (close > dcc_mid) & (close_lag1 > dcc_mid_lag1) & (close_lag2 < dcc_mid_lag2) & (close_lag3 < dcc_mid_lag3) & (close_lag4 < dcc_mid_lag4) ~ 1,
+                                     (close < dcc_mid) & (close_lag1 > dcc_mid_lag1) & (close_lag2 > dcc_mid_lag2) & (close_lag3 > dcc_mid_lag3) & (close_lag4 > dcc_mid_lag4) ~ -1,
+                                     (close < dcc_mid) & (close_lag1 < dcc_mid_lag1) & (close_lag2 > dcc_mid_lag2) & (close_lag3 > dcc_mid_lag3) & (close_lag4 > dcc_mid_lag4) ~ -1,
+                                     TRUE ~ 0 )
+        ) %>%
+        ungroup() %>%
+        select(symbol, date, dcc_high, dcc_mid, dcc_low, dcc_flag) %>%
+        arrange(symbol, date)
+
+############################
 # rsi
 rsi <- t0 %>%
         arrange(symbol, date) %>%
@@ -653,6 +686,7 @@ output <- atr %>%
                                         zlema, proxy_flag, sma5_flag), 
                           by = c("symbol", "date")) %>%
         dplyr::inner_join(adx %>% select(symbol, date, dmi_p, dmi_n, adx), by = c("symbol", "date")) %>%
+        dplyr::inner_join(dcc %>% select(symbol, date, dcc_high, dcc_mid, dcc_low, dcc_flag), by = c("symbol", "date")) %>%
         dplyr::inner_join(rsi %>% select(symbol, date, rsi, rsi_oversold_yn, rsi_oversold_flag, rsi_overbought_yn, rsi_overbought_flag), by = c("symbol", "date")) %>%
         dplyr::inner_join(cci %>% select(symbol, date, cci, cci_oversold_yn, cci_oversold_flag, cci_overbought_yn, cci_overbought_flag), by = c("symbol", "date")) %>%
         dplyr::inner_join(csp, by = c("symbol", "date")) %>%
@@ -661,8 +695,8 @@ output <- atr %>%
                                                 TRUE ~ 0)) %>%
         dplyr::select(symbol, date,
               open, high, low, close, zlema, sma5, sma50, sma200, ema10, ema30, ema100, proxy_flag, volume, 
-              macd_diff, atr, chanExit_long, chanExit_short, 
-              dmi_p, dmi_n, adx, rsi, cci, rsi_oversold_yn, rsi_oversold_flag, rsi_overbought_yn, rsi_overbought_flag, cci_oversold_yn, cci_oversold_flag, cci_overbought_yn, cci_overbought_flag, ce_long_dip_flag, ce_short_spike_flag, macd_trend_dir,
+              macd_diff, atr, chanExit_long, chanExit_short, dcc_high, dcc_mid, dcc_low,
+              dmi_p, dmi_n, adx, rsi, cci, rsi_oversold_yn, rsi_oversold_flag, rsi_overbought_yn, rsi_overbought_flag, cci_oversold_yn, cci_oversold_flag, cci_overbought_yn, cci_overbought_flag, ce_long_dip_flag, ce_short_spike_flag, dcc_flag, macd_trend_dir,
               everything()) %>%
         arrange(symbol, date)
 
@@ -717,7 +751,10 @@ indicators <- output %>%
                       evwma,
                       chanExit_long,
                       chanExit_short,
-                      atr,                      
+                      atr,     
+                      dcc_high, 
+                      dcc_mid, 
+                      dcc_low,                 
                       sma5,
                       sma50,
                       sma200,
@@ -748,6 +785,7 @@ indicators <- output %>%
                       cci_overbought_flag,
                       ce_long_dip_flag, 
                       ce_short_spike_flag,
+                      dcc_flag,
                       situation,
                       csp_doji, 
                       csp_dragonfly_doji, 

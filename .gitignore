@@ -5,4 +5,4 @@ __data__/
 .httr-oauth
 *_template_*.xlsx
 *prototype_*.xlsx
-xtslist.rds
+*.RDS

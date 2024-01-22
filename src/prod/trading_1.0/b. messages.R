@@ -69,7 +69,9 @@ indicators_transformed <- indicators %>%
                trailing_stop_loss,
                trailing_stop_loss_yesterday,
                atr,
-               
+               dcc_high, 
+               dcc_mid, 
+               dcc_low,
                percent_change_lag1_day,
                percent_change_lag3_day,               
                
@@ -89,7 +91,8 @@ indicators_transformed <- indicators %>%
                macd_flag,
                is_intraday_green_yn_ha,
                evwma_flag,
-               
+               dcc_flag,
+
                red_flag,
                green_flag,
                proxy_flag,
@@ -124,12 +127,18 @@ indicators_transformed <- indicators_transformed %>%
                                      symbol == "SNAP" & date == "2023-10-31" ~ "buy - handpicked",
                                      symbol == "VRT" & date == "2023-10-31" ~ "buy - handpicked",
                                      symbol == "TSLA" & date == "2023-11-07" ~ "buy - handpicked",
+                                     symbol == "MRK" & date == "2023-12-04" ~ "buy - handpicked",
+                                     symbol == "CF" & date == "2023-12-07" ~ "buy - handpicked",
+                                     symbol == "META" & date == "2023-12-08" ~ "buy - handpicked",
                                      TRUE ~ message_b),
                message_s = case_when(symbol == "CZR" & date == "2023-10-31" ~ message_b,
                                      symbol == "GOOGL" & date == "2023-11-01" ~ message_b,
                                      symbol == "SNAP" & date == "2023-10-31" ~ message_b,
                                      symbol == "VRT" & date == "2023-10-31" ~ message_b,
                                      symbol == "TSLA" & date == "2023-11-07" ~ message_b,
+                                     symbol == "MRK" & date == "2023-12-04" ~ message_b,
+                                     symbol == "CF" & date == "2023-12-07" ~ message_b,
+                                     symbol == "META" & date == "2023-12-08" ~ message_b,
                                      TRUE ~ message_s))
 
 #################################################################################################################
@@ -226,16 +235,20 @@ target = target5 %>%
                support1_e_line = close_flagged_by_buy + (support1 * atr_flagged_by_buy),
                support2_e_line = close_flagged_by_buy + (support2 * atr_flagged_by_buy),
                support3_e_line = close_flagged_by_buy + (support3 * atr_flagged_by_buy),
-               profit_secure1_e_line = close_flagged_by_buy + (secure_a * close_flagged_by_buy),
+               profit_secure1_e_line = close_flagged_by_buy + (secure_a * close_flagged_by_buy),               
                profit_secure2_e_line = close_flagged_by_buy + (secure_b * close_flagged_by_buy),
-               profit_secure3_e_line = close_flagged_by_buy + (secure_c * close_flagged_by_buy)) %>%
+               profit_secure3_e_line = close_flagged_by_buy + (secure_c * close_flagged_by_buy),
+               # update support1_e_line (based on the profit_secure1_e_line, by default (as of 2023-12-11, is 3% -> the exit target threshold))
+               support1_e_line = case_when(support1_e_line > profit_secure1_e_line ~ profit_secure1_e_line, TRUE ~ support1_e_line)) %>%
         mutate(stop_loss_s_base_line = close_flagged_by_buy2 - (stop_loss_base * atr_flagged_by_buy2),
                support1_s_line = close_flagged_by_buy2 + (support1 * atr_flagged_by_buy2),
                support2_s_line = close_flagged_by_buy2 + (support2 * atr_flagged_by_buy2),
                support3_s_line = close_flagged_by_buy2 + (support3 * atr_flagged_by_buy2),
                profit_secure1_s_line = close_flagged_by_buy2 + (secure_a * close_flagged_by_buy2),
                profit_secure2_s_line = close_flagged_by_buy2 + (secure_b * close_flagged_by_buy2),
-               profit_secure3_s_line = close_flagged_by_buy2 + (secure_c * close_flagged_by_buy2)) %>%
+               profit_secure3_s_line = close_flagged_by_buy2 + (secure_c * close_flagged_by_buy2),
+               # update support1_s_line (based on the profit_secure1_s_line, by default (as of 2023-12-11, is 3% -> the exit target threshold))
+               support1_s_line = case_when(support1_s_line > profit_secure1_s_line ~ profit_secure1_s_line, TRUE ~ support1_s_line)) %>%
         left_join(day_since_last_buy, by = c("symbol", "date", "last_buy_date")) %>%
         left_join(day_since_last_buy2, by = c("symbol", "date", "last_buy_date2")) %>%
         arrange(symbol, date)
@@ -539,6 +552,9 @@ poc <- poc0 %>%
                 trailing_stop_loss_yesterday, 
                 trailing_stop_loss,
                 atr, 
+                dcc_high,
+                dcc_mid,
+                dcc_low,
                 percent_change_lag1_day, 
                 percent_change_lag3_day, 
                 sma5, 
@@ -554,7 +570,8 @@ poc <- poc0 %>%
                 macd_trend_dir, 
                 macd_flag,
                 is_intraday_green_yn_ha,
-                evwma_flag,                
+                evwma_flag,
+                dcc_flag,  
                 red_flag, 
                 green_flag, 
                 proxy_flag, 

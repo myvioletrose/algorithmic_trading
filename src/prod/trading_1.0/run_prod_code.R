@@ -5,23 +5,27 @@ ALPHA_VANTAGE_API <- Sys.getenv("ALPHA_VANTAGE_API")
 av_api_key(ALPHA_VANTAGE_API)
 
 # set directory
-setwd("src/prod")
+setwd("src/prod/trading_1.0")
 
 # overwrite the watchlist csv file or not
 overwrite_watchlist_csv_yn = FALSE
 
 ################################################ part I ###################################################################
 ############# > source indicators.R, messages.R
+# current holding stocks
+current_stocks = c("SNAP", "CZR", "FLT", "PHM", "META", "CDNS")
+
 # watchlist
 watchlist_input = read.csv(WATCHLIST_PATH, header = TRUE)
 watchlist_symbols = watchlist_input$symbol
 
 # symbols
-symbols = c("AAPL", "AMD", "ANET", "CZR", "DASH",
-            "DIS", "DKNG", "GOOGL", "META", "MSFT", 
-            "NFLX", "NVDA", "ORCL", "PLUG", "SPY", 
-            "BAX", "EBAY",
-            "TGT", "TSLA", "VRT", "ZS", "SNAP") %>%
+symbols = c("META", "AAPL", "AMZN", "NFLX", "GOOGL", "TSLA", "SPY",
+            "DKNG", "ANET", "CZR", "DASH", "JOBY", 
+            "TGT", "ZS", "CRM", "EXPE", "PLNT",
+            "SHOP", "NOW",
+            "SNOW", "MDB", "CRWD", "SYM", "SNPS", "PATH",
+            current_stocks) %>%
         sort()
 
 #sp500 = tq_index("SP500")
@@ -33,7 +37,7 @@ symbols = c("SPY",
         sort()
 
 # subset data, symbol (for poc, smaller subset faster processing but less data for strategy evaluation)
-subset_date = "2020-01-01"
+subset_date = "2021-01-01"
 subset_symbols = c(symbols, "BTC-USD") %>% sort()
 
 tic("<<< ETL >>>")
@@ -144,13 +148,14 @@ watchlist_today = poc %>%
                        (
                                str_detect(tolower(message_b), 'buy') |
                                        ( macd_trend_dir == 1 & close <= evwma & (green_flag == 1 | rsi_oversold_yn == 1 | cci_oversold_yn == 1) ) |
-                                       ( (macd_flag == 1 | evwma_flag == 1 | ce_short_spike_flag == 1) & (rsi_oversold_yn == 1 | cci_oversold_yn == 1) ) 
+                                       ( (macd_flag == 1 | evwma_flag == 1 | ce_short_spike_flag == 1 | dcc_flag == 1) & (rsi_oversold_yn == 1 | cci_oversold_yn == 1) ) 
                        )
         ) %>%
         select(symbol, date, close, evwma, zlema, atr,
                is_first_buy_yn, message_b,
                rsi_oversold_yn,
                cci_oversold_yn,
+               dcc_flag,
                macd_flag,
                evwma_flag, 
                ce_short_spike_flag) %>%
@@ -179,6 +184,8 @@ write.csv(watchlist_today, WATCHLIST_PATH, row.names = FALSE)
 # msg_compare
 # etca_df
 
+highlight_symbols2 = c(highlight_symbols, current_stocks) %>% sort()
+
 # quick take
 quick_take <- poc %>%
         arrange(symbol, desc(date)) %>%
@@ -187,7 +194,7 @@ quick_take <- poc %>%
         ungroup() %>%
         arrange(symbol, date) %>%
         group_by(symbol) %>%
-        mutate(highlight_yn = case_when(symbol %in% highlight_symbols ~ 1,
+        mutate(highlight_yn = case_when(symbol %in% highlight_symbols2 ~ 1,
                                         TRUE ~ 0),
                upside_opp = (support3_line - close) / close,
                downsize_risk = (stop_loss_base_line - close) / close,               
@@ -213,6 +220,8 @@ quick_take <- poc %>%
                 
                 rsi_oversold_yn, 
                 cci_oversold_yn, 
+                dcc_flag, 
+                
                 macd_flag,
                 evwma_flag,
                 is_intraday_green_yn_ha,

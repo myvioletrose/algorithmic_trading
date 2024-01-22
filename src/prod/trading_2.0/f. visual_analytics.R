@@ -5,7 +5,7 @@ ALPHA_VANTAGE_API <- Sys.getenv("ALPHA_VANTAGE_API")
 av_api_key(ALPHA_VANTAGE_API)
 
 # symbols
-symbols = c("SPY", "GOOGL", "META", "AMC", "TSLA", "AOS")
+symbols = c("SPY", "SNAP", "FLT", "PHM", "META")
 
 # get data
 df = symbols %>%
@@ -68,7 +68,7 @@ t0 <- df3 %>%
 windows()
 
 # parameters
-s = "VRT"
+s = "TSLA"
 
 # look back: 504 (24M) / 252 (12M) / 189 (9M) / 126 (6M) / 63 (3M)
 days_look_back = 252
@@ -159,13 +159,25 @@ addZLEMA(col = "purple")
 #addZigZag(col = "yellow")
 zooom()
 
-# visual 4 - "the chart"
+# visual 4 - Chandelier Exit
 v1(1)
 addSAR()
 addCCI() 
-#addTA(chandelier(c1, coef = 2, trend = "up"), col = "darkgreen", on = 1, lty = "longdash")
-addTA(chandelier(c1, coef = 2, trend = "down"), col = "darkviolet", on = 1, lty = "longdash")
+addTA(chandelier(c1, coef = 3, trend = "up"), col = "darkgreen", on = 1, lty = "longdash")
+#addTA(chandelier(c1, coef = 3, trend = "down"), col = "darkviolet", on = 1, lty = "longdash")
 #addEVWMA(col = "darkorange")
+zooom()
+
+# visual 5 - "the chart"
+v1(1)
+addSMA(n = 5, col = "red")
+addSMA(n = 50, col = "white")
+addEVWMA(col = "darkorange")
+#addZLEMA(col = "purple")
+addCCI()
+addRSI()
+#addVo()
+#addOBV()
 zooom()
 
 ################### additonal features
@@ -260,7 +272,7 @@ TA2 <- function(df, s, start_date, end_date, version, xts_type_index, save_plot_
                                                        )
                                 ),
                         silent = TRUE
-                        )
+                )
                 dev.off()
         }         
         
@@ -281,7 +293,7 @@ TA2 <- function(df, s, start_date, end_date, version, xts_type_index, save_plot_
                         )
                 dev.off()
         }
-
+        
         # version 5
         if(version == 5){
                 name = paste(s, "_v5.png", sep = "")
@@ -289,11 +301,15 @@ TA2 <- function(df, s, start_date, end_date, version, xts_type_index, save_plot_
                 switch(xts_type_index, c1, c1ha) %>%
                         quantmod::chartSeries( name = s,
                                                TA = c(addBBands(draw = "bands"), 
+                                                      addSMA(n = 5, col = "red"),
+                                                      addSMA(n = 50, col = "white"),
                                                       addEVWMA(col = "darkorange"),
-                                                      addZLEMA(col = "purple"),
+                                                      #addZLEMA(col = "purple"),
+                                                      #addOBV(),
                                                       addMACD(),
                                                       addCCI(),
-                                                      addRSI()                                                    
+                                                      addRSI()
+                                                      #addVo(),                                                      
                                                )
                         )
                 dev.off()
@@ -303,7 +319,7 @@ TA2 <- function(df, s, start_date, end_date, version, xts_type_index, save_plot_
 
 ###############################################################################
 # look back: 504 (24M) / 252 (12M) / 189 (9M) / 126 (6M) / 63 (3M)
-days_look_back = 189
+days_look_back = 252
 days_look_back_flagged_buy_signal = 10
 end_date = t0$date %>% max() 
 
@@ -323,9 +339,20 @@ from_date = as.Date(from_date)
 #         filter(cci_overbought_flag == 0) %>%
 #         .$symbol %>%
 #         unique()
-s = t0$symbol %>% unique()
-#s = c("CZR", "VRT", "SNAP", "GOOGL")
+#s = t0$symbol %>% unique()
+s = highlight_symbols2
 s
+
+# s = c('AIZ', 
+#       'CNC', 
+#       'J', 
+#       'PTC', 
+#       'SPY', 
+#       'SNAP', 
+#       'EBAY', 
+#       'FRT', 
+#       'FLT', 
+#       'MRK')
 
 #start_date = "2022-06-01"
 #end_date = "2023-03-01"
@@ -334,11 +361,15 @@ print(from_date)
 print(end_date)
 
 # charts parameters
-# version = c(1, 2, 3, 4, 5)
-# xts_type = c(1, 2, 1, 1, 1)
-version = c(4)
+#version = c(1, 2, 3, 4, 5)
+#xts_type = c(1, 2, 1, 1, 1)
+#version = c(2, 5)
+#xts_type = c(2, 1)
+
+version = c(5)
 xts_type = c(1)
-folder_name = "v4"
+folder_name = "v5"
+#folder_name = "highlight_symbols"
 para_df <- data.frame(ver = version,
                       xts_type_ind = xts_type)
 
