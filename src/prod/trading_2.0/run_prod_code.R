@@ -8,12 +8,12 @@ av_api_key(ALPHA_VANTAGE_API)
 setwd("src/prod/trading_2.0")
 
 # overwrite the watchlist csv file or not
-overwrite_watchlist_yn = FALSE
+overwrite_watchlist_yn = TRUE
 
 ################################################ part I ###################################################################
 ############# > source indicators.R, messages.R
 # current holding stocks
-current_stocks = c("SNAP", "TSLA", "FLT", "PHM", "META")
+current_stocks = c("SNAP", "TSLA", "FLT", "META", "BX", "STLD", "HAL")
 
 # watchlist
 wl = openxlsx::loadWorkbook(WATCHLIST_PATH)
@@ -28,16 +28,16 @@ symbols = c("META", "AAPL", "AMZN", "NFLX", "GOOGL", "TSLA", "SPY", "QQQ", "GLD"
             current_stocks) %>%
         sort()
 
-sp500 = tq_index("SP500")
+#sp500 = tq_index("SP500")
 symbols = c("SPY",
-            sp500$symbol,
+            #sp500$symbol,
             watchlist_symbols,
             symbols) %>%
         unique() %>%
         sort()
 
 # subset data, symbol (for poc, smaller subset faster processing but less data for strategy evaluation)
-subset_date = "2021-01-01"
+subset_date = "2022-01-01"
 subset_symbols = c(symbols, "BTC-USD") %>% sort()
 
 tic("<<< ETL >>>")
@@ -73,11 +73,11 @@ toc()
 ################################## part III ############################################
 ############### > backtest random evaluation
 seed = 8892
-n = 10
+n = 30
 days_after_signal = 10
 symbol_to_study = poc$symbol %>% unique()
 rand_date_start = '1990-01-01'
-rand_date_end = '2023-12-31'
+rand_date_end = '2022-12-31'
 first_buy_only = FALSE
 
 tic()
@@ -145,12 +145,12 @@ toc()
 print(paste0("overwrite_watchlist_yn: ", overwrite_watchlist_yn))
 
 if(overwrite_watchlist_yn){
-
+        
         watchlist_today = poc %>%
                 filter(is_today == 1 & 
                                #is_first_buy_yn == 1 &
                                (
-                                       str_detect(tolower(message_b), 'buy') 
+                                       symbol %in% current_stocks | str_detect(tolower(message_b), 'buy') | ha_real_flag == 1
                                )
                 ) %>%
                 select(symbol) %>%
@@ -189,7 +189,7 @@ if(overwrite_watchlist_yn){
                 filter(is_today == 1 & 
                                #is_first_buy_yn == 1 &
                                (
-                                       str_detect(tolower(message_b), 'buy') 
+                                       symbol %in% current_stocks | str_detect(tolower(message_b), 'buy') | ha_real_flag == 1
                                )
                 ) %>%
                 select(symbol)
@@ -241,7 +241,6 @@ openxlsx::writeData(wb = wb,
 
 # save workbook
 openxlsx::saveWorkbook(wb, WATCHLIST_PATH, overwrite = TRUE)
-
 
 ################################################# analysis begin here ###########################################
 # simpoc2

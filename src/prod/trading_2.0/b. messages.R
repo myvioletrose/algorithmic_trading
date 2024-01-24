@@ -113,7 +113,7 @@ target0 = indicators_transformed %>%
         arrange(symbol, date)
 
 target1 = target0 %>%
-        filter(grepl("sell|down_alert", message_s, ignore.case = TRUE)) %>%
+        filter(grepl("sell - profit protect|down_alert - macd|down_alert - ha_real|down_alert - ce|down_alert - evwma", message_s, ignore.case = TRUE)) %>%
         select(symbol, sell_date = date, close, atr, message_b, message_s)
 
 target2 = target0 %>%
