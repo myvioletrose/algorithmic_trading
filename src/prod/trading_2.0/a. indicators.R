@@ -110,9 +110,13 @@ df3 <- df2 %>%
 # filter out symbols that have 200 or less trading days of data
 exclude_symbols = df3 %>% group_by(symbol) %>% summarise(n = n()) %>% filter(n <= 200) %>% .$symbol
 
+#subset_date = "1990-01-01"
+
 # begin transformation
+# use subset_date to get smaller dataset in exchange for faster processing
 t0 <- df3 %>%        
         dplyr::filter(symbol %nin% exclude_symbols) %>%
+        dplyr::filter(date >= subset_date) %>%
         dplyr::select(symbol,
                       date, 
                       open = adj_open,
@@ -276,8 +280,14 @@ ha <- dplyr::inner_join(ha0, t0 %>% select(symbol, date, real_close = close), by
                                                     real_close_lag6 < close_ema_lag6 &
                                                     real_close_lag7 < close_ema_lag7 &
                                                     real_close_lag8 < close_ema_lag8 ~ 1,
-                                            real_close > close_ema & real_close_lag1 > close_ema_lag1 & real_close_lag2 < close_ema_lag2 &
+                                            real_close > close_ema & real_close_lag1 > close_ema_lag1 & real_close_lag2 > close_ema_lag2 &
                                                     real_close_lag3 < close_ema_lag3 &
+                                                    real_close_lag4 < close_ema_lag4 &
+                                                    real_close_lag5 < close_ema_lag5 &
+                                                    real_close_lag6 < close_ema_lag6 &
+                                                    real_close_lag7 < close_ema_lag7 &
+                                                    real_close_lag8 < close_ema_lag8 ~ 1,
+                                            real_close > close_ema & real_close_lag1 > close_ema_lag1 & real_close_lag2 > close_ema_lag2 & real_close_lag3 > close_ema_lag3 &
                                                     real_close_lag4 < close_ema_lag4 &
                                                     real_close_lag5 < close_ema_lag5 &
                                                     real_close_lag6 < close_ema_lag6 &
@@ -300,13 +310,19 @@ ha <- dplyr::inner_join(ha0, t0 %>% select(symbol, date, real_close = close), by
                                                     real_close_lag6 > close_ema_lag6 &
                                                     real_close_lag7 > close_ema_lag7 &
                                                     real_close_lag8 > close_ema_lag8 ~ -1,
-                                            real_close < close_ema & real_close_lag1 < close_ema_lag1 & real_close_lag2 > close_ema_lag2 &
+                                            real_close < close_ema & real_close_lag1 < close_ema_lag1 & real_close_lag2 < close_ema_lag2 &
                                                     real_close_lag3 > close_ema_lag3 &
                                                     real_close_lag4 > close_ema_lag4 &
                                                     real_close_lag5 > close_ema_lag5 &
                                                     real_close_lag6 > close_ema_lag6 &
                                                     real_close_lag7 > close_ema_lag7 &
                                                     real_close_lag8 > close_ema_lag8 ~ -1, 
+                                            real_close < close_ema & real_close_lag1 < close_ema_lag1 & real_close_lag2 < close_ema_lag2 & real_close_lag3 < close_ema_lag3 &
+                                                    real_close_lag4 > close_ema_lag4 &
+                                                    real_close_lag5 > close_ema_lag5 &
+                                                    real_close_lag6 > close_ema_lag6 &
+                                                    real_close_lag7 > close_ema_lag7 &
+                                                    real_close_lag8 > close_ema_lag8 ~ -1,
                                             TRUE ~ 0),
                       smooth_flag = case_when(close > close_ema & 
                                                       close_lag1 < close_ema_lag1 &
@@ -325,8 +341,14 @@ ha <- dplyr::inner_join(ha0, t0 %>% select(symbol, date, real_close = close), by
                                                       close_lag6 < close_ema_lag6 &
                                                       close_lag7 < close_ema_lag7 &
                                                       close_lag8 < close_ema_lag8 ~ 1,
-                                              close > close_ema & close_lag1 > close_ema_lag1 & close_lag2 < close_ema_lag2 & 
+                                              close > close_ema & close_lag1 > close_ema_lag1 & close_lag2 > close_ema_lag2 & 
                                                       close_lag3 < close_ema_lag3 &
+                                                      close_lag4 < close_ema_lag4 &
+                                                      close_lag5 < close_ema_lag5 &
+                                                      close_lag6 < close_ema_lag6 &
+                                                      close_lag7 < close_ema_lag7 &
+                                                      close_lag8 < close_ema_lag8 ~ 1,                                       
+                                              close > close_ema & close_lag1 > close_ema_lag1 & close_lag2 > close_ema_lag2 & close_lag3 > close_ema_lag3 &
                                                       close_lag4 < close_ema_lag4 &
                                                       close_lag5 < close_ema_lag5 &
                                                       close_lag6 < close_ema_lag6 &
@@ -349,8 +371,14 @@ ha <- dplyr::inner_join(ha0, t0 %>% select(symbol, date, real_close = close), by
                                                       close_lag6 > close_ema_lag6 &
                                                       close_lag7 > close_ema_lag7 &
                                                       close_lag8 > close_ema_lag8 ~ -1,
-                                              close < close_ema & close_lag1 < close_ema_lag1 & close_lag2 > close_ema_lag2 & 
+                                              close < close_ema & close_lag1 < close_ema_lag1 & close_lag2 < close_ema_lag2 &                                                      
                                                       close_lag3 > close_ema_lag3 &
+                                                      close_lag4 > close_ema_lag4 &
+                                                      close_lag5 > close_ema_lag5 &
+                                                      close_lag6 > close_ema_lag6 &
+                                                      close_lag7 > close_ema_lag7 &
+                                                      close_lag8 > close_ema_lag8 ~ -1,        
+                                              close < close_ema & close_lag1 < close_ema_lag1 & close_lag2 < close_ema_lag2 & close_lag3 < close_ema_lag3 &
                                                       close_lag4 > close_ema_lag4 &
                                                       close_lag5 > close_ema_lag5 &
                                                       close_lag6 > close_ema_lag6 &
@@ -681,7 +709,7 @@ ma <- t0 %>%
 dplyr::mutate(sma5 = pracma::movavg(close, n = 5, type = "s"),
               sma8 = pracma::movavg(close, n = 8, type = "s"),
               sma13 = pracma::movavg(close, n = 13, type = "s"),
-
+              
               sma50 = pracma::movavg(close, n = 50, type = "s"),
               sma200 = pracma::movavg(close, n = 200, type = "s"), 
               
@@ -717,18 +745,34 @@ arrange(symbol, date) %>%
                       close_lag2 = dplyr::lag(close, 2),
                       close_lag3 = dplyr::lag(close, 3),
                       close_lag4 = dplyr::lag(close, 4),
-
+                      
                       sma5_lag1 = dplyr::lag(sma5, 1),
                       sma5_lag2 = dplyr::lag(sma5, 2),
                       sma5_lag3 = dplyr::lag(sma5, 3),
                       sma5_lag4 = dplyr::lag(sma5, 4),
                       
+                      ema5_lag1 = dplyr::lag(ema5, 1),
+                      ema5_lag2 = dplyr::lag(ema5, 2),
+                      ema5_lag3 = dplyr::lag(ema5, 3),
+                      ema5_lag4 = dplyr::lag(ema5, 4),
+                      
+                      ema20_lag1 = dplyr::lag(ema20, 1),
+                      ema20_lag2 = dplyr::lag(ema20, 2),
+                      ema20_lag3 = dplyr::lag(ema20, 3),
+                      ema20_lag4 = dplyr::lag(ema20, 4),
+                      
                       sma5_flag = dplyr::case_when( (close >sma5) & (close_lag1 <sma5_lag1) & (close_lag2 <sma5_lag2) & (close_lag3 <sma5_lag3) & (close_lag4 <sma5_lag4) ~ 1, 
                                                     (close <sma5) & (close_lag1 >sma5_lag1) & (close_lag2 >sma5_lag2) & (close_lag3 >sma5_lag3) & (close_lag4 >sma5_lag4) ~ -1, 
+                                                    TRUE ~ 0 ),
+                      
+                      ema5_flag = dplyr::case_when( (ema5 >ema20) & (ema5_lag1 <ema20_lag1) & (ema5_lag2 <ema20_lag2) & (ema5_lag3 <ema20_lag3) & (ema5_lag4 <ema20_lag4) ~ 1, 
+                                                    (ema5 <ema20) & (ema5_lag1 >ema20_lag1) & (ema5_lag2 >ema20_lag2) & (ema5_lag3 >ema20_lag3) & (ema5_lag4 >ema20_lag4) ~ -1, 
                                                     TRUE ~ 0 )
         ) %>%
         dplyr::select(-close_lag1, -close_lag2, -close_lag3, -close_lag4,
-                      -sma5_lag1, -sma5_lag2, -sma5_lag3, -sma5_lag4
+                      -sma5_lag1, -sma5_lag2, -sma5_lag3, -sma5_lag4,
+                      -ema5_lag1, -ema5_lag2, -ema5_lag3, -ema5_lag4,
+                      -ema20_lag1, -ema20_lag2, -ema20_lag3, -ema20_lag4
         ) %>%
         ungroup
 
@@ -949,7 +993,41 @@ from sub4
 order by symbol, date
 "
 
-demark = sqldf(glue(demark_query))
+demark0 = sqldf(glue(demark_query)) 
+
+demark_entry = demark0 %>%
+        arrange(symbol, date) %>%
+        # add is_demark_entry_yn flag, i.e., has demark signal been flagged in past n days?
+        group_by(symbol) %>%
+        tq_transmute(select = "flag",
+                     mutate_fun = rollapply,
+                     width = 7,
+                     FUN = max,
+                     by.column = FALSE,
+                     col_rename = "is_demark_entry_yn") %>%
+        ungroup()
+
+demark_exit = demark0 %>%
+        arrange(symbol, date) %>%
+        # add is_demark_entry_yn flag, i.e., has demark signal been flagged in past n days?
+        group_by(symbol) %>%
+        tq_transmute(select = "flag",
+                     mutate_fun = rollapply,
+                     width = 7,
+                     FUN = min,
+                     by.column = FALSE,
+                     col_rename = "is_demark_exit_yn") %>%
+        ungroup()
+
+demark <- demark0 %>%
+        inner_join(demark_entry, by = c("symbol", "date")) %>%
+        inner_join(demark_exit, by = c("symbol", "date")) %>%
+        mutate(demark_signal_past_n_days = is_demark_entry_yn + is_demark_exit_yn,
+               demark_signal_past_n_days_flag = case_when(demark_signal_past_n_days >= 1 ~ 1,
+                                                          demark_signal_past_n_days <= -1 ~ 1,
+                                                          TRUE ~ demark_signal_past_n_days)) %>%
+        select(-is_demark_entry_yn, -is_demark_exit_yn, -demark_signal_past_n_days) %>%
+        arrange(symbol, date)
 
 #################################################
 # combine them all
@@ -970,11 +1048,12 @@ output <- atr %>%
                                         sma5, sma8, sma13,
                                         sma50, sma200,                                         
                                         ema5, ema20,
-                                        zlema, proxy_flag, sma5_flag), 
+                                        zlema, proxy_flag, 
+                                        sma5_flag, ema5_flag), 
                           by = c("symbol", "date")) %>% 
         dplyr::inner_join(csp, by = c("symbol", "date")) %>%
         dplyr::inner_join(traffic_light %>% select(symbol, date, red_flag, green_flag), by = c("symbol", "date")) %>%
-        dplyr::inner_join(demark %>% select(symbol, date, demark_flag = flag), by = c("symbol", "date")) %>%
+        dplyr::inner_join(demark %>% select(symbol, date, demark_flag = flag, demark_signal_past_n_days_flag), by = c("symbol", "date")) %>%
         dplyr::mutate(csp_trend_dir = case_when(csp_candle_stick_signal == 1 & macd_trend_dir == 1 ~ 1,
                                                 csp_candle_stick_signal == -1 & macd_trend_dir == -1 ~ -1,
                                                 TRUE ~ 0)) %>%
@@ -1039,10 +1118,12 @@ indicators <- output %>%
                       evwma_flag, 
                       overnight_flag, 
                       sma5_flag, 
+                      ema5_flag,
                       red_flag, 
                       green_flag, 
                       obv_flag,
                       demark_flag, 
+                      demark_signal_past_n_days_flag,
                       csp_doji, 
                       csp_dragonfly_doji, 
                       csp_gravestone_doji, 

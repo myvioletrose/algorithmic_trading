@@ -13,7 +13,7 @@ overwrite_watchlist_yn = TRUE
 ################################################ part I ###################################################################
 ############# > source indicators.R, messages.R
 # current holding stocks
-current_stocks = c("SNAP", "TSLA", "FLT", "META", "BX", "STLD", "HAL")
+current_stocks = c("SNAP", "FLT", "META", "BX", "HAL", "EIX")
 
 # watchlist
 wl = openxlsx::loadWorkbook(WATCHLIST_PATH)
@@ -24,7 +24,7 @@ symbols = c("META", "AAPL", "AMZN", "NFLX", "GOOGL", "TSLA", "SPY", "QQQ", "GLD"
             "DKNG", "ANET", "CZR", "DASH", "JOBY", 
             "TGT", "ZS", "CRM", "EXPE", "PLNT",
             "SHOP", "NOW",
-            "SNOW", "MDB", "CRWD", "SYM", "SNPS", "PATH",
+            "SNOW", "MDB", "CRWD", "SYM", "PATH",
             current_stocks) %>%
         sort()
 
@@ -37,15 +37,18 @@ symbols = c("SPY",
         sort()
 
 # subset data, symbol (for poc, smaller subset faster processing but less data for strategy evaluation)
-subset_date = "2022-01-01"
+subset_date = "2019-01-01"
 subset_symbols = c(symbols, "BTC-USD") %>% sort()
 
-tic("<<< ETL >>>")
+tic("<<< ETL >>>"); script_start_time = Sys.time()
 
 source("a. indicators.R")
 source("b. messages.R")
+#saveRDS(indicators, file = "indicators.RDS"); saveRDS(poc, file = "poc.RDS")
 
-toc()
+toc(); script_end_time = Sys.time()
+
+print(script_end_time - script_start_time)
 
 ##################################### part II ###############################################
 ############## > backtest YTD
@@ -160,8 +163,8 @@ if(overwrite_watchlist_yn){
                                    mutate(index = row_number()) %>%
                                    ungroup() %>%
                                    filter(index <= 20) %>%
-                                   select(symbol, date, is_today, 
-                                          close, today_support, support, 
+                                   select(symbol, date, is_today, is_first_buy_yn,
+                                          close, today_support, support, csp_bullish_candle, volume_inconsistency_alert,
                                           message_s, message_e0, message_e1, message_e2, 
                                           rsi, cci, 
                                           sma5, sma50, sma200, ema5, ema20, 
@@ -174,7 +177,8 @@ if(overwrite_watchlist_yn){
                                           ha_real_flag, 
                                           ha_smooth_flag, 
                                           macd_flag, 
-                                          sma5_flag),
+                                          sma5_flag,
+                                          ema5_flag),
                            by = "symbol", 
                            multiple = "all") %>%
                 arrange(symbol, date)
@@ -201,8 +205,8 @@ if(overwrite_watchlist_yn){
                                    mutate(index = row_number()) %>%
                                    ungroup() %>%
                                    filter(index <= 20) %>%
-                                   select(symbol, date, is_today, 
-                                          close, today_support, support, 
+                                   select(symbol, date, is_today, is_first_buy_yn,
+                                          close, today_support, support, csp_bullish_candle, volume_inconsistency_alert,
                                           message_s, message_e0, message_e1, message_e2, 
                                           rsi, cci, 
                                           sma5, sma50, sma200, ema5, ema20, 
@@ -215,7 +219,8 @@ if(overwrite_watchlist_yn){
                                           ha_real_flag, 
                                           ha_smooth_flag, 
                                           macd_flag, 
-                                          sma5_flag),
+                                          sma5_flag,
+                                          ema5_flag),
                            by = "symbol", 
                            multiple = "all") %>%
                 arrange(symbol, date)
@@ -286,6 +291,7 @@ quick_take <- poc %>%
                 rsi_oversold_flag,
                 obv_flag,
                 demark_flag,
+                #demark_signal_past_n_days_flag,
                 ce_short_spike_flag,
                 dcc_flag,
                 evwma_flag,
@@ -293,6 +299,7 @@ quick_take <- poc %>%
                 ha_smooth_flag,
                 macd_flag,
                 sma5_flag,
+                ema5_flag,
                 volume,
                 open,
                 high,
@@ -316,6 +323,8 @@ quick_take <- poc %>%
                 pct_chg5,
                 in_the_buy_yn,
                 is_first_buy_yn,
+                csp_bullish_candle,
+                volume_inconsistency_alert,
                 support1_line,
                 support2_line,
                 support3_line,

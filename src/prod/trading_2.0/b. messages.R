@@ -36,19 +36,23 @@ indicators_transformed <- indicators %>%
                 ema_pos_trend_flag = case_when(close > ema5 & close > ema20 ~ 1, TRUE ~ 0),
                 
                 # buy alert if,
-                message_b = case_when(dcc_flag == 1 & close > zlema & ema5 > ema20 & demark_flag != -1 & rsi > 50 & sma5_flag == 1 ~ "buy - dcc",                                                                            
+                message_b = case_when(volume_inconsistency_alert == "bearish inconsistency" & demark_flag == 1 ~ "near future spike alert",
+
+                                      dcc_flag == 1 & close > zlema & ema5 > ema20 & demark_flag != -1 & rsi > 50 & sma5_flag == 1 ~ "buy - dcc",                                                                            
                                       
                                       demark_flag == 1 & close > zlema & (cci_oversold_flag == 1 | rsi_oversold_flag == 1) ~ "buy - demark (v0)",
                                       demark_flag == 1 & ema5 > ema20 ~ "buy - demark (v1)",
+                                      
+                                      demark_signal_past_n_days_flag == 1 & ha_real_flag == 1 & (macd_trend_dir == 1 | macd_flag == 1 | ema5_flag == 1) ~ "buy - demark hybrid",
                                       
                                       evwma_flag == 1 & close > zlema & ema5 > ema20 & demark_flag != -1 & rsi > 50 & (dcc_flag == 1 | demark_flag == 1 | ha_real_flag == 1 | ha_smooth_flag == 1 | macd_flag == 1) ~ "buy - evwma (v0)",                                      
                                       evwma_flag == 1 & close > zlema & ema5 > ema20 & demark_flag != -1 & rsi > 50 & (cci_oversold_flag == 1 | rsi_oversold_flag == 1) & obv_flag == 1 ~ "buy - evwma (v1)",
                                       
                                       ha_real_flag == 1 & close > zlema & ema5 > ema20 & demark_flag != -1 & rsi > 50 & green_flag == 1 & (rsi_trend_dir == 1 | cci_trend_dir == 1 | macd_trend_dir == 1 | obv_flag == 1) ~ "buy - ha_real",
-
+                                      
                                       macd_flag == 1 & close > zlema & ema5 > ema20 & (cci_oversold_flag == 1 | rsi_oversold_flag == 1) ~ "buy - macd",
                                       
-                                      sma5_flag == 1 & close > zlema & ema5 > ema20 & demark_flag != -1 & rsi > 50 & sma_pos_trend_flag == 1 ~ "buy - sma (v0)",
+                                      sma5_flag == 1 & close > zlema & ema5 > ema20 & demark_flag != -1 & rsi > 50 & sma_pos_trend_flag == 1 ~ "sma alert",
                                       sma5_flag == 1 & close > zlema & demark_flag != -1 & rsi > 50 & (cci_oversold_flag == 1 | rsi_oversold_flag == 1) & obv_flag == 1 ~ "buy - sma (v1)",
                                       
                                       TRUE ~ "hold"),
@@ -398,17 +402,17 @@ poc0 <- indicators_transformed %>%
                daily_ceiling = case_when(daily_ceiling_e > daily_ceiling_s ~ daily_ceiling_e, TRUE ~ daily_ceiling_s)) %>%
         mutate(                
                 # update messages based on daily support, target
-                message_e0 = case_when(in_the_buy_yn == 1 & close < stop_loss_base_line ~ "sell - stop-loss (msg0)",
-                                       in_the_buy_yn == 1 & close < daily_support ~ "sell - break support (msg0)",
-                                       in_the_buy_yn == 1 & close > support1_line ~ "sell - meet target (msg0)",
+                message_e0 = case_when(in_the_buy_yn == 1 & low < stop_loss_base_line ~ "sell - stop-loss (msg0)",
+                                       in_the_buy_yn == 1 & low < daily_support ~ "sell - break support (msg0)",
+                                       in_the_buy_yn == 1 & high > support1_line ~ "sell - meet target (msg0)",
                                        TRUE ~ message_s),
-                message_e1 = case_when(in_the_buy_yn == 1 & close < stop_loss_base_line ~ "sell - stop-loss (msg1)",
-                                       in_the_buy_yn == 1 & close_lag1 > support1_line & (close < daily_support | close < evwma) ~ "sell - break support (msg1)",
-                                       in_the_buy_yn == 1 & close > profit_target2_line ~ "sell - meet target (msg1)", 
+                message_e1 = case_when(in_the_buy_yn == 1 & low < stop_loss_base_line ~ "sell - stop-loss (msg1)",
+                                       in_the_buy_yn == 1 & close_lag1 > support1_line & low < daily_support ~ "sell - break support (msg1)",
+                                       in_the_buy_yn == 1 & high > profit_target2_line ~ "sell - meet target (msg1)", 
                                        TRUE ~ message_s),
-                message_e2 = case_when(in_the_buy_yn == 1 & close < stop_loss_base_line ~ "sell - stop-loss (msg2)",
-                                       in_the_buy_yn == 1 & close_lag1 > support2_line & (close < daily_support | close < evwma) ~ "sell - break support (msg2)",
-                                       in_the_buy_yn == 1 & close > profit_target3_line ~ "sell - meet target (msg2)", 
+                message_e2 = case_when(in_the_buy_yn == 1 & low < stop_loss_base_line ~ "sell - stop-loss (msg2)",
+                                       in_the_buy_yn == 1 & close_lag1 > support2_line & low < daily_support ~ "sell - break support (msg2)",
+                                       in_the_buy_yn == 1 & high > profit_target3_line ~ "sell - meet target (msg2)", 
                                        TRUE ~ message_s)
         ) %>%
         ungroup() %>%
@@ -533,10 +537,12 @@ poc <- poc0 %>%
                 evwma_flag, 
                 overnight_flag, 
                 sma5_flag, 
+                ema5_flag,
                 red_flag, 
                 green_flag, 
                 obv_flag,
                 demark_flag, 
+                demark_signal_past_n_days_flag,
                 csp_doji, 
                 csp_dragonfly_doji, 
                 csp_gravestone_doji, 

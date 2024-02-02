@@ -70,10 +70,12 @@ alerts <- indicators %>%
                 #v2_ha_real_buy_alert = case_when(ha_real_flag == 1 & ema5 > ema20 & close > zlema ~ 1, TRUE ~ 0),
                 v0_ha_real_buy_alert = case_when(demark_flag != -1 & rsi > 50 & ha_real_flag == 1 & ema5 > ema20 & close > zlema & green_flag == 1 & (macd_trend_dir == 1 | obv_flag == 1) ~ 1, TRUE ~ 0),
                 v99_ha_real_buy_alert = case_when(demark_flag != -1 & ha_real_flag == 1 & close > zlema & green_flag == 1 & (rsi_trend_dir == 1 | cci_trend_dir == 1 | macd_trend_dir == 1 | obv_flag == 1) ~ 1, TRUE ~ 0),
-                
+
                 #v2_ha_smooth_buy_alert = case_when(ha_smooth_flag == 1 & ema5 > ema20 & close > zlema ~ 1, TRUE ~ 0),
                 #v0_ha_smooth_buy_alert = case_when(ha_smooth_flag == 1 & ema5 > ema20 & close > zlema & green_flag == 1 & (macd_trend_dir == 1 | obv_flag == 1) ~ 1, TRUE ~ 0),
-                
+                new_flag10 = case_when(ha_real_flag == 1 & is_demark_entry_yn == 1 & (macd_trend_dir == 1 | macd_flag == 1 | obv_flag == 1 | ce_short_spike_flag == 1 | ema5_flag == 1) ~ 1, TRUE ~ 0),
+                new_flag11 = case_when(ha_real_flag == 1 & is_demark_entry_yn == 1 & intraday_volatility_flag == 1 & (macd_trend_dir == 1 | macd_flag == 1 | obv_flag == 1 | ce_short_spike_flag == 1 | ema5_flag == 1) ~ 1, TRUE ~ 0),
+
                 # sell alerts                
                 #v1_ce_sell_alert = case_when(ce_long_dip_flag == 1 & ema5 < ema20 ~ 1, TRUE ~ 0),
                 v1_evwma_sell_alert = case_when(evwma_flag == -1 & demark_flag != 1 & close < zlema & ema5 < ema20 ~ 1, TRUE ~ 0),
@@ -254,3 +256,99 @@ alert_eval2
 # 2      ce         sell_alert 2139 2217 0.965 0.4910468    2
 # 3    macd         sell_alert 2154 2728 0.790 0.4412126    3
 # 4    sma5         sell_alert  719  979 0.734 0.4234393    4
+
+#################################################################################################
+###################################################################
+
+tic()
+volume_alerts <- indicators %>%
+        filter(date >= subset_date) %>%
+        #filter(date >= '2011-01-01' & date <= '2020-12-31') %>%
+        filter(symbol %in% subset_symbols) %>%
+        arrange(symbol, date) %>%
+        group_by(symbol) %>%
+        dplyr::mutate(
+                # close lag, lead, near_future_flags
+                close_lag1 = lag(close, 1),
+                close_next2 = lead(close, 2),
+                close_next4 = lead(close, 4),
+                close_next10 = lead(close, 10),
+                near_future_flag2 = case_when(close_next2 > close ~ 1,
+                                              close_next2 < close ~ -1,
+                                              TRUE ~ 0),
+                near_future_flag4 = case_when(close_next4 > close ~ 1,
+                                              close_next4 < close ~ -1,
+                                              TRUE ~ 0),
+                near_future_flag10 = case_when(close_next10 > close ~ 1,
+                                               close_next10 < close ~ -1,
+                                               TRUE ~ 0),
+                volume_buy_alert1 = case_when(volume_inconsistency_alert == "bearish inconsistency" & demark_flag == 1 ~ 1, TRUE ~ 0),
+                volume_buy_alert2 = case_when(volume_inconsistency_alert == "bullish inconsistency" & demark_flag == 1 ~ 1, TRUE ~ 0),
+                
+                volume_sell_alert1 = case_when(volume_inconsistency_alert == "bullish inconsistency" & demark_flag == -1 ~ 1, TRUE ~ 0),
+                volume_sell_alert2 = case_when(volume_inconsistency_alert == "bearish inconsistency" & demark_flag == -1 ~ 1, TRUE ~ 0),
+        ) %>%
+        ungroup() %>%
+        select(symbol, date, is_today, 
+               close, 
+               #today_support, support, 
+               csp_bullish_candle, volume_inconsistency_alert,
+               #message_s, message_e0, message_e1, message_e2, 
+               rsi, cci, 
+               sma5, sma50, sma200, ema5, ema20, 
+               cci_oversold_flag, 
+               rsi_oversold_flag, 
+               obv_flag, 
+               demark_flag, 
+               ce_short_spike_flag, 
+               dcc_flag, evwma_flag, 
+               ha_real_flag, 
+               ha_smooth_flag, 
+               macd_flag, 
+               sma5_flag,
+               ema5_flag,
+               proxy_flag,
+               matches("near_future|volume_buy_alert|volume_sell_alert")) %>%
+        arrange(symbol, date)
+toc()
+
+##################################################
+with(volume_alerts,
+     prop.table(ftable(demark_flag, proxy_flag), margin = 1))
+
+with(volume_alerts,
+     prop.table(ftable(demark_flag, 
+                       #proxy_flag
+                       near_future_flag2
+     ), margin = 1))
+
+#####################################
+with(volume_alerts,
+     prop.table(ftable(volume_buy_alert2, 
+                       proxy_flag), margin = 1))
+
+with(volume_alerts,
+     prop.table(ftable(volume_buy_alert1, 
+                       #proxy_flag
+                       near_future_flag2
+                       ), margin = 1))
+
+######################################################
+with(volume_alerts,
+     prop.table(ftable(volume_sell_alert2, 
+                       proxy_flag), margin = 1))
+
+with(volume_alerts,
+     prop.table(ftable(volume_sell_alert2, 
+                       #proxy_flag
+                       near_future_flag2
+     ), margin = 1))
+
+
+
+
+
+
+
+
+
