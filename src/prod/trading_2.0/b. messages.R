@@ -105,7 +105,7 @@ support2 = 2
 # third stop/support - set at ATR * 'x' above flagged close
 support3 = 3
 # profit target (a) - set at 'x' percent above flagged close
-target_a = 0.03
+target_a = 0.05
 # profit target (b) - set at 'x' percent above flagged close
 target_b = 0.1
 # profit target (c) - set at 'x' percent above flagged close
@@ -191,7 +191,7 @@ target = target5 %>%
                profit_target1_e_line = close_flagged_by_buy + (target_a * close_flagged_by_buy),               
                profit_target2_e_line = close_flagged_by_buy + (target_b * close_flagged_by_buy),
                profit_target3_e_line = close_flagged_by_buy + (target_c * close_flagged_by_buy),
-               # update support1_e_line (based on the profit_target1_e_line, by default (as of 2023-12-11, i.e., 3% -> the exit target threshold))
+               # update support1_e_line (based on the profit_target1_e_line, by default (as of 2024-02-06, i.e., 5% -> the exit target threshold))
                support1_e_line = case_when(support1_e_line > profit_target1_e_line ~ profit_target1_e_line, TRUE ~ support1_e_line)) %>%
         mutate(stop_loss_s_base_line = close_flagged_by_buy2 - (stop_loss_base * atr_flagged_by_buy2),
                support1_s_line = close_flagged_by_buy2 + (support1 * atr_flagged_by_buy2),
@@ -200,7 +200,7 @@ target = target5 %>%
                profit_target1_s_line = close_flagged_by_buy2 + (target_a * close_flagged_by_buy2),
                profit_target2_s_line = close_flagged_by_buy2 + (target_b * close_flagged_by_buy2),
                profit_target3_s_line = close_flagged_by_buy2 + (target_c * close_flagged_by_buy2),
-               # update support1_s_line (based on the profit_target1_s_line, by default (as of 2023-12-11, i.e., 3% -> the exit target threshold))
+               # update support1_s_line (based on the profit_target1_s_line, by default (as of 2024-02-06, i.e., 5% -> the exit target threshold))
                support1_s_line = case_when(support1_s_line > profit_target1_s_line ~ profit_target1_s_line, TRUE ~ support1_s_line)) %>%
         left_join(day_since_last_buy, by = c("symbol", "date", "last_buy_date")) %>%
         left_join(day_since_last_buy2, by = c("symbol", "date", "last_buy_date2")) %>%

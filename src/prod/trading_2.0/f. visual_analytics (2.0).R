@@ -90,6 +90,8 @@ visual_screen <- function(df, symbol, start_date, end_date, dollar_by, support, 
         # g5: basic + Heikin Ashi smoothed + ema5 + ema20 + support/resistance line(s)
         if(!any(support < 0)){
                 g5 = g4 + geom_hline(yintercept = support, linetype = "dotted", linewidth = 0.5)
+        } else {
+                g5 = g4
         }
         
         # render chart

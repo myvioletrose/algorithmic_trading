@@ -44,7 +44,7 @@ tic("<<< ETL >>>"); script_start_time = Sys.time()
 
 source("a. indicators.R")
 source("b. messages.R")
-#saveRDS(indicators, file = "indicators.RDS"); saveRDS(poc, file = "poc.RDS")
+#saveRDS(t0, file = "t0.RDS"); saveRDS(ha, file = "ha.RDS"); saveRDS(indicators, file = "indicators.RDS"); saveRDS(poc, file = "poc.RDS")
 
 toc(); script_end_time = Sys.time()
 
