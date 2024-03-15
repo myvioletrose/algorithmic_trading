@@ -7,7 +7,8 @@ subset_date = "2014-01-01"
 
 tic()
 # buy/sell alerts
-alerts <- indicators %>%
+alerts <- poc %>% 
+        #indicators %>%
         filter(date >= subset_date) %>%
         #filter(date >= '2011-01-01' & date <= '2020-12-31') %>%
         filter(symbol %in% subset_symbols) %>%
@@ -29,6 +30,19 @@ alerts <- indicators %>%
                                                close_next10 < close ~ -1,
                                                TRUE ~ 0),
                 
+                # daily zone, advisory(s)
+                daily_zone = case_when(ha_real2_flag == -1 ~ "red",
+                                       ha_real2_flag == 0 & close < ema5 ~ "purple",
+                                       ha_real2_flag == 1 & close < ema5 ~ "purple",
+                                       ha_real2_flag == 0 & close >= ema5 ~ "blue",                                       
+                                       ha_real2_flag == 1 & close >= ema5 ~ "green",
+                                       TRUE ~ "red"),
+                
+                v1_advisory_test_buy_alert = case_when(in_the_buy_yn == 1 & daily_zone == "red" ~ 1, TRUE ~ 0),
+                v2_advisory_test_buy_alert = case_when(in_the_buy_yn == 1 & daily_zone == "purple" ~ 1, TRUE ~ 0),
+                v3_advisory_test_buy_alert = case_when(in_the_buy_yn == 1 & daily_zone == "blue" ~ 1, TRUE ~ 0),
+                v4_advisory_test_buy_alert = case_when(in_the_buy_yn == 1 & daily_zone == "green" ~ 1, TRUE ~ 0),
+                
                 # trailing_stop_loss
                 trailing_stop_loss = close - risk_tolerance*atr,
                 trailing_stop_loss_yesterday = dplyr::lag(trailing_stop_loss, 1),
@@ -38,55 +52,35 @@ alerts <- indicators %>%
                 ema_pos_trend_flag = case_when(close > ema5 & close > ema20 ~ 1, TRUE ~ 0),
                 
                 # buy alerts
-                #v2_ce_buy_alert = case_when(demark_flag != -1 & rsi > 50 & ema5 > ema20 & ce_short_spike_flag == 1 & close > zlema ~ 1, TRUE ~ 0),
-                #v21_ce_buy_alert = case_when(ema5 > ema20 & ce_short_spike_flag == 1 & close > zlema & (demark_flag == 1 | dcc_flag == 1 | ha_real_flag == 1 | ha_smooth_flag == 1 | macd_flag == 1 | evwma_flag == 1) ~ 1, TRUE ~ 0),
-
-                #v2_dcc_buy_alert = case_when(ema5 > ema20 & dcc_flag == 1 & close > zlema ~ 1, TRUE ~ 0),
-                v0_dcc_buy_alert = case_when(demark_flag != -1 & ema5 > ema20 & rsi > 50 & dcc_flag == 1 & close > zlema ~ 1, TRUE ~ 0),
-                v1_dcc_buy_alert = case_when(demark_flag != -1 & ema5 > ema20 & rsi > 50 & dcc_flag == 1 & close > zlema & obv_flag == 1 ~ 1, TRUE ~ 0),
-                #v3_dcc_buy_alert = case_when(ema5 > ema20 & dcc_flag == 1 & close > zlema & sma5_flag == 1 ~ 1, TRUE ~ 0),
-                #v0_dcc_buy_alert = case_when(demark_flag != -1 & rsi > 50 & ema5 > ema20 & dcc_flag == 1 & close > zlema & sma5_flag == 1 ~ 1, TRUE ~ 0),
-                #v11_dcc_buy_alert = case_when(ema5 > ema20 & dcc_flag == 1 & close > zlema & green_flag == 1 & (macd_trend_dir == 1 | obv_flag == 1) ~ 1, TRUE ~ 0),
-
-                v1_demark_buy_alert = case_when(ema5 > ema20 & demark_flag == 1 ~ 1, TRUE ~ 0),
-                v14_demark_buy_alert = case_when(demark_flag == 1 & close > zlema & (cci_oversold_flag == 1 | rsi_oversold_flag == 1) ~ 1, TRUE ~ 0),
-
-                #v3_evwma_buy_alert = case_when(demark_flag != -1 & rsi > 50 & evwma_flag == 1 & close > zlema & sma5_flag == 1 ~ 1, TRUE ~ 0),                
+                v0_dcc_buy_alert = case_when(dcc_flag == 1 & close > zlema & ema5 > ema20 & demark_flag != -1 & rsi > 50 & sma5_flag == 1 ~ 1, TRUE ~ 0),
                 
-                v17_evwma_buy_alert = case_when(demark_flag != -1 & rsi > 50 & ema5 > ema20 & evwma_flag == 1 & close > zlema & (cci_oversold_flag == 1 | rsi_oversold_flag == 1) & obv_flag == 1 ~ 1, TRUE ~ 0),
-                v21_evwma_buy_alert = case_when(demark_flag != -1 & rsi > 50 & ema5 > ema20 & evwma_flag == 1 & close > zlema & (macd_flag == 1 | demark_flag == 1 | dcc_flag == 1 | ha_real_flag == 1 | ha_smooth_flag == 1) ~ 1, TRUE ~ 0),
+                v0_demark_buy_alert = case_when(demark_flag == 1 & close > zlema & (cci_oversold_flag == 1 | rsi_oversold_flag == 1) ~ 1, TRUE ~ 0),
+                v1_demark_buy_alert = case_when(demark_flag == 1 & ema5 > ema20 ~ 1, TRUE ~ 0),
+                
+                v0_demark_hybrid_buy_alert = case_when(demark_signal_past_n_days_flag == 1 & ha_real_flag == 1 & demark_flag != -1 & (macd_trend_dir == 1 | macd_flag == 1 | ema5_flag == 1) ~ 1, TRUE ~ 0),
+                v1_demark_hybrid_buy_alert = case_when(demark_signal_past_n_days_flag == 1 & ha_real2_flag == 1 & demark_flag != -1 & close > close_lag1 & (macd_trend_dir == 1 | macd_flag == 1 | ema5_flag == 1) ~ 1, TRUE ~ 0),
+                
+                v0_evwma_buy_alert = case_when(evwma_flag == 1 & close > zlema & ema5 > ema20 & demark_flag != -1 & rsi > 50 & (dcc_flag == 1 | demark_flag == 1 | ha_real_flag == 1 | ha_smooth_flag == 1 | macd_flag == 1) ~ 1, TRUE ~ 0),
+                v1_evwma_buy_alert = case_when(evwma_flag == 1 & close > zlema & ema5 > ema20 & demark_flag != -1 & rsi > 50 & (cci_oversold_flag == 1 | rsi_oversold_flag == 1) & obv_flag == 1 ~ 1, TRUE ~ 0),
+                
+                v0_ha_real_flag = case_when(ha_real_flag == 1 & close > zlema & ema5 > ema20 & demark_flag != -1 & rsi > 50 & green_flag == 1 & (rsi_trend_dir == 1 | cci_trend_dir == 1 | macd_trend_dir == 1 | obv_flag == 1) ~ 1, TRUE ~ 0),
+                
+                v0_macd_buy_alert = case_when(macd_flag == 1 & close > zlema & ema5 > ema20 & demark_flag != -1 & (cci_oversold_flag == 1 | rsi_oversold_flag == 1) ~ 1, TRUE ~ 0),
+                                
+                v0_rising_buy_alert = case_when(rising_flag == 1 & close > zlema & ema5 > ema20 & demark_flag != -1 & (cci_overbought_flag != 1 | rsi_overbought_flag != 1) ~ 1, TRUE ~ 0),
 
-                #v2_macd_buy_alert = case_when(ema5 > ema20 & macd_flag == 1 & close > zlema ~ 1, TRUE ~ 0),
-                #v3_macd_buy_alert = case_when(demark_flag != -1 & rsi > 50 & macd_flag == 1 & close > zlema & sma5_flag == 1 ~ 1, TRUE ~ 0),
-                v14_macd_buy_alert = case_when(demark_flag != -1 & rsi > 50 & ema5 > ema20 & macd_flag == 1 & close > zlema & (cci_oversold_flag == 1 | rsi_oversold_flag == 1) ~ 1, TRUE ~ 0),
-                v24_macd_buy_alert = case_when(demark_flag != -1 & ema5 > ema20 & macd_flag == 1 & close > zlema & (cci_oversold_flag == 1 | rsi_oversold_flag == 1) ~ 1, TRUE ~ 0),
-
-                v4_sma5_buy_alert = case_when(demark_flag != -1 & rsi > 50 & ema5 > ema20 & sma5_flag == 1 & close > zlema & sma_pos_trend_flag == 1 ~ 1, TRUE ~ 0),
-                #v14_sma5_buy_alert = case_when(sma5_flag == 1 & close > zlema & (cci_oversold_flag == 1 | rsi_oversold_flag == 1) ~ 1, TRUE ~ 0),
-                v17_sma5_buy_alert = case_when(demark_flag != -1 & rsi > 50 & sma5_flag == 1 & close > zlema & (cci_oversold_flag == 1 | rsi_oversold_flag == 1) & obv_flag == 1 ~ 1, TRUE ~ 0),
-                v21_sma5_buy_alert = case_when(demark_flag != -1 & rsi > 50 & sma5_flag == 1 & close > zlema & (macd_flag == 1 | demark_flag == 1 | dcc_flag == 1 | ha_real_flag == 1 | ha_smooth_flag == 1 | evwma_flag == 1) ~ 1, TRUE ~ 0),                
-                #v22_sma5_buy_alert = case_when(sma5_flag == 1 & close > zlema & (cci_oversold_flag == 1 | rsi_oversold_flag == 1) & (demark_flag == 1 | dcc_flag == 1 | ce_short_spike_flag == 1 | ha_real_flag == 1 | ha_smooth_flag == 1 | evwma_flag == 1) ~ 1, TRUE ~ 0),                
-
-                #v2_ha_real_buy_alert = case_when(ha_real_flag == 1 & ema5 > ema20 & close > zlema ~ 1, TRUE ~ 0),
-                v0_ha_real_buy_alert = case_when(demark_flag != -1 & rsi > 50 & ha_real_flag == 1 & ema5 > ema20 & close > zlema & green_flag == 1 & (macd_trend_dir == 1 | obv_flag == 1) ~ 1, TRUE ~ 0),
-                v99_ha_real_buy_alert = case_when(demark_flag != -1 & ha_real_flag == 1 & close > zlema & green_flag == 1 & (rsi_trend_dir == 1 | cci_trend_dir == 1 | macd_trend_dir == 1 | obv_flag == 1) ~ 1, TRUE ~ 0),
-
-                #v2_ha_smooth_buy_alert = case_when(ha_smooth_flag == 1 & ema5 > ema20 & close > zlema ~ 1, TRUE ~ 0),
-                #v0_ha_smooth_buy_alert = case_when(ha_smooth_flag == 1 & ema5 > ema20 & close > zlema & green_flag == 1 & (macd_trend_dir == 1 | obv_flag == 1) ~ 1, TRUE ~ 0),
-                new_flag10 = case_when(ha_real_flag == 1 & is_demark_entry_yn == 1 & (macd_trend_dir == 1 | macd_flag == 1 | obv_flag == 1 | ce_short_spike_flag == 1 | ema5_flag == 1) ~ 1, TRUE ~ 0),
-                new_flag11 = case_when(ha_real_flag == 1 & is_demark_entry_yn == 1 & intraday_volatility_flag == 1 & (macd_trend_dir == 1 | macd_flag == 1 | obv_flag == 1 | ce_short_spike_flag == 1 | ema5_flag == 1) ~ 1, TRUE ~ 0),
-
-                # sell alerts                
-                #v1_ce_sell_alert = case_when(ce_long_dip_flag == 1 & ema5 < ema20 ~ 1, TRUE ~ 0),
-                v1_evwma_sell_alert = case_when(evwma_flag == -1 & demark_flag != 1 & close < zlema & ema5 < ema20 ~ 1, TRUE ~ 0),
-                v1_macd_sell_alert = case_when(macd_flag == -1 & demark_flag != 1 & close < zlema & ema5 < ema20 ~ 1, TRUE ~ 0),
-                v1_demark_sell_alert = case_when(demark_flag == -1 & close < zlema ~ 1, TRUE ~ 0),
-                #v1_sma5_sell_alert = case_when(sma5_flag == -1 & ema5 < ema20 ~ 1, TRUE ~ 0),
-                #v1_dcc_sell_alert = case_when(dcc_flag == -1 & ema5 < ema20 ~ 1, TRUE ~ 0),
-                v1_ha_real_sell_alert = case_when(ha_real_flag == -1 & demark_flag != 1 & close < zlema & ema5 < ema20 ~ 1, TRUE ~ 0),
-                #v1_ha_smooth_sell_alert = case_when(ha_smooth_flag == -1 & ema5 < ema20 ~ 1, TRUE ~ 0),     
-                v1_overbought_sell_alert = case_when((cci_overbought_flag == 1 | rsi_overbought_flag == 1) & close < zlema & ema5 < ema20 & demark_flag != 1 ~ 1, TRUE ~ 0),
-                v1_profit_protect_sell_alert = case_when(close < trailing_stop_loss_yesterday ~ 1, TRUE ~ 0)
+                v0_sma_buy_alert = case_when(sma5_flag == 1 & close > zlema & ema5 > ema20 & demark_flag != -1 & rsi > 50 & sma_pos_trend_flag == 1 ~ 1, TRUE ~ 0),
+                v1_sma_buy_alert = case_when(sma5_flag == 1 & close > zlema & demark_flag != -1 & rsi > 50 & (cci_oversold_flag == 1 | rsi_oversold_flag == 1) & obv_flag == 1 ~ 1, TRUE ~ 0),
+                
+                # sell alerts
+                v0_ce_sell_alert = case_when(ce_long_dip_flag == 1 & close < zlema & ema5 < ema20 & demark_flag != 1 ~ 1, TRUE ~ 0),
+                v0_evwma_sell_alert = case_when(evwma_flag == -1 & close < zlema & ema5 < ema20 & demark_flag != 1 ~ 1, TRUE ~ 0),
+                v0_macd_sell_alert = case_when(macd_flag == -1 & close < zlema & ema5 < ema20 & demark_flag != 1 ~ 1, TRUE ~ 0),
+                v0_ha_real_sell_alert = case_when(ha_real_flag == -1 & close < zlema & ema5 < ema20 & demark_flag != 1 ~ 1, TRUE ~ 0),
+                v0_ha_real2_sell_alert = case_when(ha_real2_flag == -1 & close < zlema & ema5 < ema20 & demark_flag != 1 ~ 1, TRUE ~ 0),
+                v0_overbought_sell_alert = case_when((cci_overbought_flag == 1 | rsi_overbought_flag == 1) & close < zlema & ema5 < ema20 & demark_flag != 1 ~ 1, TRUE ~ 0),
+                v0_demark_sell_alert = case_when(demark_flag == -1 & close < zlema ~ 1, TRUE ~ 0),
+                v0_profit_protect_sell_alert = case_when(close < trailing_stop_loss_yesterday ~ 1, TRUE ~ 0)
                 
         ) %>%
         ungroup() %>%
@@ -331,7 +325,7 @@ with(volume_alerts,
      prop.table(ftable(volume_buy_alert1, 
                        #proxy_flag
                        near_future_flag2
-                       ), margin = 1))
+     ), margin = 1))
 
 ######################################################
 with(volume_alerts,

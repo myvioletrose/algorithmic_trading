@@ -233,10 +233,13 @@ ha0 = lapply(1:length(vector_of_symbols), function(x){
         arrange(symbol, date)
 
 # join with t0 to get real 'close'
-ha <- dplyr::inner_join(ha0, t0 %>% select(symbol, date, real_close = close), by = c("symbol", "date")) %>%
+ha <- dplyr::inner_join(ha0, t0 %>% select(symbol, date, real_open = open, real_close = close), by = c("symbol", "date")) %>%
         arrange(symbol, date) %>%
         group_by(symbol) %>%
-        dplyr::mutate(real_close_lag1 = lag(real_close, 1),
+        dplyr::mutate(real_open_lag1 = lag(real_open, 1),
+                      open_ema_lag1 = lag(open_ema, 1),
+                      
+                      real_close_lag1 = lag(real_close, 1),
                       real_close_lag2 = lag(real_close, 2),
                       real_close_lag3 = lag(real_close, 3),
                       real_close_lag4 = lag(real_close, 4),
@@ -324,6 +327,15 @@ ha <- dplyr::inner_join(ha0, t0 %>% select(symbol, date, real_close = close), by
                                                     real_close_lag7 > close_ema_lag7 &
                                                     real_close_lag8 > close_ema_lag8 ~ -1,
                                             TRUE ~ 0),
+                      real2_flag = case_when(real_open > open_ema & real_open > close_ema &
+                                                     real_close > open_ema & real_close > close_ema &
+                                                     real_open_lag1 > open_ema_lag1 & real_open_lag1 > close_ema_lag1 &
+                                                     real_close_lag1 > open_ema_lag1 & real_close_lag1 > close_ema_lag1 ~ 1,
+                                             real_open < open_ema & real_open < close_ema &
+                                                     real_close < open_ema & real_close < close_ema &
+                                                     real_open_lag1 < open_ema_lag1 & real_open_lag1 < close_ema_lag1 &
+                                                     real_close_lag1 < open_ema_lag1 & real_close_lag1 < close_ema_lag1 ~ -1,
+                                             TRUE ~ 0),
                       smooth_flag = case_when(close > close_ema & 
                                                       close_lag1 < close_ema_lag1 &
                                                       close_lag2 < close_ema_lag2 &
@@ -400,6 +412,7 @@ ha <- dplyr::inner_join(ha0, t0 %>% select(symbol, date, real_close = close), by
                close_ha_ema = close_ema,
                intraday_volatility,
                real_flag,
+               real2_flag,
                smooth_flag) %>%
         arrange(symbol, date)
 
@@ -997,11 +1010,11 @@ demark0 = sqldf(glue(demark_query))
 
 demark_entry = demark0 %>%
         arrange(symbol, date) %>%
-        # add is_demark_entry_yn flag, i.e., has demark signal been flagged in past n days?
+        # add is_demark_entry_yn flag, i.e., has demark entry signal been flagged in past n days?
         group_by(symbol) %>%
         tq_transmute(select = "flag",
                      mutate_fun = rollapply,
-                     width = 7,
+                     width = 12,
                      FUN = max,
                      by.column = FALSE,
                      col_rename = "is_demark_entry_yn") %>%
@@ -1009,11 +1022,11 @@ demark_entry = demark0 %>%
 
 demark_exit = demark0 %>%
         arrange(symbol, date) %>%
-        # add is_demark_entry_yn flag, i.e., has demark signal been flagged in past n days?
+        # add is_demark_exit_yn flag, i.e., has demark exit signal been flagged in past n days?
         group_by(symbol) %>%
         tq_transmute(select = "flag",
                      mutate_fun = rollapply,
-                     width = 7,
+                     width = 12,
                      FUN = min,
                      by.column = FALSE,
                      col_rename = "is_demark_exit_yn") %>%
@@ -1024,7 +1037,7 @@ demark <- demark0 %>%
         inner_join(demark_exit, by = c("symbol", "date")) %>%
         mutate(demark_signal_past_n_days = is_demark_entry_yn + is_demark_exit_yn,
                demark_signal_past_n_days_flag = case_when(demark_signal_past_n_days >= 1 ~ 1,
-                                                          demark_signal_past_n_days <= -1 ~ 1,
+                                                          demark_signal_past_n_days <= -1 ~ -1,
                                                           TRUE ~ demark_signal_past_n_days)) %>%
         select(-is_demark_entry_yn, -is_demark_exit_yn, -demark_signal_past_n_days) %>%
         arrange(symbol, date)
@@ -1037,7 +1050,7 @@ output <- atr %>%
                       atr, chanExit_long, chanExit_short) %>%
         dplyr::inner_join(chanExit %>% select(symbol, date, ce_long_dip_flag, ce_short_spike_flag), by = c("symbol", "date")) %>%
         dplyr::inner_join(macd %>% select(symbol, date, macd_flag = flag, macd_diff = diff, macd_trend_dir = trend_dir), by = c("symbol", "date")) %>%
-        dplyr::inner_join(ha %>% select(symbol, date, ha_real_flag = real_flag, ha_smooth_flag = smooth_flag), by = c("symbol", "date")) %>%   
+        dplyr::inner_join(ha %>% select(symbol, date, ha_real_flag = real_flag, ha_real2_flag = real2_flag, ha_smooth_flag = smooth_flag), by = c("symbol", "date")) %>%   
         dplyr::inner_join(dcc %>% select(symbol, date, dcc_high, dcc_mid, dcc_low, dcc_flag = flag), by = c("symbol", "date")) %>%
         dplyr::inner_join(rsi %>% select(symbol, date, rsi, rsi_oversold_yn, rsi_oversold_flag, rsi_overbought_yn, rsi_overbought_flag, rsi_trend_dir), by = c("symbol", "date")) %>%
         dplyr::inner_join(cci %>% select(symbol, date, cci, cci_oversold_yn, cci_oversold_flag, cci_overbought_yn, cci_overbought_flag, cci_trend_dir), by = c("symbol", "date")) %>%
@@ -1114,6 +1127,7 @@ indicators <- output %>%
                       ce_short_spike_flag, 
                       dcc_flag, 
                       ha_real_flag, 
+                      ha_real2_flag,
                       ha_smooth_flag,
                       evwma_flag, 
                       overnight_flag, 

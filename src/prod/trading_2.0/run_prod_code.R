@@ -1,7 +1,5 @@
 # initiate set up
 source("~/algorithmic_trading/config/setup.R")
-readRenviron("~/algorithmic_trading/config/.env")
-ALPHA_VANTAGE_API <- Sys.getenv("ALPHA_VANTAGE_API")
 av_api_key(ALPHA_VANTAGE_API)
 
 # set directory
@@ -13,7 +11,7 @@ overwrite_watchlist_yn = TRUE
 ################################################ part I ###################################################################
 ############# > source indicators.R, messages.R
 # current holding stocks
-current_stocks = c("SNAP", "FLT", "META", "BX", "HAL", "EIX")
+current_stocks = c("SPY", "META", "AJG", "PARA", "KDP", "XRAY", "ALLE")
 
 # watchlist
 wl = openxlsx::loadWorkbook(WATCHLIST_PATH)
@@ -23,69 +21,70 @@ watchlist_symbols = readWorkbook(wl, "watchlist") %>% select(symbol) %>% distinc
 symbols = c("META", "AAPL", "AMZN", "NFLX", "GOOGL", "TSLA", "SPY", "QQQ", "GLD",
             "DKNG", "ANET", "CZR", "DASH", "JOBY", 
             "TGT", "ZS", "CRM", "EXPE", "PLNT",
-            "SHOP", "NOW",
+            "SHOP", "NOW", "SNAP",
             "SNOW", "MDB", "CRWD", "SYM", "PATH",
+            "ALB", "ETSY", "SMCI",
             current_stocks) %>%
         sort()
 
-#sp500 = tq_index("SP500")
+sp500 = tq_index("SP500")
 symbols = c("SPY",
-            #sp500$symbol,
+            sp500$symbol,
             watchlist_symbols,
             symbols) %>%
         unique() %>%
         sort()
 
 # subset data, symbol (for poc, smaller subset faster processing but less data for strategy evaluation)
-subset_date = "2019-01-01"
+subset_date = "2022-01-01"
 subset_symbols = c(symbols, "BTC-USD") %>% sort()
 
 tic("<<< ETL >>>"); script_start_time = Sys.time()
 
 source("a. indicators.R")
 source("b. messages.R")
-#saveRDS(t0, file = "t0.RDS"); saveRDS(ha, file = "ha.RDS"); saveRDS(indicators, file = "indicators.RDS"); saveRDS(poc, file = "poc.RDS")
-
+saveRDS(t0, file = "t0.RDS"); saveRDS(ha, file = "ha.RDS"); saveRDS(indicators, file = "indicators.RDS"); saveRDS(poc, file = "poc.RDS")
+#t0 <- readRDS("t0.RDS"); ha <- readRDS("ha.RDS"); indicators <- readRDS("indicators.RDS"); poc <- readRDS("poc.RDS")
 toc(); script_end_time = Sys.time()
 
 print(script_end_time - script_start_time)
 
 ##################################### part II ###############################################
-############## > backtest YTD
-# look back: 504 (24M) / 252 (12M) / 189 (9M) / 126 (6M) / 63 (3M)
-backtest_ytd_symbols = poc$symbol %>% unique()
-#backtest_ytd_symbols = "SNAP"
-backtest_days_look_back = 126
-backtest_end_date = poc$date %>% max() 
-
-unique_trading_date = poc %>% filter(symbol == "SPY") %>% select(date) %>% arrange(date) %>% distinct %>% .$date
-end_date_index = which(unique_trading_date == backtest_end_date)
-if(length(end_date_index) == 0){end_date_index = length(unique_trading_date)}
-backtest_start_date = unique_trading_date[end_date_index -backtest_days_look_back]
-backtest_start_date = as.Date(backtest_start_date)
-
-#backtest_start_date
-#backtest_end_date
-print(backtest_start_date)
-print(backtest_end_date)
-
-tic()
-source("c. backtest_ytd.R")
-toc()
-
-################################## part III ############################################
-############### > backtest random evaluation
-seed = 8892
-n = 30
-days_after_signal = 10
-symbol_to_study = poc$symbol %>% unique()
-rand_date_start = '1990-01-01'
-rand_date_end = '2022-12-31'
-first_buy_only = FALSE
-
-tic()
-source("d. backtest_rand.R")
-toc()
+# ############## > backtest YTD
+# # look back: 504 (24M) / 252 (12M) / 189 (9M) / 126 (6M) / 63 (3M)
+# backtest_ytd_symbols = poc$symbol %>% unique()
+# #backtest_ytd_symbols = "SNAP"
+# backtest_days_look_back = 126
+# backtest_end_date = poc$date %>% max() 
+# 
+# unique_trading_date = poc %>% filter(symbol == "SPY") %>% select(date) %>% arrange(date) %>% distinct %>% .$date
+# end_date_index = which(unique_trading_date == backtest_end_date)
+# if(length(end_date_index) == 0){end_date_index = length(unique_trading_date)}
+# backtest_start_date = unique_trading_date[end_date_index -backtest_days_look_back]
+# backtest_start_date = as.Date(backtest_start_date)
+# 
+# #backtest_start_date
+# #backtest_end_date
+# print(backtest_start_date)
+# print(backtest_end_date)
+# 
+# tic()
+# source("c. backtest_ytd.R")
+# toc()
+# 
+# ################################## part III ############################################
+# ############### > backtest random evaluation
+# seed = 8892
+# n = 30
+# days_after_signal = 10
+# symbol_to_study = poc$symbol %>% unique()
+# rand_date_start = '1990-01-01'
+# rand_date_end = '2022-12-31'
+# first_buy_only = FALSE
+# 
+# tic()
+# source("d. backtest_rand.R")
+# toc()
 
 ################################## part IV #####################################
 ################## > equity trading analysis curve
@@ -166,15 +165,18 @@ if(overwrite_watchlist_yn){
                                    select(symbol, date, is_today, is_first_buy_yn,
                                           close, today_support, support, csp_bullish_candle, volume_inconsistency_alert,
                                           message_s, message_e0, message_e1, message_e2, 
+                                          advisory, today_zone,
                                           rsi, cci, 
                                           sma5, sma50, sma200, ema5, ema20, 
                                           cci_oversold_flag, 
                                           rsi_oversold_flag, 
                                           obv_flag, 
                                           demark_flag, 
+                                          rising_flag,
                                           ce_short_spike_flag, 
                                           dcc_flag, evwma_flag, 
                                           ha_real_flag, 
+                                          ha_real2_flag,
                                           ha_smooth_flag, 
                                           macd_flag, 
                                           sma5_flag,
@@ -208,15 +210,18 @@ if(overwrite_watchlist_yn){
                                    select(symbol, date, is_today, is_first_buy_yn,
                                           close, today_support, support, csp_bullish_candle, volume_inconsistency_alert,
                                           message_s, message_e0, message_e1, message_e2, 
+                                          advisory, today_zone,
                                           rsi, cci, 
                                           sma5, sma50, sma200, ema5, ema20, 
                                           cci_oversold_flag, 
                                           rsi_oversold_flag, 
                                           obv_flag, 
                                           demark_flag, 
+                                          rising_flag,
                                           ce_short_spike_flag, 
                                           dcc_flag, evwma_flag, 
                                           ha_real_flag, 
+                                          ha_real2_flag,
                                           ha_smooth_flag, 
                                           macd_flag, 
                                           sma5_flag,
@@ -283,6 +288,7 @@ quick_take <- poc %>%
         select(
                 symbol,
                 date,
+                index,
                 is_today,
                 highlight_yn,
                 rsi,
@@ -292,10 +298,12 @@ quick_take <- poc %>%
                 obv_flag,
                 demark_flag,
                 #demark_signal_past_n_days_flag,
+                rising_flag,
                 ce_short_spike_flag,
                 dcc_flag,
                 evwma_flag,
                 ha_real_flag,
+                ha_real2_flag,
                 ha_smooth_flag,
                 macd_flag,
                 sma5_flag,
@@ -341,6 +349,8 @@ quick_take <- poc %>%
                 message_e0,
                 message_e1,
                 message_e2,
+                advisory,
+                today_zone,
                 today_support,
                 today_ceiling,
                 support,
@@ -353,3 +363,96 @@ quick_take <- poc %>%
 ############################
 dim(quick_take)
 quick_take %>% write_clip()
+
+########################################################################
+# look back: 504 (24M) / 252 (12M) / 189 (9M) / 126 (6M) / 63 (3M)
+days_look_back = 189
+days_look_back_flagged_buy_signal = 10
+end_date = t0$date %>% max() 
+
+unique_trading_date = t0 %>% filter(symbol == "SPY") %>% select(date) %>% arrange(date) %>% distinct %>% .$date
+target_date_index = which(unique_trading_date == end_date)
+if(length(target_date_index) == 0){target_date_index = length(unique_trading_date)}
+start_date = unique_trading_date[target_date_index -days_look_back]
+start_date = as.Date(start_date)
+
+####################################################################################
+# save charts
+ss = highlight_symbols2
+#start_date 
+#end_date
+dollar_by = 1
+gchart_num = 4
+support = -1
+
+tic()
+for(x in 1:length(ss)){
+        
+        # today
+        today_key = Sys.Date() |> str_replace_all("-", replacement = "")
+        
+        # path for saving all the charts
+        path <- paste(PLOT_DIRECTORY, paste0("chart_", today_key), sep = "/")
+        
+        # delete folder if exists and then create one again; create it if it does not exist
+        #if(dir.exists(path)){unlink(path, recursive = TRUE); dir.create(path)} else {dir.create(path)}
+        
+        # create dir if it does not exist
+        if(!dir.exists(path)){dir.create(path)}
+        
+        s = ss[x]
+        
+        name = paste(s, ".png", sep = "")
+        
+        visual_screen(df = poc,
+                      s = s, 
+                      start_date = start_date, 
+                      end_date = end_date, 
+                      dollar_by = dollar_by, 
+                      support = support, 
+                      gchart_num = gchart_num) %>%
+                invisible()
+        
+        ggsave(filename = name, path = path, width = 18, height = 16)
+        print(paste0(s, " done!"))
+        
+}
+toc()
+
+######################################################################################################
+# examine individual chart
+# windows()
+# i = "SPY"
+# start_date
+# end_date
+# dollar_by = 1
+# support = -1
+# gchart_num = 4
+# 
+# chart = visual_screen(df = poc,
+#                       s = i, 
+#                       start_date = start_date, 
+#                       end_date = end_date, 
+#                       dollar_by = dollar_by, 
+#                       support = support, 
+#                       gchart_num = gchart_num)
+# chart
+
+# high = 43.5
+# low = 33
+# fibonacci_seq = fibonacci(high, low)$DR
+# 
+# gFib = chart + geom_hline(yintercept = fibonacci_seq,
+#                           linetype = "dotted",
+#                           linewidth = 0.1,
+#                           color = "darkblue")
+# 
+# gFib
+
+
+
+
+
+
+
+

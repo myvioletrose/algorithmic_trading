@@ -5,10 +5,99 @@ risk_tolerance = 2
 #subset_date = "1990-01-01"
 #subset_symbols = symbols
 
+################################################################################################
+# create "rising flag" strategy
+ha_real2_flag_sum = indicators %>%
+        select(symbol, date, ha_real2_flag) %>%
+        filter(date >= subset_date) %>%
+        filter(symbol %in% subset_symbols) %>%
+        arrange(symbol, date) %>%
+        group_by(symbol) %>%
+        tq_transmute(select = "ha_real2_flag",
+                     mutate_fun = rollapply,
+                     width = 3,
+                     FUN = sum,
+                     by.column = FALSE,
+                     col_rename = "ha_real2_flag_sum") %>%
+        ungroup()
+
+rise_in_2_day_yn_sum = indicators %>%
+        select(symbol, date, close) %>%
+        filter(date >= subset_date) %>%
+        filter(symbol %in% subset_symbols) %>%
+        arrange(symbol, date) %>%
+        group_by(symbol) %>%
+        mutate(close_lag2 = lag(close, 2),
+               rise_in_2_day_yn = case_when(close > close_lag2 ~ 1, TRUE ~ 0)) %>%
+        tq_transmute(select = "rise_in_2_day_yn",
+                     mutate_fun = rollapply,
+                     width = 2,
+                     FUN = sum,
+                     by.column = FALSE,
+                     col_rename = "rise_in_2_day_yn_sum") %>%
+        ungroup()
+
+up_down_up_prep = indicators %>%
+        select(symbol, date, close, open, low) %>%
+        filter(date >= subset_date) %>%
+        filter(symbol %in% subset_symbols) %>%
+        arrange(symbol, date) %>%
+        group_by(symbol) %>%
+        mutate(close_lag1 = lag(close, 1),
+               close_lag2 = lag(close, 2),
+               open_lag2 = lag(open, 2),
+               
+               rise_up_yn = case_when(close > close_lag1 ~ 1, TRUE ~ 0),
+               rise_up_2_yn = case_when(close > close_lag2 ~ 1, TRUE ~ 0),
+               
+               rise_up_yn_lag1 = lag(rise_up_yn, 1),
+               rise_up_yn_lag2 = lag(rise_up_yn, 2),
+               
+               up_down_up_strategy = case_when(rise_up_yn_lag2 == 1 & 
+                                                       rise_up_yn_lag1 == 0 &
+                                                       close_lag1 < close_lag2 & 
+                                                       close_lag1 > open_lag2 & 
+                                                       rise_up_2_yn == 1 ~ 1,
+                                               TRUE ~ 0)) %>%
+        ungroup() %>%
+        select(symbol, date, up_down_up_strategy)
+
+rising_strategy = ha_real2_flag_sum %>%
+        dplyr::inner_join(rise_in_2_day_yn_sum, by = c("symbol", "date")) %>%
+        dplyr::inner_join(up_down_up_prep, by = c("symbol", "date")) %>%
+        dplyr::inner_join(indicators %>% select(symbol, date, close, open, high, low, 
+                                                rsi, cci,
+                                                rsi_trend_dir, cci_trend_dir), 
+                          by = c("symbol", "date")) %>%
+        group_by(symbol) %>%
+        mutate(high_lag1 = lag(high, 1),
+               low_lag1 = lag(low, 1),
+               low_lag2 = lag(low, 2),
+               volatility = round((low - high_lag1) / low, 3),
+               green_zone_flag = case_when(ha_real2_flag_sum == 3 & rise_in_2_day_yn_sum == 2 ~ 1, TRUE ~ 0),
+               ppp_flag = case_when(ha_real2_flag_sum == 3 & up_down_up_strategy == 1 ~ 1, TRUE ~ 0),
+               rising_flag = case_when(green_zone_flag == 1 & ppp_flag == 1 & (low > low_lag1 & low_lag1 > low_lag2) ~ 1, TRUE ~ 0)) %>%
+        ungroup() %>%
+        mutate(year = lubridate::year(date)) %>%
+        select(symbol, year, date,
+               ha_real2_flag_sum, rise_in_2_day_yn_sum,
+               green_zone_flag,
+               ppp_flag,
+               rising_flag,
+               close, open, high, low,
+               rsi, cci, 
+               rsi_trend_dir, cci_trend_dir,
+               volatility) %>%
+        arrange(symbol, date)
+
+#rising_strategy |> write_clip()
+################################################################################################
+
 # begin transformation
 indicators_transformed <- indicators %>%
         filter(date >= subset_date) %>%
         filter(symbol %in% subset_symbols) %>%
+        dplyr::inner_join(rising_strategy %>% select(symbol, date, rising_flag), by = c("symbol", "date")) %>%
         arrange(symbol, date) %>%
         group_by(symbol) %>%        
         dplyr::mutate(
@@ -37,20 +126,23 @@ indicators_transformed <- indicators %>%
                 
                 # buy alert if,
                 message_b = case_when(volume_inconsistency_alert == "bearish inconsistency" & demark_flag == 1 ~ "near future spike alert",
-
+                                      
                                       dcc_flag == 1 & close > zlema & ema5 > ema20 & demark_flag != -1 & rsi > 50 & sma5_flag == 1 ~ "buy - dcc",                                                                            
                                       
                                       demark_flag == 1 & close > zlema & (cci_oversold_flag == 1 | rsi_oversold_flag == 1) ~ "buy - demark (v0)",
                                       demark_flag == 1 & ema5 > ema20 ~ "buy - demark (v1)",
                                       
-                                      demark_signal_past_n_days_flag == 1 & ha_real_flag == 1 & (macd_trend_dir == 1 | macd_flag == 1 | ema5_flag == 1) ~ "buy - demark hybrid",
+                                      demark_signal_past_n_days_flag == 1 & ha_real_flag == 1 & demark_flag != -1 & (macd_trend_dir == 1 | macd_flag == 1 | ema5_flag == 1) ~ "buy - demark hybrid (v0)",
+                                      demark_signal_past_n_days_flag == 1 & ha_real2_flag == 1 & demark_flag != -1 & close > close_lag1 & (macd_trend_dir == 1 | macd_flag == 1 | ema5_flag == 1) ~ "buy - demark hybrid (v1)",
                                       
                                       evwma_flag == 1 & close > zlema & ema5 > ema20 & demark_flag != -1 & rsi > 50 & (dcc_flag == 1 | demark_flag == 1 | ha_real_flag == 1 | ha_smooth_flag == 1 | macd_flag == 1) ~ "buy - evwma (v0)",                                      
                                       evwma_flag == 1 & close > zlema & ema5 > ema20 & demark_flag != -1 & rsi > 50 & (cci_oversold_flag == 1 | rsi_oversold_flag == 1) & obv_flag == 1 ~ "buy - evwma (v1)",
                                       
                                       ha_real_flag == 1 & close > zlema & ema5 > ema20 & demark_flag != -1 & rsi > 50 & green_flag == 1 & (rsi_trend_dir == 1 | cci_trend_dir == 1 | macd_trend_dir == 1 | obv_flag == 1) ~ "buy - ha_real",
                                       
-                                      macd_flag == 1 & close > zlema & ema5 > ema20 & (cci_oversold_flag == 1 | rsi_oversold_flag == 1) ~ "buy - macd",
+                                      macd_flag == 1 & close > zlema & ema5 > ema20 & demark_flag != -1 & (cci_oversold_flag == 1 | rsi_oversold_flag == 1) ~ "buy - macd",
+                                      
+                                      rising_flag == 1 & close > zlema & ema5 > ema20 & demark_flag != -1 & (cci_overbought_flag != 1 | rsi_overbought_flag != 1) ~ "buy - rising", 
                                       
                                       sma5_flag == 1 & close > zlema & ema5 > ema20 & demark_flag != -1 & rsi > 50 & sma_pos_trend_flag == 1 ~ "sma alert",
                                       sma5_flag == 1 & close > zlema & demark_flag != -1 & rsi > 50 & (cci_oversold_flag == 1 | rsi_oversold_flag == 1) & obv_flag == 1 ~ "buy - sma (v1)",
@@ -62,13 +154,22 @@ indicators_transformed <- indicators %>%
                                       evwma_flag == -1 & close < zlema & ema5 < ema20 & demark_flag != 1 ~ "down_alert - evwma",                                      
                                       macd_flag == -1 & close < zlema & ema5 < ema20 & demark_flag != 1 ~ "down_alert - macd",                                      
                                       ha_real_flag == -1 & close < zlema & ema5 < ema20 & demark_flag != 1 ~ "down_alert - ha_real",
+                                      ha_real2_flag == -1 & close < zlema & ema5 < ema20 & demark_flag != 1 ~ "down_alert - ha_real2",
                                       #ha_smooth_flag == -1 & close < zlema & ema5 < ema20 & demark_flag != 1 ~ "down_alert - ha_smooth",                                      
                                       (cci_overbought_flag == 1 | rsi_overbought_flag == 1) & close < zlema & ema5 < ema20 & demark_flag != 1 ~ "down_alert - overbought",
                                       demark_flag == -1 & close < zlema ~ "down_alert - demark",
                                       
                                       # profit protection
                                       close < trailing_stop_loss_yesterday ~ "sell - profit protect",
-                                      TRUE ~ message_b)
+                                      TRUE ~ message_b),
+                
+                # daily zone
+                daily_zone = case_when(ha_real2_flag == -1 ~ "red",
+                                       ha_real2_flag == 0 & close < ema5 ~ "purple",
+                                       ha_real2_flag == 1 & close < ema5 ~ "purple",
+                                       ha_real2_flag == 0 & close >= ema5 ~ "blue",
+                                       ha_real2_flag == 1 & close >= ema5 ~ "green",
+                                       TRUE ~ "-1")
         ) %>%
         ungroup() %>%        
         arrange(symbol, date)
@@ -415,6 +516,14 @@ poc0 <- indicators_transformed %>%
                                        in_the_buy_yn == 1 & high > profit_target3_line ~ "sell - meet target (msg2)", 
                                        TRUE ~ message_s)
         ) %>%
+        mutate(
+                # advisory - what to do when reaching target0?
+                advisory = case_when(daily_zone == "red" ~ "sold_all@target0",
+                                     daily_zone == "purple" ~ "full_support@target0",
+                                     daily_zone == "blue" ~ "default2_support_lines",
+                                     daily_zone == "green" ~ "long2_support_lines",
+                                     TRUE ~ "sold_all@target0")
+        ) %>%
         ungroup() %>%
         select(-stop_loss_e_base_line, 
                -support1_e_line,
@@ -533,6 +642,7 @@ poc <- poc0 %>%
                 ce_short_spike_flag, 
                 dcc_flag, 
                 ha_real_flag, 
+                ha_real2_flag,
                 ha_smooth_flag, 
                 evwma_flag, 
                 overnight_flag, 
@@ -543,6 +653,7 @@ poc <- poc0 %>%
                 obv_flag,
                 demark_flag, 
                 demark_signal_past_n_days_flag,
+                rising_flag,
                 csp_doji, 
                 csp_dragonfly_doji, 
                 csp_gravestone_doji, 
@@ -587,7 +698,9 @@ poc <- poc0 %>%
                 message_e0, 
                 message_e1, 
                 message_e2,
-                support
+                support,
+                today_zone = daily_zone,
+                advisory
         ) %>%
         arrange(symbol, date)
 

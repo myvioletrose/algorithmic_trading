@@ -11,7 +11,7 @@ if(length(target_date_index) == 0){target_date_index = length(unique_trading_dat
 start_date = unique_trading_date[target_date_index -days_look_back]
 start_date = as.Date(start_date)
 
-visual_screen <- function(df, symbol, start_date, end_date, dollar_by, support, gchart_num){
+visual_screen <- function(df, s, start_date, end_date, dollar_by, support, gchart_num){
         
         # "buy - dcc, buy - demark (v0), buy - demark (v1), buy - demark hybrid, buy - evwma (v0), buy - ha_real, buy - macd, buy - sma (v1), sma alert"
         buy_line_keywords = "buy - demark|buy - demark hybrid|buy - evwma|buy - ha_real|buy - macd|buy - sma"
@@ -24,11 +24,11 @@ visual_screen <- function(df, symbol, start_date, end_date, dollar_by, support, 
         #######################################
         # visual object
         visObj = df %>%
-                filter(symbol == i & 
+                filter(symbol == s &
                                date >= start_date) %>%
                 # join with ha to get ha time series
                 inner_join(ha %>%
-                                   filter(symbol == i & date >= start_date) %>%
+                                   filter(symbol == s & date >= start_date) %>%
                                    select(symbol, date, 
                                           # ha
                                           open_ha, high_ha, low_ha, close_ha,
@@ -48,11 +48,12 @@ visual_screen <- function(df, symbol, start_date, end_date, dollar_by, support, 
                 geom_line(aes(x = date, y = dcc_high), color = "red", linetype = "dashed") +
                 geom_line(aes(x = date, y = dcc_mid), color = "grey") +
                 geom_line(aes(x = date, y = dcc_low), color = "red", linetype = "dashed") +
-                labs(title = i,
+                labs(title = s,
                      x = "", 
                      y = "") +
                 coord_x_date(xlim = c(start_date, end_date)) +
-                scale_y_continuous(labels = scales::dollar,
+                scale_y_continuous(position = "right",
+                                   labels = scales::dollar,
                                    breaks = ceiling(seq(min(visObj$low), max(visObj$high), 
                                                         by = dollar_by))) + 
                 #theme_tq() +
@@ -78,14 +79,16 @@ visual_screen <- function(df, symbol, start_date, end_date, dollar_by, support, 
         # g4: basic + Heikin Ashi smoothed + ema5 + ema20 + support/resistance line(s) + buy signal line(s)
         g4 = g3 + geom_vline(aes(xintercept = date),
                              data = visObj %>%
-                                     filter(symbol == i) %>%
+                                     filter(symbol == s) %>%
                                      filter(grepl(buy_line_keywords, message_s, ignore.case = TRUE)),
-                             col = "green") +
+                             col = "green", 
+                             alpha = 0.25) +
                 geom_vline(aes(xintercept = date),
                            data = visObj %>%
-                                   filter(symbol == i) %>%
+                                   filter(symbol == s) %>%
                                    filter(grepl(sell_line_keywords, message_s, ignore.case = TRUE)),
-                           col = "red")
+                           col = "red", 
+                           alpha = 0.25)
         
         # g5: basic + Heikin Ashi smoothed + ema5 + ema20 + support/resistance line(s)
         if(!any(support < 0)){
@@ -110,7 +113,7 @@ support = -1
 gchart_num = 4
 
 chart = visual_screen(df = poc,
-                      symbol = i, 
+                      s = i, 
                       start_date = start_date, 
                       end_date = end_date, 
                       dollar_by = dollar_by, 
@@ -130,7 +133,42 @@ chart
 # gFib
 
 
+####################################################################################
+ss = highlight_symbols2
+# start_date 
+# end_date
+# dollar_by = 1
+# gchart_num = 4
+# support = -1
 
+for(x in 1:length(ss)){
+        
+        # path for saving all the TA charts
+        path <- paste(PLOT_DIRECTORY, "chart 2.0", sep = "/")
+        
+        # delete folder if exists and then create one again; create it if it does not exist
+        #if(dir.exists(path)){unlink(path, recursive = TRUE); dir.create(path)} else {dir.create(path)}
+        
+        # create dir if it does not exist
+        if(!dir.exists(path)){dir.create(path)}
+        
+        s = ss[x]
+        
+        name = paste(s, ".png", sep = "")
+        
+        visual_screen(df = poc,
+                      s = s, 
+                      start_date = start_date, 
+                      end_date = end_date, 
+                      dollar_by = dollar_by, 
+                      support = support, 
+                      gchart_num = gchart_num) %>%
+                invisible()
+        
+        ggsave(filename = name, path = path, width = 18, height = 16)
+        print(paste0(s, " done!"))
+        
+}
 
 
 
