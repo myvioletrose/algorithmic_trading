@@ -7,6 +7,7 @@ visual_screen <- function(df, s, start_date, end_date, dollar_by, support, gchar
         sell_line_keywords = "down_alert - ce|down_alert - evwma|down_alert - ha_real|down_alert - macd|sell - profit protect"        
         
         rising_keyword = "buy - rising"
+        alert_keywords = "near future spike alert|sma_alert"
         
         #######################################
         # visual object
@@ -81,6 +82,12 @@ visual_screen <- function(df, s, start_date, end_date, dollar_by, support, gchar
                                    filter(symbol == s) %>%
                                    filter(grepl(rising_keyword, message_s, ignore.case = TRUE)),
                            col = "purple", 
+                           alpha = 0.25) +
+                geom_vline(aes(xintercept = date),
+                           data = visObj %>%
+                                   filter(symbol == s) %>%
+                                   filter(grepl(alert_keywords, message_s, ignore.case = TRUE)),
+                           col = "gold", 
                            alpha = 0.25)
         
         # g5: basic + Heikin Ashi smoothed + ema5 + ema20 + support/resistance line(s)

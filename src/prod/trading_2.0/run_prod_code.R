@@ -11,7 +11,7 @@ overwrite_watchlist_yn = TRUE
 ################################################ part I ###################################################################
 ############# > source indicators.R, messages.R
 # current holding stocks
-current_stocks = c("SPY", "META", "AJG", "PARA", "KDP", "XRAY", "ALLE")
+current_stocks = c("SPY", "META", "A", "XRAY", "WRK", "HII", "COST", "MRK", "LH", "AMGN")
 
 # watchlist
 wl = openxlsx::loadWorkbook(WATCHLIST_PATH)
@@ -152,7 +152,7 @@ if(overwrite_watchlist_yn){
                 filter(is_today == 1 & 
                                #is_first_buy_yn == 1 &
                                (
-                                       symbol %in% current_stocks | str_detect(tolower(message_b), 'buy') | ha_real_flag == 1
+                                       symbol %in% current_stocks | str_detect(tolower(message_b), 'buy') | ha_real_flag == 1 | message_b %in% c("near future spike alert", "sma alert")
                                )
                 ) %>%
                 select(symbol) %>%
@@ -195,7 +195,7 @@ if(overwrite_watchlist_yn){
                 filter(is_today == 1 & 
                                #is_first_buy_yn == 1 &
                                (
-                                       symbol %in% current_stocks | str_detect(tolower(message_b), 'buy') | ha_real_flag == 1
+                                       symbol %in% current_stocks | str_detect(tolower(message_b), 'buy') | ha_real_flag == 1 | message_b %in% c("near future spike alert", "sma alert")
                                )
                 ) %>%
                 select(symbol)
@@ -366,7 +366,7 @@ quick_take %>% write_clip()
 
 ########################################################################
 # look back: 504 (24M) / 252 (12M) / 189 (9M) / 126 (6M) / 63 (3M)
-days_look_back = 189
+days_look_back = 126
 days_look_back_flagged_buy_signal = 10
 end_date = t0$date %>% max() 
 
@@ -449,10 +449,5 @@ toc()
 # 
 # gFib
 
-
-
-
-
-
-
-
+# print time now
+print(Sys.time())

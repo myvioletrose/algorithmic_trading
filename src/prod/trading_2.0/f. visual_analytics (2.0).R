@@ -13,13 +13,14 @@ start_date = as.Date(start_date)
 
 visual_screen <- function(df, s, start_date, end_date, dollar_by, support, gchart_num){
         
-        # "buy - dcc, buy - demark (v0), buy - demark (v1), buy - demark hybrid, buy - evwma (v0), buy - ha_real, buy - macd, buy - sma (v1), sma alert"
-        buy_line_keywords = "buy - demark|buy - demark hybrid|buy - evwma|buy - ha_real|buy - macd|buy - sma"
-        #buy_line_keywords = "buy - demark"
+        # "buy - dcc, buy - demark (v0), buy - demark (v1), buy - demark hybrid, buy - evwma (v0), buy - ha_real, buy - macd, buy - rising, buy - sma (v1), sma alert"
+        buy_line_keywords = "buy - demark|buy - demark hybrid|buy - evwma|buy - ha_real|buy - macd|buy - sma"        
         
         #"down_alert - ce, down_alert - demark, down_alert - evwma, down_alert - ha_real, down_alert - macd, down_alert - overbought, sell - profit protect"
-        sell_line_keywords = "down_alert - ce|down_alert - evwma|down_alert - ha_real|down_alert - macd|sell - profit protect"
-        #sell_line_keywords = "down_alert|sell - profit protect"        
+        sell_line_keywords = "down_alert - ce|down_alert - evwma|down_alert - ha_real|down_alert - macd|sell - profit protect"        
+        
+        rising_keyword = "buy - rising"
+        alert_keywords = "near future spike alert|sma_alert"
         
         #######################################
         # visual object
@@ -88,6 +89,18 @@ visual_screen <- function(df, s, start_date, end_date, dollar_by, support, gchar
                                    filter(symbol == s) %>%
                                    filter(grepl(sell_line_keywords, message_s, ignore.case = TRUE)),
                            col = "red", 
+                           alpha = 0.25) +
+                geom_vline(aes(xintercept = date),
+                           data = visObj %>%
+                                   filter(symbol == s) %>%
+                                   filter(grepl(rising_keyword, message_s, ignore.case = TRUE)),
+                           col = "purple", 
+                           alpha = 0.25) +
+                geom_vline(aes(xintercept = date),
+                           data = visObj %>%
+                                   filter(symbol == s) %>%
+                                   filter(grepl(alert_keywords, message_s, ignore.case = TRUE)),
+                           col = "gold", 
                            alpha = 0.25)
         
         # g5: basic + Heikin Ashi smoothed + ema5 + ema20 + support/resistance line(s)
