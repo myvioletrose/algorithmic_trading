@@ -261,6 +261,7 @@ openxlsx::saveWorkbook(wb, WATCHLIST_PATH, overwrite = TRUE)
 
 # daily highlight
 highlight_symbols2 = c(highlight_symbols, current_stocks) %>% unique() %>% sort()
+#highlight_symbols2[highlight_symbols2 %nin% current_stocks] %>% as.data.frame() %>% write_clip()
 
 # quick take
 quick_take <- poc %>%

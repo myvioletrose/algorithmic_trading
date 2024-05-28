@@ -24,8 +24,8 @@ library(clipr)
 # t0 <- readRDS("t0.RDS")
 
 # extract data
-threshold = 0.005
-filter_date = '2024-04-01'
+threshold = 0.006
+filter_date = '2024-05-01'
 
 tic()
 df <- poc %>%        
@@ -55,22 +55,22 @@ df <- poc %>%
                
                open_n1 = lead(open, 1),
                
-               #bid_price = (high_n1 + low_n1 + open_n1 + close_n1) / 4,
-               #bid_price = (high_n1 + open_n1 + low_n1) / 3,
-               #bid_price = (high_n1 + open_n1) / 2,
-               #bid_price = high_n1,
-               #bid_price = open_n1,               
-               
-               stop_price = (open + low) / 2,
+               # stop, limit, bid prices               
+               stop_price = (open + low) / 2,               
                limit_price = (open + high) / 2,
-               bid_price = (open_n1 *2 + high) / 3,
-               
-               limit_price = case_when(bid_price > limit_price ~ bid_price, TRUE ~ limit_price),
-
-               target = bid_price * (1 + threshold),
-               stop_loss = bid_price - (2 * atr),               
+               suggested_limit_price = (open_n1 *2 + high) / 3,               
+               bid_price = (close *2 + high) / 3,
+               # update limit price, bid_price
+               limit_price = case_when(suggested_limit_price > limit_price ~ suggested_limit_price, TRUE ~ limit_price),
+               bid_price = case_when(bid_price < stop_price ~ stop_price,
+                                     bid_price > limit_price ~ limit_price, 
+                                     TRUE ~ bid_price),
+               # target, stop-loss
+               #target = bid_price * (1 + threshold),
+               target = limit_price * (1 + threshold),
+               stop_loss = bid_price - (1 * atr),               
                # logic trigger buy
-               entry_trade_yn = case_when(bid_price > stop_price & bid_price < limit_price ~ 1, TRUE ~ 0),
+               entry_trade_yn = case_when(bid_price >= stop_price & bid_price <= limit_price ~ 1, TRUE ~ 0),
                year = lubridate::year(date)
         ) %>%
         ungroup() %>%
