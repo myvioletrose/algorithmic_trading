@@ -1,0 +1,62 @@
+<<< items >>>
+
+# eval of trading_strategy_1pct
+# measure of "uncertainty" - (today_low - previous_high)
+# 3 stock market collapse (or market top) signals / Market Breadth Indicators
+  # Shiller P/E ratio
+  # Market Breadth
+    # Advance Decline Line (such as bearish divergence)
+    # percent "up" or "down" out of the stock list
+      # e.g., what is the proportion, e.g., 20% between 0 and 1pct, 40% between 1pct and 2pct, etc.
+    # percent of SP500 stocks above SMA50 vs overall SP500 index growth
+    # num of 52-week high vs num of 52-week low
+  # IBD Distribution Days
+    # Distribution days is a term related to distribution stock in the sense that heavy institutional selling of shares is taking place. 
+    # A distribution day, technically speaking, occurs when major market indexes fall 0.2% or more on volume that is higher than the previous trading day.
+    # pay attention to how many distibution days occur in past 20-25 trading days
+      # e.g., 4 (distribution days) on SP500, 3 on Nasdaq in past 25 trading days
+      
+# "3rd" chart: 
+scaled:  # x` = x - min(x) / (max(x) - min(x)) 
+  close
+  obv
+  rsi
+  dcc (high, mid, low)
++plus vertical line(s)
+# ichimoku cloud
+
+# Demark Hybrid 3.0!?
+# fix alerts steps
+# visuals 2.0 (+ mass save option)
+# pricing.xlsx "activity_log"
+
+# cal target $ after adjusting for inflation
+# price range simulation function
+# Sharpe Ratio, Beta, P/E
+
+#########################################################
+# keep tuning buy alerts
+# classification model??
+
+class_tree_fit %>%
+  extract_fit_engine() %>%
+  rpart.plot()
+
+augment(class_tree_fit, new_data = Carseats) %>%
+  conf_mat(truth = High, estimate = .pred_class)  
+
+##############################################################################
+# message_e* logic
+message_e0 = case_when(in_the_buy_yn == 1 & low < stop_loss_base_line ~ "sell - stop-loss (msg0)",
+                       in_the_buy_yn == 1 & low < daily_support ~ "sell - break support (msg0)",
+                       in_the_buy_yn == 1 & high > support1_line ~ "sell - meet target (msg0)",
+                       TRUE ~ message_s),
+message_e1 = case_when(in_the_buy_yn == 1 & low < stop_loss_base_line ~ "sell - stop-loss (msg1)",
+                       in_the_buy_yn == 1 & close_lag1 > support1_line & low < daily_support ~ "sell - break support (msg1)",
+                       in_the_buy_yn == 1 & high > profit_target2_line ~ "sell - meet target (msg1)", 
+                       TRUE ~ message_s),
+message_e2 = case_when(in_the_buy_yn == 1 & low < stop_loss_base_line ~ "sell - stop-loss (msg2)",
+                       in_the_buy_yn == 1 & close_lag1 > support2_line & low < daily_support ~ "sell - break support (msg2)",
+                       in_the_buy_yn == 1 & high > profit_target3_line ~ "sell - meet target (msg2)", 
+                       TRUE ~ message_s)
+
