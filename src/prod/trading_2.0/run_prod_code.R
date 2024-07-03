@@ -364,6 +364,7 @@ quick_take <- poc %>%
 ############################
 dim(quick_take)
 quick_take %>% write_clip()
+#highlight_symbols2[highlight_symbols2 %nin% current_stocks] %>% as.data.frame() %>% write_clip()
 
 ########################################################################
 # look back: 504 (24M) / 252 (12M) / 189 (9M) / 126 (6M) / 63 (3M)
