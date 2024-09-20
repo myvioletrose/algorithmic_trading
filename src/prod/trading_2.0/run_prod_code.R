@@ -11,7 +11,10 @@ overwrite_watchlist_yn = TRUE
 ################################################ part I ###################################################################
 ############# > source indicators.R, messages.R
 # current holding stocks
-current_stocks = c("SPY", "META", "A", "XRAY", "WRK", "HII", "COST", "MRK", "LH", "AMGN")
+current_stocks = c("SPY", 
+                   "SBUX",
+                   "SRE", 
+                   "NVDA", "LLY", "AVGO", "CRWD")
 
 # watchlist
 wl = openxlsx::loadWorkbook(WATCHLIST_PATH)
@@ -19,7 +22,7 @@ watchlist_symbols = readWorkbook(wl, "watchlist") %>% select(symbol) %>% distinc
 
 # symbols
 symbols = c("META", "AAPL", "AMZN", "NFLX", "GOOGL", "TSLA", "SPY", "QQQ", "GLD",
-            "DKNG", "ANET", "CZR", "DASH", "JOBY", 
+            "DKNG", "ANET", "CZR", "DASH", "JOBY", "GME",
             "TGT", "ZS", "CRM", "EXPE", "PLNT",
             "SHOP", "NOW", "SNAP",
             "SNOW", "MDB", "CRWD", "SYM", "PATH",
@@ -363,8 +366,7 @@ quick_take <- poc %>%
 
 ############################
 dim(quick_take)
-quick_take %>% write_clip()
-#highlight_symbols2[highlight_symbols2 %nin% current_stocks] %>% as.data.frame() %>% write_clip()
+quick_take %>% head() 
 
 ########################################################################
 # look back: 504 (24M) / 252 (12M) / 189 (9M) / 126 (6M) / 63 (3M)
@@ -453,3 +455,33 @@ toc()
 
 # print time now
 print(Sys.time())
+
+###########################################################################################
+# emoji
+# add logic for "suggested_limit"
+emoji = poc %>%
+        filter(date >= "2024-01-01") %>%
+        select(date, 
+               symbol, 
+               open, high, low, close, volume, atr,
+               dcc_mid, csp_bullish_candle, csp_bearish_candle,
+               today_zone, ema5, ema20, evwma) %>%
+        group_by(symbol) %>%
+        mutate(stop = (open + low)/2,
+               limit = (open + high)/2,
+               stop_lag1 = lag(stop, 1),
+               limit_lag1 = lag(limit, 1),
+               today_sentiment = case_when(close > limit_lag1 ~ 1,
+                                           close < stop_lag1 ~ -1,
+                                           TRUE ~ 0),
+               today_sentiment_lag1 = lag(today_sentiment, 1),
+               emoji = today_sentiment + today_sentiment_lag1) %>%
+        ungroup() 
+
+emoji %>% head()
+
+######################################################
+#quick_take %>% write_clip()
+#emoji %>% write_clip()
+#highlight_symbols2[highlight_symbols2 %nin% current_stocks] %>% as.data.frame() %>% write_clip()
+#highlight_symbols2 %>% as.data.frame() %>% write_clip()
