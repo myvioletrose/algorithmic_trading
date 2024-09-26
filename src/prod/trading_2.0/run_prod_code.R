@@ -12,9 +12,8 @@ overwrite_watchlist_yn = TRUE
 ############# > source indicators.R, messages.R
 # current holding stocks
 current_stocks = c("SPY", 
-                   "SBUX",
-                   "SRE", 
-                   "NVDA", "LLY", "AVGO", "CRWD")
+                   "NVDA", "DAL", "CRWD", "TSLA", "SBUX", "AAPL",
+                   "LLY", "AVGO", "NOW")
 
 # watchlist
 wl = openxlsx::loadWorkbook(WATCHLIST_PATH)
