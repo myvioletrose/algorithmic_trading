@@ -6,7 +6,7 @@ if(!require(pacman)){install.packages("pacman"); require(pacman)}
 pacman::p_load(tictoc)
 
 # set environment, proxy servers if running the script at Bloomberg office desktop
-if(tolower(Sys.getenv("username")) == "jng410"){
+if(tolower(Sys.getenv("RSTUDIO_USER_IDENTITY")) == "jng410"){
     proxy <- "proxy.bloomberg.com:81"
     Sys.setenv(
         https_proxy = proxy,
@@ -41,9 +41,13 @@ EXECUTE_PW <- Sys.getenv("EXECUTE_PW")
 # set project home directory
 setwd(PROJECT_HOME_DIRECTORY)
 
+# install CandleStickPattern manually
+#options(download.file.method = "wininet")
+#devtools::install_github("kochiuyu/CandleStickPattern")
+
 # load packages
 packages <- read.csv(PACKAGE_PATH, header = FALSE)
-pacman::p_load(char = as.vector(packages$V1))
+pacman::p_load(char = as.vector(packages$V1), install = FALSE)
 
 # source all functions
 sapply(paste(FUNCTION_DIRECTORY, grep(pattern = "\\.[Rr]$", list.files(FUNCTION_DIRECTORY), value = TRUE), sep = "/"), function(x) source(x)) %>% invisible()

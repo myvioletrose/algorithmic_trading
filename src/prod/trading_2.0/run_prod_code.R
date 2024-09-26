@@ -11,8 +11,8 @@ overwrite_watchlist_yn = TRUE
 ################################################ part I ###################################################################
 ############# > source indicators.R, messages.R
 # current holding stocks
-current_stocks = c("SPY", 
-                   "NVDA", "DAL", "CRWD", "TSLA", "SBUX", "AAPL",
+current_stocks = c("SPY", "QQQ", "GLD",
+                   "NVDA", "DAL", "AAPL", "CRWD", "TSLA", "SBUX",
                    "LLY", "AVGO", "NOW")
 
 # watchlist
@@ -20,7 +20,7 @@ wl = openxlsx::loadWorkbook(WATCHLIST_PATH)
 watchlist_symbols = readWorkbook(wl, "watchlist") %>% select(symbol) %>% distinct() %>% .$symbol
 
 # symbols
-symbols = c("META", "AAPL", "AMZN", "NFLX", "GOOGL", "TSLA", "SPY", "QQQ", "GLD",
+symbols = c("META", "AAPL", "AMZN", "NFLX", "GOOGL", "TSLA",
             "DKNG", "ANET", "CZR", "DASH", "JOBY", "GME",
             "TGT", "ZS", "CRM", "EXPE", "PLNT",
             "SHOP", "NOW", "SNAP",
