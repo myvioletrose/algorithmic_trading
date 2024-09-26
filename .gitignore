@@ -1,5 +1,6 @@
-__plot__/
 __data__/
+__plot__/
+__wm__/
 *.env
 *.Rhistory
 .httr-oauth
