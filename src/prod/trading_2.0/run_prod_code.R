@@ -480,7 +480,7 @@ emoji = poc %>%
 emoji %>% head()
 
 ######################################################
-#quick_take %>% write_clip()
-#emoji %>% write_clip()
-#highlight_symbols2[highlight_symbols2 %nin% current_stocks] %>% as.data.frame() %>% write_clip()
+# quick_take %>% write_clip()
+# emoji %>% write_clip()
+# highlight_symbols2[highlight_symbols2 %nin% current_stocks] %>% as.data.frame() %>% write_clip()
 #highlight_symbols2 %>% as.data.frame() %>% write_clip()
