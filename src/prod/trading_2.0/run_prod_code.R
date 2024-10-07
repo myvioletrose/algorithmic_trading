@@ -12,8 +12,8 @@ overwrite_watchlist_yn = TRUE
 ############# > source indicators.R, messages.R
 # current holding stocks
 current_stocks = c("SPY", "QQQ", "GLD",
-                   "NVDA", "ABT", "SBUX",
-                   "LLY", "AVGO", "NOW")
+                   "NVDA", "ABT", "SBUX", "LLY", "CAH",
+                   "AVGO", "NOW")
 
 # watchlist
 wl = openxlsx::loadWorkbook(WATCHLIST_PATH)
@@ -483,4 +483,4 @@ emoji %>% head()
 # quick_take %>% write_clip()
 # emoji %>% write_clip()
 # highlight_symbols2[highlight_symbols2 %nin% current_stocks] %>% as.data.frame() %>% write_clip()
-#highlight_symbols2 %>% as.data.frame() %>% write_clip()
+# highlight_symbols2 %>% as.data.frame() %>% write_clip()
