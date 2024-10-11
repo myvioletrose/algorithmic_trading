@@ -12,7 +12,7 @@ overwrite_watchlist_yn = TRUE
 ############# > source indicators.R, messages.R
 # current holding stocks
 current_stocks = c("SPY", "QQQ", "GLD",
-                   "NVDA", "ABT", "SBUX", "LLY", "CAH",
+                   "NVDA", "ABT", "SBUX", "LLY", "CAH", "MCO",
                    "AVGO", "NOW")
 
 # watchlist
